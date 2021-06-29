@@ -1,0 +1,22 @@
+config.*
+.env
+
+data.*
+*.db
+
+test.js
+test/
+mongodb-test/
+
+node_modules/
+package-lock.json
+
+old/
+
+# *.todo # is included because other todos are also included (directly in source code)
+
+.eslintrc.json
+
+.vscode/
+
+start-pm2.cmd

@@ -1,0 +1,20 @@
+{
+  "name": "game-roles-v2",
+  "main": "src/index.js",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^10.0.0",
+    "mongoose": "^5.12.13",
+    "wokcommands": "^1.3.6"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.29.0",
+    "mocha": "^9.0.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
