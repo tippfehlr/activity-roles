@@ -57,7 +57,7 @@ async function checkRoles(member) {
   for (const x in guildActivityList) {
     if (guildActivityList[x].only_included_allowed) {
       for (const y in userActivityList) {
-        //user needs role
+        // user needs role
         if (!member.roles.cache.has(guildActivityList[x].roleID) && userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
           if (!userActivityList[y].ignored && !userActivityList[y].autoRole) {
             const role = member.guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
@@ -69,11 +69,12 @@ async function checkRoles(member) {
               const logChannelID = _guildConfig.logChannelID;
               const channel = member.guild.channels.cache.find(_channel => _channel.id === logChannelID);
               if (channel) {
-                console.log(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole))
+                console.log(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
                 channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
               }
             }
           }
+          // user has role but not activity
         } else if (member.roles.cache.has(guildActivityList[x].roleID) && !userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
           const role = member.guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
           if (role.position < highestBotRole) {
@@ -107,9 +108,8 @@ async function checkRoles(member) {
             }
           }
         }
-      }
-      // user doesn't have activity but role
-      if (member.roles.cache.has(guildActivityList[x].roleID) && !userActivityListFiltered) {
+        // user doesn't have activity but role
+      } else if (member.roles.cache.has(guildActivityList[x].roleID) && !userActivityListFiltered) {
         const role = member.guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
         if (role.position < highestBotRole) {
           member.roles.remove(role);
@@ -131,31 +131,35 @@ async function checkAllRoles(guild) {
   messages.log.activity();
 
   const guildActivityList = await GuildData.find({ guildID: guild.id.toString() }).lean();
-  await guild.members.cache.forEach(async (member) => {
+  const highestBotRole = guild.me.roles.highest.position;
+
+  await guild.members.cache.forEach(async (member) => { // for each member in guild
     if (member.user.bot) return;
     await checkUser(member.user);
-    if (!await UserConfig.findById(member.user.id.toString()).select('autoRole').lean().autoRole) return;
+
+    if (!await UserConfig.findById(member.user.id.toString()).select('autoRole').lean().autoRole) return; // if autorole is off for that user return
 
     const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
-    for (const x in guildActivityList) {
-      if (guildActivityList[x].only_included_allowed) {
-        for (const y in userActivityList) {
-          if (!member.roles.cache.has(guildActivityList[x].roleID) && userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
-            if (!userActivityList[y].ignored && !userActivityList[y].autoRole) {
+    for (const x in guildActivityList) { // for all guild activities
+      if (guildActivityList[x].only_included_allowed) { // included? (gamerole option)
+        for (const y in userActivityList) { // for all user activities
+          if (!member.roles.cache.has(guildActivityList[x].roleID) && userActivityList[y].activityName.includes(guildActivityList[x].activityName)) { // if user needs role
+            if (!userActivityList[y].ignored && !userActivityList[y].autoRole) { // if user doesn't ignore role
               const role = guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
-              if (role.position < highestBotRole) {
+              if (role.position < highestBotRole) { // make sure bot has permissions
                 member.roles.add(role);
                 messages.log.addedRoleToMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
-              } else if ('logChannelID' in await GuildConfig.findById(guild.id.toString()).lean()) {
+              } else if ('logChannelID' in await GuildConfig.findById(guild.id.toString()).lean()) { // if not check if log channel is available
                 const _guildConfig = await GuildConfig.findById(guild.id.toString()).lean();
                 const logChannelID = _guildConfig.logChannelID;
                 const channel = guild.channels.cache.find(_channel => _channel.id === logChannelID);
                 if (channel) {
+                  // and send the error message
                   channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
                 }
               }
             }
-          } else if (member.roles.cache.has(guildActivityList[x].roleID) && !userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
+          } else if (member.roles.cache.has(guildActivityList[x].roleID) && !userActivityList[y].activityName.includes(guildActivityList[x].activityName)) { // same as above but reversed
             const role = guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
             if (role.position < highestBotRole) {
               member.roles.remove(role);
@@ -174,19 +178,17 @@ async function checkAllRoles(guild) {
         const userActivityListFiltered = userActivityList.filter(elmt => elmt.activityName === guildActivityList[x].activityName)[0];
         // user has activity but not role
         if (!member.roles.cache.has(guildActivityList[x].roleID) && userActivityListFiltered) {
-          if (userActivityListFiltered.autoRole && !userActivityListFiltered.ignored) {
-            if (!userActivityList[y].ignored && !userActivityList[y].autoRole) {
-              const role = guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
-              if (role.position < highestBotRole) {
-                member.roles.add(role);
-                messages.log.addedRoleToMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
-              } else if ('logChannelID' in await GuildConfig.findById(guild.id.toString()).lean()) {
-                const _guildConfig = await GuildConfig.findById(guild.id.toString()).lean();
-                const logChannelID = _guildConfig.logChannelID;
-                const channel = guild.channels.cache.find(_channel => _channel.id === logChannelID);
-                if (channel) {
-                  channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
-                }
+          if (!userActivityListFiltered.ignored && !userActivityListFiltered.autoRole) {
+            const role = guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
+            if (role.position < highestBotRole) {
+              member.roles.add(role);
+              messages.log.addedRoleToMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
+            } else if ('logChannelID' in await GuildConfig.findById(guild.id.toString()).lean()) {
+              const _guildConfig = await GuildConfig.findById(guild.id.toString()).lean();
+              const logChannelID = _guildConfig.logChannelID;
+              const channel = guild.channels.cache.find(_channel => _channel.id === logChannelID);
+              if (channel) {
+                channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
               }
             }
           }
