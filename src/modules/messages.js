@@ -27,9 +27,9 @@ function errorCantAssignRole(roleID, rolePosition, userID, activityName, highest
     .addField('Error:', 'Missing permissions')
     .addField('Activity Name:', activityName)
     .addField('My highest role:', `#${highestBotRole}`, true)
-    .addField(`GameRole:`, `#${rolePosition}`, true)
+    .addField('GameRole:', `#${rolePosition}`, true)
     .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
-    .setFooter("© 2021 tippfehlr#3575", config.botOwnerLogoLink)
+    .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
     .setTimestamp();
 }
 
@@ -41,9 +41,9 @@ function errorCantRemoveRole(roleID, rolePosition, userID, activityName, highest
     .addField('Error:', 'Missing permissions')
     .addField('Activity Name:', activityName)
     .addField('My highest role:', `#${highestBotRole}`, true)
-    .addField(`GameRole:`, `#${rolePosition}`, true)
+    .addField('GameRole:', `#${rolePosition}`, true)
     .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
-    .setFooter("© 2021 tippfehlr#3575", config.botOwnerLogoLink)
+    .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
     .setTimestamp();
 }
 
@@ -62,13 +62,11 @@ async function mongodbConnect() {
 }
 
 async function addedRoleToMember(roleName, roleID, userUsername, userID, guildName, guildID) {
-  console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userUsername} (${userID}) \
-  on guild: ${guildName} (${guildID})`);
+  console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
 }
 
 async function removedRoleFromMember(roleName, roleID, userUsername, userID, guildName, guildID) {
-  console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) to user: ${userUsername} (${userID}) \
-  on guild: ${guildName} (${guildID})`);
+  console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) from user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
 }
 
 async function activity() {
@@ -94,4 +92,4 @@ module.exports = {
     activity,
     command
   }
-}
+};

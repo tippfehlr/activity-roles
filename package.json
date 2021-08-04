@@ -1,11 +1,18 @@
 {
   "name": "game-roles-v2",
   "main": "src/index.js",
+  "test": "src/tests",
+  "license" : "AGPL-3.0",
+  "author": "tippfehlr",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tippf3hlr/game-roles-v2.git"
+  },
   "dependencies": {
     "discord.js": "^12.5.1",
     "dotenv": "^10.0.0",
     "mongoose": "^5.12.13",
-    "nodemon": "^2.0.8",
+    "nodemon": "^2.0.9",
     "wokcommands": "^1.3.6"
   },
   "devDependencies": {
@@ -16,6 +23,9 @@
     "mocha": "^9.0.0"
   },
   "scripts": {
+    "pm2": "pm2 start ./src/index.js -a --restart-delay 3000 --name game-roles-v2",
+    "run": "node ./src/index.js",
+    "nodemon": "nodemon",
     "test": "mocha"
   }
 }

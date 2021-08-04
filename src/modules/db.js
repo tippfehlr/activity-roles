@@ -104,7 +104,7 @@ async function checkRoles(member) {
             const logChannelID = _guildConfig.logChannelID;
             const channel = member.guild.channels.cache.find(_channel => _channel.id === logChannelID);
             if (channel) {
-              channel.send(channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole)));
+              channel.send(messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole));
             }
           }
         }

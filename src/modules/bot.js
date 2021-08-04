@@ -6,7 +6,7 @@ const db = require('./db.js');
 
 const config = require('../config.js');
 const { presence } = config;
-const testGuildIDs = ['782687651492790314'];
+const testGuildIDs = ['782687651492790314', '727818725784551495'];
 
 function changeActivity() {
   if (presence.nextActivityNumber >= presence.activity.length) {
