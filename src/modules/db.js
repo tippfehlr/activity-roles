@@ -38,7 +38,7 @@ async function checkUser(user) {
       _id: user.id.toString(),
       autoRole: true
     }).save();
-    console.log(messages.addUserLog());
+    messages.log.addUser();
   }
 }
 
@@ -48,7 +48,9 @@ async function checkRoles(member) {
   if (member.user.bot) return;
   await checkUser(member.user);
   await checkGuild(member.guild);
-  if (await UserConfig.findById(member.user.id.toString()).select('autoRole').lean().autoRole) return;
+  const doc = await UserConfig.findById(member.user.id.toString());
+  if (!doc) return;
+
   const guildActivityList = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
   const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
 
