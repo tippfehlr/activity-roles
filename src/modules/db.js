@@ -49,7 +49,7 @@ async function checkRoles(member) {
   await checkUser(member.user);
   await checkGuild(member.guild);
   const doc = await UserConfig.findById(member.user.id.toString());
-  if (!doc) return;
+  if (!doc.autoRole) return;
 
   const guildActivityList = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
   const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
