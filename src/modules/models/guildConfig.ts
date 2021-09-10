@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose, { Schema } from 'mongoose';
 
 const guildConfigSchema = new Schema({
   _id: {
@@ -13,5 +12,4 @@ const guildConfigSchema = new Schema({
   //more guild settings here
 }, { timestamps: true });
 
-const GuildConfig = mongoose.model('GuildConfig', guildConfigSchema);
-module.exports = GuildConfig;
+export default mongoose.model('GuildConfig', guildConfigSchema);

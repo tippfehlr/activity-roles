@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose, { Schema } from 'mongoose';
 
 const userConfigSchema = new Schema({
   _id: {
@@ -12,5 +11,4 @@ const userConfigSchema = new Schema({
   }
 }, { timestamps: true });
 
-const UserConfig = mongoose.model('UserConfig', userConfigSchema);
-module.exports = UserConfig;
+export default mongoose.model('UserConfig', userConfigSchema);

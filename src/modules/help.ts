@@ -1,12 +1,12 @@
-const Discord = require("discord.js");
-const config = require("../config.js");
+import Discord, { ColorResolvable } from "discord.js";
+import config from "../../config";
 
-//TODO: Update help after ./command transfer
+//TODO: Update help
 
 module.exports = {
   default: "Sorry, not added yet",
   autoRole: new Discord.MessageEmbed()
-    .setColor(config.embedColor)
+    .setColor(config.embedColor as ColorResolvable)
     .setTitle(`Help with /autoRole`)
     .addField("Usage:", "`" + `/autoRole <true/false> <optional: game>` + "`")
     .addField("<true/false>", "Decides if the bot does assign you roles automatically")
@@ -15,5 +15,5 @@ module.exports = {
     .setFooter("© 2021 tippfehlr#3575", config.botOwnerLogoLink),
   inviteLink: new Discord.MessageEmbed()
     .setDescription(`Here is my Link: ${config.inviteLink}.\nThanks for inviting me!`)
-    .setColor(config.embedColor),
+    .setColor(config.embedColor as ColorResolvable)
 };

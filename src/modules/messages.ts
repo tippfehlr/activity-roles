@@ -1,11 +1,11 @@
-const Discord = require('discord.js');
-const config = require('../config.js');
+import Discord from 'discord.js';
+import config from '../../config';
 
 
 //? TODO: Different languages?
 
-module.exports = {
-  newLogChannel: () => {
+export default {
+  newLogChannel: (): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
       .setTitle('Logs')
@@ -14,12 +14,12 @@ module.exports = {
       .setTimestamp()
       .setFooter(config.footerMessage, config.botOwnerLogoLink);
   },
-  set: () => {
+  set: (): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
       .setTitle('Set!');
   },
-  errorCantAssignRole: (roleID, rolePosition, userID, activityName, highestBotRole) => {
+  errorCantAssignRole: (roleID: string, rolePosition: number, userID: string, activityName: string, highestBotRole: number): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor('#ff0000')
       .setTitle('Error')
@@ -32,7 +32,7 @@ module.exports = {
       .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
-  errorCantRemoveRole: (roleID, rolePosition, userID, activityName, highestBotRole) => {
+  errorCantRemoveRole: (roleID: string, rolePosition: number, userID: string, activityName: string, highestBotRole: number): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor('#ff0000')
       .setTitle('Error')
@@ -47,32 +47,32 @@ module.exports = {
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
-    addGuild: async (guildName, guildID) => {
+    addGuild: async (guildName: string, guildID: string): Promise<void> => {
       console.log(`\nMONGODB > Added guild ${guildName} (${guildID}) to the database.`);
     },
-    addUser: async (userUsername, userID) => {
+    addUser: async (userUsername: string, userID: string): Promise<void> => {
       console.log(`\nMONGODB > Added user ${userUsername} (${userID}) to the database.`);
     },
-    mongodbConnect: async () => {
+    mongodbConnect: async (): Promise<void> => {
       console.log('MONGODB > Connected to DB!');
     },
-    addedRoleToMember: async (roleName, roleID, userUsername, userID, guildName, guildID) => {
+    addedRoleToMember: async (roleName: string, roleID: string, userUsername: string, userID: string, guildName: string, guildID: string): Promise<void> => {
       console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
     },
-    removedRoleFromMember: (roleName, roleID, userUsername, userID, guildName, guildID) => {
+    removedRoleFromMember: async (roleName: string, roleID: string, userUsername: string, userID: string, guildName: string, guildID: string): Promise<void> => {
       console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) from user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
     },
-    activity: () => {
+    activity: async (): Promise<void> => {
       process.stdout.write('.');
     },
-    command: () => {
+    command: async (): Promise<void> => {
       process.stdout.write(':');
     },
-    errorCantAssignRole: async () => {
-      console.log('TODO messages.js/errorCantAssignRole'); //TODO:
+    errorCantAssignRole: async (roleName: string, roleID: string, rolePosition: number, userName: string, userID: string, activityName: string, highestBotRole: number): Promise<void> => {
+      console.log(`Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`);
     },
-    errorCantRemoveRole: async () => {
-      console.log('TODO messages.js/errorCantRemoveRole'); //TODO:
+    errorCantRemoveRole: async (roleName: string, roleID: string, rolePosition: number, userName: string, userID: string, activityName: string, highestBotRole: number): Promise<void> => {
+      console.log(`Error: Can't remove role ${roleName} (${roleID}, rolePosition: ${rolePosition}) from user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`);
     }
   }
 };
