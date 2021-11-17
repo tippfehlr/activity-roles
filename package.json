@@ -20,7 +20,7 @@
   },
   "scripts": {
     "prod": "pm2 start ./src/index.ts -a --restart-delay 3000 --name game-roles-v2",
-    "run": "node ./src/index.ts",
+    "start": "ts-node ./src/index.ts",
     "dev": "nodemon",
     "test": "mocha"
   }
