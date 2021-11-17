@@ -1,4 +1,4 @@
-import { ColorResolvable, ActivityType } from 'discord.js';
+import { ColorResolvable, ActivitiesOptions, ActivityOptions, Activity } from 'discord.js';
 require('dotenv').config();
 const TOKEN = process.env.TOKEN as string;
 const MONGODB_URI = process.env.MONGODB_URI as string;
@@ -11,9 +11,9 @@ export default {
   footerMessage: '© 2021 tippfehlr#3575',
   embedColor: '#0099ff' as ColorResolvable,
   activities: [
-    { name: 'gr!help', type: 'LISTENING' as ActivityType },
-    { name: 'your activities', type: 'LISTENING' as ActivityType },
-    { name: 'with you', type: 'PLAYING' as ActivityType }
+    { name: 'gr!help', type: 'LISTENING' } as ActivityOptions,
+    { name: 'your activities', type: 'LISTENING' } as ActivityOptions,
+    { name: 'with you', type: 'PLAYING' } as ActivitiesOptions
   ],
   TOKEN,
   MONGODB_URI
