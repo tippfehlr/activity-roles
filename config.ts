@@ -4,7 +4,7 @@ const TOKEN = process.env.TOKEN as string;
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 export default {
-  botOwner: '712702707986595880',
+  botOwners: ['712702707986595880'],
   inviteLink: 'https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot%20applications.commands',
   botLogoLink: 'https://i.imgur.com/wSTFkRM.png',
   botOwnerLogoLink: 'https://i.imgur.com/wSTFkRM.png',

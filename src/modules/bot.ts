@@ -23,13 +23,14 @@ client.on('ready', () => {
     testServers: testGuildIDs,
     typeScript: true,
     mongoUri: config.MONGODB_URI,
-    disabledDefaultCommands: [
-      'help',
-      'command',
-      'language',
-      'prefix',
-      'requiredrole'
-    ],
+    botOwners: config.botOwners,
+    // disabledDefaultCommands: [
+      // 'help',
+      // 'command',
+      // 'language',
+      // 'prefix',
+      // 'requiredrole'
+    // ],
   });
 
   client.user?.setPresence({
