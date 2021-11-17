@@ -4,8 +4,8 @@ import mongoose from 'mongoose';
 import config from '../../config';
 import messages from './messages';
 
-export async function connect() {
-  await mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+async function connect() {
+  await mongoose.connect(config.MONGODB_URI).then(() => {
     messages.log.mongodbConnect();
   });
 }
@@ -14,10 +14,9 @@ import UserConfig from './models/userConfig';
 import GuildConfig from './models/guildConfig';
 import GuildData from './models/guildData';
 import UserData from './models/userData';
-import * as db from './db';
 
 // @param guild: Discord guild object
-export async function checkGuild(guild: Discord.Guild): Promise<void> {
+async function checkGuild(guild: Discord.Guild): Promise<void> {
   messages.log.activity();
   if (!await GuildConfig.findById(guild.id.toString()).select('_id').lean()) {
     const channel = await guild.channels.create('game-roles-v2');
@@ -31,7 +30,7 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
 }
 
 // @param user: Discord user object
-export async function checkUser(user: Discord.User): Promise<void> {
+async function checkUser(user: Discord.User): Promise<void> {
   messages.log.activity();
   if (!await UserConfig.findById(user.id.toString()).exec()) {
     await new UserConfig({
@@ -43,7 +42,7 @@ export async function checkUser(user: Discord.User): Promise<void> {
 }
 
 // @param member: Discord member object
-export async function checkRoles(member: Discord.GuildMember) {
+async function checkRoles(member: Discord.GuildMember) {
   messages.log.activity();
   if (member.user.bot) return;
   await checkUser(member.user);
@@ -120,7 +119,7 @@ export async function checkRoles(member: Discord.GuildMember) {
   }
 }
 
-export async function checkAllRoles(guild: Discord.Guild) {
+async function checkAllRoles(guild: Discord.Guild) {
   messages.log.activity();
   await checkGuild(guild);
 
@@ -207,4 +206,15 @@ export async function checkAllRoles(guild: Discord.Guild) {
   });
 }
 
-module.exports = { connect };
+export default {
+  connect,
+  checkGuild,
+  checkUser,
+  checkRoles,
+  checkAllRoles,
+
+  UserConfig,
+  UserData,
+  GuildConfig,
+  GuildData
+}

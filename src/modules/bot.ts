@@ -2,6 +2,10 @@ import Discord, { Intents } from 'discord.js';
 import WOKcommands from 'wokcommands';
 import path from 'path';
 
+import db from './db';
+import config from '../../config';
+const testGuildIDs: string[] = ['782687651492790314', '727818725784551495'];
+
 export const client: Discord.Client = new Discord.Client({
   intents: [
     Intents.FLAGS.GUILDS,
@@ -13,21 +17,12 @@ export const client: Discord.Client = new Discord.Client({
   ]
 });
 
-import UserConfig from './models/userConfig';
-import GuildConfig from './models/guildConfig';
-import GuildData from './models/guildData';
-import UserData from './models/userData';
-import * as db from './db';
-
-import config from '../../config';
-
-const testGuildIDs: string[] = ['782687651492790314', '727818725784551495'];
-
 client.on('ready', () => {
   new WOKcommands(client, {
-    commandsDir: path.join(__dirname, 'commands'),
+    commandsDir: path.join(__dirname, '/commands'),
     testServers: testGuildIDs,
-    typescript: true,
+    typeScript: true,
+    mongoUri: config.MONGODB_URI,
     disabledDefaultCommands: [
       'help',
       'command',
@@ -42,8 +37,6 @@ client.on('ready', () => {
     afk: false,
     activities: config.activities
   });
-
-  console.log('DISCORD.JS > Ready!');
 });
 
 client.on('presenceUpdate', async function (oldMember: any, newMember: any) {
@@ -53,10 +46,10 @@ client.on('presenceUpdate', async function (oldMember: any, newMember: any) {
 
   for (const i in newMember.activities) {
     if (newMember.activities[i].name !== 'Custom Status') {
-      UserData.findOne({ userID: newMember.user.id.toString(), activityName: newMember.activities[i].name }, (err: any, docs: any) => {
+      db.UserData.findOne({ userID: newMember.user.id.toString(), activityName: newMember.activities[i].name }, (err: any, docs: any) => {
         if (err) console.error(err);
         if (!docs) {
-          new UserData({
+          new db.UserData({
             userID: newMember.user.id.toString(),
             activityName: newMember.activities[i].name,
             autoRole: true,

@@ -1,8 +1,8 @@
-// import { connect as mongoDBConnect } from './modules/db';
+import db from './modules/db';
 import { connect as discordJSConnect } from './modules/bot';
 
-// mongoDBConnect();
+db.connect();
 discordJSConnect();
-require('./modules/db').connect();
+// require('./modules/db').connect();
 
 export {}
