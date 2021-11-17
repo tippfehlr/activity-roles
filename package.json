@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "eslint": "^7.32.0",
-    "nodemon": "^2.0.12" 
-   },
+    "nodemon": "^2.0.12"
+  },
   "scripts": {
     "prod": "pm2 start ./src/index.ts -a --restart-delay 3000 --name game-roles-v2",
     "run": "node ./src/index.ts",
