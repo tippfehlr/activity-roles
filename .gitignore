@@ -1,12 +1,5 @@
 .env
 
 node_modules/
-package-lock.json
-
-# *.todo # is included because other todos are also included (directly in source code)
-
-
 
 out/
-
-.vscode/
