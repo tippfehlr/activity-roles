@@ -4,8 +4,8 @@ import mongoose from 'mongoose';
 import config from '../../config';
 import messages from './messages';
 
-async function connect() {
-  await mongoose.connect(config.MONGODB_URI).then(() => {
+async function connect(uri: string) {
+  await mongoose.connect(uri).then(() => {
     messages.log.mongodbConnect();
   });
 }
@@ -30,7 +30,8 @@ async function checkGuild(guild: Discord.Guild): Promise<void> {
 }
 
 // @param user: Discord user object
-async function checkUser(user: Discord.User): Promise<void> {
+// @return: User existed before check
+async function checkUser(user: Discord.User): Promise<boolean> {
   messages.log.activity();
   if (!await UserConfig.findById(user.id.toString()).exec()) {
     await new UserConfig({
@@ -38,7 +39,9 @@ async function checkUser(user: Discord.User): Promise<void> {
       autoRole: true
     }).save();
     messages.log.addUser(user.username, user.id.toString());
+    return false;
   }
+  return true;
 }
 
 // @param member: Discord member object

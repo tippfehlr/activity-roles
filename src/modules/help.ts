@@ -3,7 +3,7 @@ import config from "../../config";
 
 //TODO: Update help
 
-module.exports = {
+export default {
   default: "Sorry, not added yet",
   autoRole: new Discord.MessageEmbed()
     .setColor(config.embedColor as ColorResolvable)
@@ -15,5 +15,6 @@ module.exports = {
     .setFooter("© 2021 tippfehlr#3575", config.botOwnerLogoLink),
   inviteLink: new Discord.MessageEmbed()
     .setDescription(`Here is my Link: ${config.inviteLink}.\nThanks for inviting me!`)
-    .setColor(config.embedColor as ColorResolvable)
-};
+    .setColor(config.embedColor as ColorResolvable),
+  jest: 'jest1234'
+}
