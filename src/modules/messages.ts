@@ -5,6 +5,8 @@ import config from '../../config';
 //? TODO: Different languages?
 
 export default {
+  errorMessage: 'sorry, something is wrong.',
+
   newLogChannel: (): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
@@ -52,6 +54,9 @@ export default {
     },
     addUser: async (userUsername: string, userID: string): Promise<void> => {
       console.log(`\nMONGODB > Added user ${userUsername} (${userID}) to the database.`);
+    },
+    addGameRole: async (guildName: string, guildID: string, roleName: string, roleID: string, activityName: string, excactActivityName: boolean) => {
+      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, included: ${excactActivityName}`);
     },
     mongodbConnect: async (): Promise<void> => {
       console.log('MONGODB > Connected to DB!');
