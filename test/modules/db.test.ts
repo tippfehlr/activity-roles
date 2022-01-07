@@ -18,7 +18,7 @@ describe('checkUser', () => {
     await mongoose.disconnect();
     return await mongod.stop();
   });
-  test('should do nothing because the user exists', async () => {
+  test('should do nothing because the user already exists', async () => {
     const mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     console.log = jest.fn();
