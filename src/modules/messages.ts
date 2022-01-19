@@ -56,7 +56,7 @@ export default {
       console.log(`\nMONGODB > Added user ${userUsername} (${userID}) to the database.`);
     },
     addGameRole: async (guildName: string, guildID: string, roleName: string, roleID: string, activityName: string, excactActivityName: boolean) => {
-      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, included: ${excactActivityName}`);
+      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${excactActivityName}`);
     },
     mongodbConnect: async (): Promise<void> => {
       console.log('MONGODB > Connected to DB!');

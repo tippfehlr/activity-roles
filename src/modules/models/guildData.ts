@@ -13,7 +13,7 @@ const guildDataSchema = new Schema({
     type: String,
     required: true
   },
-  only_included_allowed: {
+  exactActivityName: {
     type: Boolean,
     required: true
   }
