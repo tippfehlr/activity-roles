@@ -53,10 +53,13 @@ async function checkRoles(member: Discord.GuildMember) {
   const doc = await UserConfig.findById(member.user.id.toString());
   if (!doc.autoRole) return;
 
-  const guildActivityList: any = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
-  const userActivityList: any = await UserData.find({ userID: member.user.id.toString() }).lean();
-  const highestBotRole: number | undefined = member?.guild?.me?.roles.highest.position;
-  if (highestBotRole === undefined) return;
+  const guildActivityList = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
+  const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
+  const highestBotRole = member?.guild?.me?.roles.highest.position;
+  if (highestBotRole === undefined) {
+    messages.error.highestBotRoleUndefined(member.guild.name, member.guild.id);
+    return;
+  }
 
   for (const x in guildActivityList) {
     this_role: {

@@ -21,7 +21,7 @@ export default {
       .setColor(config.embedColor)
       .setTitle('Set!');
   },
-  errorCantAssignRole: (roleID: string, rolePosition: number, userID: string, activityName: string, highestBotRole: number): Discord.MessageEmbed => {
+  errorCantAssignRole: (roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userID: Discord.User["id"], activityName: string, highestBotRole: number): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor('#ff0000')
       .setTitle('Error')
@@ -34,7 +34,7 @@ export default {
       .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
-  errorCantRemoveRole: (roleID: string, rolePosition: number, userID: string, activityName: string, highestBotRole: number): Discord.MessageEmbed => {
+  errorCantRemoveRole: (roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userID: Discord.User["id"], activityName: string, highestBotRole: number): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
       .setColor('#ff0000')
       .setTitle('Error')
@@ -44,28 +44,28 @@ export default {
       .addField('My highest role:', `#${highestBotRole}`, true)
       .addField('GameRole:', `#${rolePosition}`, true)
       .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
-      .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
+      .setFooter('© 2021-2022 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
-    addGuild: async (guildName: string, guildID: string): Promise<void> => {
+    addGuild: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
       console.log(`\nMONGODB > Added guild ${guildName} (${guildID}) to the database.`);
     },
-    addUser: async (userUsername: string, userID: string): Promise<void> => {
-      console.log(`\nMONGODB > Added user ${userUsername} (${userID}) to the database.`);
+    addUser: async (userName: Discord.User["username"], userID: Discord.User["id"]): Promise<void> => {
+      console.log(`\nMONGODB > Added user ${userName} (${userID}) to the database.`);
     },
-    addGameRole: async (guildName: string, guildID: string, roleName: string, roleID: string, activityName: string, excactActivityName: boolean) => {
-      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${excactActivityName}`);
+    addGameRole: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"], roleName: Discord.Role["name"], roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
+      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`);
     },
     mongodbConnect: async (): Promise<void> => {
       console.log('MONGODB > Connected to DB!');
     },
-    addedRoleToMember: async (roleName: string, roleID: string, userUsername: string, userID: string, guildName: string, guildID: string): Promise<void> => {
-      console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
+    addedRoleToMember: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], userName: Discord.User["username"], userID: Discord.User["id"], guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
+      console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
     },
-    removedRoleFromMember: async (roleName: string, roleID: string, userUsername: string, userID: string, guildName: string, guildID: string): Promise<void> => {
-      console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) from user: ${userUsername} (${userID}) on guild: ${guildName} (${guildID})`);
+    removedRoleFromMember: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], userName: Discord.User["username"], userID: Discord.User["id"], guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
+      console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
     },
     activity: async (): Promise<void> => {
       process.stdout.write('.');
@@ -73,11 +73,16 @@ export default {
     command: async (): Promise<void> => {
       process.stdout.write(':');
     },
-    errorCantAssignRole: async (roleName: string, roleID: string, rolePosition: number, userName: string, userID: string, activityName: string, highestBotRole: number): Promise<void> => {
+    errorCantAssignRole: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userName: Discord.User["username"], userID: Discord.User["id"], activityName: string, highestBotRole: number): Promise<void> => {
       console.log(`Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`);
     },
-    errorCantRemoveRole: async (roleName: string, roleID: string, rolePosition: number, userName: string, userID: string, activityName: string, highestBotRole: number): Promise<void> => {
+    errorCantRemoveRole: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userName: Discord.User["username"], userID: Discord.User["id"], activityName: string, highestBotRole: number): Promise<void> => {
       console.log(`Error: Can't remove role ${roleName} (${roleID}, rolePosition: ${rolePosition}) from user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`);
+    }
+  },
+  error: {
+    highestBotRoleUndefined: async (guildID: Discord.BaseGuild["id"], guildName: Discord.BaseGuild["name"]) => {
+      console.error(`guild.me.roles.highest.position === undefined on guild: ${guildName}(${guildID})`);
     }
   }
 };
