@@ -19,7 +19,7 @@ import UserData from './models/userData';
 async function checkGuild(guild: Discord.Guild): Promise<void> {
   messages.log.activity();
   if (!await GuildConfig.findById(guild.id.toString()).select('_id').lean()) {
-    const channel = await guild.channels.create('game-roles-v2');
+    const channel = await guild.channels.create('game-roles-v2', {type: "GUILD_TEXT"});
     channel.send({ embeds: [messages.newLogChannel()] })
     new GuildConfig({
       _id: guild.id.toString(),
