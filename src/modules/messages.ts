@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import config from '../../config';
 
-
+//? TODO: remove activity dots before a log message is written to stdout
 //? TODO: Different languages?
 
 export default {
@@ -50,22 +50,22 @@ export default {
 
   log: { // -----------------------------------------------------------------------------------------------------
     addGuild: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
-      console.log(`\nMONGODB > Added guild ${guildName} (${guildID}) to the database.`);
+      console.log(`\nMONGODB     > Added guild ${guildName} (${guildID}) to the database.`);
     },
     addUser: async (userName: Discord.User["username"], userID: Discord.User["id"]): Promise<void> => {
-      console.log(`\nMONGODB > Added user ${userName} (${userID}) to the database.`);
+      console.log(`\nMONGODB     > Added user ${userName} (${userID}) to the database.`);
     },
     addGameRole: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"], roleName: Discord.Role["name"], roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
-      console.log(`\nMONGODB > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`);
+      console.log(`\nMONGODB     > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`);
     },
     mongodbConnect: async (): Promise<void> => {
-      console.log('MONGODB > Connected to DB!');
+      console.log('MONGODB     > Connected to DB!');
     },
     addedRoleToMember: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], userName: Discord.User["username"], userID: Discord.User["id"], guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
-      console.log(`\nDISCORD.JS > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
+      console.log(`\nDISCORD.JS  > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
     },
     removedRoleFromMember: async (roleName: Discord.Role["name"], roleID: Discord.Role["id"], userName: Discord.User["username"], userID: Discord.User["id"], guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
-      console.log(`\nDISCORD.JS > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
+      console.log(`\nDISCORD.JS  > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`);
     },
     activity: async (): Promise<void> => {
       process.stdout.write('.');
