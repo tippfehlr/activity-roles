@@ -61,30 +61,17 @@ async function checkRoles(member: Discord.GuildMember) {
     return;
   }
 
-  for (const x in guildActivityList) {
+  for (const guildActivity of guildActivityList) {
     this_role: {
-      const userHasRole: boolean = member.roles.cache.has(guildActivityList[x].roleID);
-      let role: Discord.Role | undefined = member.guild.roles.cache.find(_role => _role.id === guildActivityList[x].roleID);
-      if (role === undefined) {
-        break this_role; //FIXME: What if role gets removed?
-      } else {
-        role = role as Discord.Role;
-      }
+      const userHasRole: boolean = member.roles.cache.has(guildActivity.roleID);
+      let role = member.guild.roles.cache.find(_role => _role.id === guildActivity.roleID);
+      if (role === undefined) break this_role; //FIXME: What if role gets removed?
 
       // eslint-disable-next-line no-var
       var userShouldHaveRole = false;
-      userActivities: {
-        if (guildActivityList[x].only_included_allowed) {
-          for (const y in userActivityList) {
-            if (userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
-              if (!userActivityList[y].ignored && userActivityList[y].autoRole) {
-                userShouldHaveRole = true;
-                break userActivities;
-              }
-            }
-          }
-        } else {
-          const userActivityListFiltered = userActivityList.filter((elmt: { activityName: string }) => elmt.activityName === guildActivityList[x].activityName);
+      if (guildActivity.exactActivityName) {
+        userActivities: {
+          const userActivityListFiltered = userActivityList.filter((elmt: { activityName: string }) => elmt.activityName === guildActivity.activityName);
           for (const y in userActivityListFiltered) {
             if (userActivityListFiltered[y]) {
               if (!userActivityListFiltered[y].ignored && userActivityListFiltered[y].autoRole) {
@@ -94,30 +81,42 @@ async function checkRoles(member: Discord.GuildMember) {
             }
           }
         }
+      } else {
+        userActivities: {
+          for (const y in userActivityList) {
+            if (userActivityList[y].activityName.includes(guildActivity.activityName)) {
+              if (!userActivityList[y].ignored && userActivityList[y].autoRole) {
+                userShouldHaveRole = true;
+                break userActivities;
+              }
+            }
+          }
+        }
+        
       }
 
       if (userShouldHaveRole && !userHasRole) { // add role to member
         if (role.position < highestBotRole) {
           member.roles.add(role);
-          messages.log.addedRoleToMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
+          messages.log.addedRoleToMember(role.name, guildActivity.roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
         } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
           const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
           const channel = member.guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
           if (channel) { //TODO: Check for permissions
-            messages.log.errorCantAssignRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivityList[x].activityName, highestBotRole);
-            channel.send({ embeds: [messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole)] });
+            messages.log.errorCantAssignRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivity.activityName, highestBotRole);
+            channel.send({ embeds: [messages.errorCantAssignRole(role.id, role.position, member.user.id, guildActivity.activityName, highestBotRole)] });
           }
         }
       } else if (!userShouldHaveRole && userHasRole) { // remove role from member
         if (role.position < highestBotRole) {
           member.roles.remove(role);
-          messages.log.removedRoleFromMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
+          messages.log.removedRoleFromMember(role.name, guildActivity.roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
         } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
           const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
           const channel = member.guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
           if (channel) {
-            messages.log.errorCantRemoveRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivityList[x].activityName, highestBotRole);
-            channel.send({ embeds: [messages.errorCantRemoveRole(role.id, role.position, member.user.id, guildActivityList[x].activityName, highestBotRole)] });
+            messages.log.errorCantRemoveRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivity.activityName, highestBotRole);
+            channel.send({ embeds: [messages.errorCantRemoveRole(role.id, role.position, member.user.id, guildActivity.activityName, highestBotRole)] });
           }
         }
       }
@@ -154,7 +153,6 @@ async function checkAllRoles(guild: Discord.Guild) {
           } else {
             role = role as Discord.Role;
           }
-          // eslint-disable-next-line no-var
           var userShouldHaveRole = false;
           userActivities: {
             if (guildActivityList[x].only_included_allowed) {
