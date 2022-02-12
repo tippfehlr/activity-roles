@@ -13,10 +13,9 @@ export default {
   requiredPermissions: ['ADMINISTRATOR'],
 
   slash: true,
-  testOnly: true,
+  testOnly: config.debug,
 
   minArgs: 2,
-  expectedArgs: '<num1> <num2>',
   options: [
     {
       name: 'role',
@@ -26,13 +25,13 @@ export default {
     },
     {
       name: 'activityname',
-      description: 'The second number',
+      description: 'The name of the discord presence I look for',
       required: true,
       type: OptionType.STRING
     },
     {
       name: 'excactactivityname',
-      description: 'If the activityname can be a part of an activity (for example \'Chrome\' at \'Google Chrome\')',
+      description: 'If the activity name can be a part of a discord presence (for example the activity role \'Chrome\' will trigger when discord presence is \'Google Chrome\')',
       required: true,
       type: OptionType.BOOLEAN
     }
@@ -46,10 +45,10 @@ export default {
     const exactActivityName = command.args[2] === 'true' ? true : false;
     const role = command?.guild?.roles.cache.get(roleID);
     if (!role) {  //not sure if it's possible to enter an invalid role but to be safe //actually it is possible to enter @everyone but I don't know id this protects from that //TODO: Possible bug
-      return ':x: That role does not exist! :x:';
+      return messages.roleDoesNotExist();
     } else {
       if (await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID, activityName: activityName })) {
-        return ':x: That GameRole already exists in this guild! Edit it with `/editRole`. :x:';
+        return messages.gameRoleExists();
       } else {
         new db.GuildData({
           guildID: command?.guild?.id.toString(),
@@ -60,13 +59,8 @@ export default {
         if (command.guild) db.checkAllRoles(command.guild);
 
         messages.log.addGameRole(command?.guild?.name ?? messages.errorMessage, command?.guild?.id ?? messages.errorMessage, role.name, roleID, activityName, exactActivityName);
-        return new Discord.MessageEmbed()
-          .setColor(config.embedColor)
-          .setTitle('Set!')
-          .addField('Role:', '<@&' + role.id + '>')
-          .addField('Activity:', activityName)
-          .addField('has to be exact:', exactActivityName.toString());
+        return messages.setNewGameRole(role.id, activityName, exactActivityName);
       }
     }
-  },
+  }
 } as ICommand
