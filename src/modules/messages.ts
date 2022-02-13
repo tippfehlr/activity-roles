@@ -35,21 +35,21 @@ export default {
       .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
       .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
-    },
-    errorCantRemoveRole: (roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userID: Discord.User["id"], activityName: string, highestBotRole: number) => {
+  },
+  errorCantRemoveRole: (roleID: Discord.Role["id"], rolePosition: Discord.Role["position"], userID: Discord.User["id"], activityName: string, highestBotRole: number) => {
     return new Discord.MessageEmbed()
-        .setColor('#ff0000')
-        .setTitle('Error')
-        .setDescription(`Can't remove <@&${roleID}> to <@${userID}>`)
-        .addField('Error:', 'Missing permissions')
-        .addField('Activity Name:', activityName)
-        .addField('My highest role:', `#${highestBotRole}`, true)
-        .addField('GameRole:', `#${rolePosition}`, true)
-        .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
-        .setFooter('© 2021-2022 tippfehlr#3575', config.botOwnerLogoLink)
-        .setTimestamp();
-    },
-    setNewGameRole: (roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
+      .setColor('#ff0000')
+      .setTitle('Error')
+      .setDescription(`Can't remove <@&${roleID}> to <@${userID}>`)
+      .addField('Error:', 'Missing permissions')
+      .addField('Activity Name:', activityName)
+      .addField('My highest role:', `#${highestBotRole}`, true)
+      .addField('GameRole:', `#${rolePosition}`, true)
+      .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
+      .setFooter('© 2021-2022 tippfehlr#3575', config.botOwnerLogoLink)
+      .setTimestamp();
+  },
+  setNewGameRole: (roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
       .setTitle('Set!')
@@ -103,6 +103,42 @@ export default {
     return new Discord.MessageEmbed()
       .setTitle('Error')
       .setColor('RED');
+  },
+  roleList: (data: { roleID: string, activityName: string, exactActivityName: boolean }[]) => {
+    console.log(data)
+    let roleString = [''];
+    let activityNameString = [''];
+    let exactActivityNameString = [''];
+    let arrayCount = 0;
+    data.forEach(role => {
+      console.log(role)
+      if (roleString[0] === '') {
+        roleString[0] = `<@&${role.roleID}>`;
+      } else {
+        if (
+          (roleString + role.roleID).length > 1023 ||
+          (activityNameString + role.activityName).length > 1023 ||
+          (exactActivityNameString + String(role.exactActivityName)).length > 1023
+        ) {
+          arrayCount++;
+          roleString[arrayCount] = `<@&${role.roleID}>`;
+          activityNameString[arrayCount] = role.activityName;
+          exactActivityNameString[arrayCount] = String(role.roleID);
+        }
+        roleString[arrayCount] += ('\n' + `<@&${role.roleID}>`);
+        activityNameString[arrayCount] += ('\n' + role.activityName);
+        exactActivityNameString[arrayCount] += ('\n' + role.exactActivityName);
+      }
+    });
+    let embeds = [];
+    for (let i = 0; i < roleString.length - 1; i++) {
+      embeds.push(new Discord.MessageEmbed()
+        .addField('Role', roleString[i], true)
+        .addField('ActivityName', activityNameString[i], true)
+        .addField('exactActivityName', exactActivityNameString[i], true)
+      );
+    }
+    return embeds;
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
