@@ -1,6 +1,6 @@
 import { ICommand } from 'wokcommands'
 
-import messages from '../messages';
+import msg from '../messages';
 import db from '../db';
 import config from '../../../config';
 
@@ -14,7 +14,7 @@ export default {
   testOnly: config.debug,
 
   callback: async command => {
-    messages.log.activity();
+    msg.log.activity();
     if(command.guild) db.checkAllRoles(command.guild);
     return 'ok';
   },

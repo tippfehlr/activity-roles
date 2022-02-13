@@ -5,7 +5,7 @@ import Discord from 'discord.js';
 import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
-import messages from '../messages';
+import msg from '../messages';
 import db from '../db';
 
 export default {
@@ -42,15 +42,15 @@ export default {
 
 
   callback: async command => {
-    messages.log.activity();
+    msg.log.activity();
 
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID });
-    if (!data) return messages.gameRoleDoesNotExist();
+    if (!data) return msg.gameRoleDoesNotExist();
 
     await command.interaction.reply({
-      embeds: [messages.removeGameRoleQ(activityName, roleID, data.exactActivityName)],
-      components: [messages.removeButtonRow()],
+      embeds: [msg.removeGameRoleQ(activityName, roleID, data.exactActivityName)],
+      components: [msg.removeButtonRow()],
       ephemeral: true
     });
 
@@ -63,14 +63,14 @@ export default {
         case 'remove':
           db.GuildData.deleteOne({ guildID: command?.guild?.id.toString(), roleID: roleID }).then((res) => {
             if (res.deletedCount > 0) {
-              int.update({ embeds: [messages.removed()], components: [] });
+              int.update({ embeds: [msg.removed()], components: [] });
             } else {
-              int.update({ embeds: [messages.errorEmbed()], components: [] });
+              int.update({ embeds: [msg.errorEmbed()], components: [] });
             }
           });
           break;
         case 'cancel':
-          int.update({ embeds: [messages.cancelled()], components: [] });
+          int.update({ embeds: [msg.cancelled()], components: [] });
           break;
       }
     });

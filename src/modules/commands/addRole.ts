@@ -3,7 +3,7 @@ import Discord from 'discord.js';
 import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
-import messages from '../messages';
+import msg from '../messages';
 import db from '../db';
 
 export default {
@@ -40,16 +40,16 @@ export default {
 
 
   callback: async command => {
-    messages.log.activity();
+    msg.log.activity();
 
     const [roleID, activityName] = command.args;
     const exactActivityName = command.args[2] === 'true' ? true : false;
     const role = command?.guild?.roles.cache.get(roleID);
     if (!role) {  //not sure if it's possible to enter an invalid role but to be safe //actually it is possible to enter @everyone but I don't know id this protects from that //TODO: Possible bug
-      return messages.roleDoesNotExist();
+      return msg.roleDoesNotExist();
     } else {
       if (await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID, activityName: activityName })) {
-        return messages.gameRoleExists();
+        return msg.gameRoleExists();
       } else {
         new db.GuildData({
           guildID: command?.guild?.id.toString(),
@@ -59,8 +59,8 @@ export default {
         }).save();
         if (command.guild) db.checkAllRoles(command.guild);
 
-        messages.log.addGameRole(command?.guild?.name ?? messages.errorMessage, command?.guild?.id ?? messages.errorMessage, role.name, roleID, activityName, exactActivityName);
-        return messages.setNewGameRole(role.id, activityName, exactActivityName);
+        msg.log.addGameRole(String(command?.guild?.name), String(command?.guild?.id), role.name, roleID, activityName, exactActivityName);
+        return msg.setNewGameRole(role.id, activityName, exactActivityName);
       }
     }
   }
