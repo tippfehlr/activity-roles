@@ -4,6 +4,7 @@ import config from '../../config';
 //? TODO: remove activity dots before a log message is written to stdout
 //? TODO: Different languages?
 //TODO edit setFooter as they are marked as deprecated
+//TODO sort messages into embed and string
 
 export default {
   errorMessage: 'sorry, something is wrong.',
@@ -32,7 +33,7 @@ export default {
       .addField('My highest role:', `#${highestBotRole}`, true)
       .addField('GameRole:', `#${rolePosition}`, true)
       .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
-      
+
       .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
@@ -51,11 +52,11 @@ export default {
   },
   setNewGameRole: (roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
     return new Discord.MessageEmbed()
-          .setColor(config.embedColor)
-          .setTitle('Set!')
-          .addField('Role:', '<@&' + roleID + '>')
-          .addField('Activity:', activityName)
-          .addField('has to be exact:', exactActivityName.toString());
+      .setColor(config.embedColor)
+      .setTitle('Set!')
+      .addField('Role:', '<@&' + roleID + '>')
+      .addField('Activity:', activityName)
+      .addField('has to be exact:', exactActivityName.toString());
   },
   roleDoesNotExist: () => {
     return ':x: That role does not exist! :x:';
@@ -65,6 +66,44 @@ export default {
   },
   gameRoleDoesNotExist: () => {
     return ':x: That game role does not exists in this guild! Create it with \'/addRole\'. :x:';
+  },
+  removeGameRoleQ: (activityName: string, roleID: string, exactActivityName: boolean) => {
+    return new Discord.MessageEmbed()
+      .setTitle('Do you really want to delete this game role?')
+      .setColor(config.embedColor)
+      .addField('Activity Name', activityName.toString())
+      .addField('Role', '<@&' + roleID + '>')
+      .addField('Has to be exact', exactActivityName.toString());
+  },
+  removeButtonRow: () => {
+    return new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId('remove')
+          .setLabel('Remove')
+          .setStyle('DANGER')
+      )
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId('cancel')
+          .setLabel('Cancel')
+          .setStyle('SECONDARY')
+      );
+  },
+  removed: () => {
+    return new Discord.MessageEmbed()
+      .setTitle('Removed')
+      .setColor('RED');
+  },
+  cancelled: () => {
+    return new Discord.MessageEmbed()
+      .setTitle('Cancelled')
+      .setColor('GREY');
+  },
+  errorEmbed: () => {
+    return new Discord.MessageEmbed()
+      .setTitle('Error')
+      .setColor('RED');
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
