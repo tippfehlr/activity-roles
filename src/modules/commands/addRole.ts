@@ -1,5 +1,4 @@
 import { ICommand } from 'wokcommands'
-import Discord from 'discord.js';
 import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
