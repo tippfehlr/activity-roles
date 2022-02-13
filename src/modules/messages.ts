@@ -105,15 +105,15 @@ export default {
       .setColor('RED');
   },
   roleList: (data: { roleID: string, activityName: string, exactActivityName: boolean }[]) => {
-    console.log(data)
     let roleString = [''];
-    let activityNameString = [''];
     let exactActivityNameString = [''];
+    let activityNameString = [''];
     let arrayCount = 0;
     data.forEach(role => {
-      console.log(role)
       if (roleString[0] === '') {
         roleString[0] = `<@&${role.roleID}>`;
+        exactActivityNameString[0] = String(role.exactActivityName);
+        activityNameString[0] = role.activityName;
       } else {
         if (
           (roleString + role.roleID).length > 1023 ||
@@ -130,12 +130,16 @@ export default {
         exactActivityNameString[arrayCount] += ('\n' + role.exactActivityName);
       }
     });
+    console.log('~ roleString', roleString)
+    console.log('~ activityNameString', activityNameString)
+    console.log('~ exactActivityNameString', exactActivityNameString)
     let embeds = [];
-    for (let i = 0; i < roleString.length - 1; i++) {
+    for (let i = 0; i < roleString.length; i++) {
       embeds.push(new Discord.MessageEmbed()
         .addField('Role', roleString[i], true)
         .addField('ActivityName', activityNameString[i], true)
         .addField('exactActivityName', exactActivityNameString[i], true)
+        .setColor(config.embedColor)
       );
     }
     return embeds;
