@@ -89,6 +89,23 @@ export default {
           .setStyle('SECONDARY')
       );
   },
+  navigationButtonRow: (lastDisabled: boolean, nextDisabled: boolean) => {
+    return new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId('back')
+          .setEmoji('⬅️')
+          .setStyle('PRIMARY')
+          .setDisabled(lastDisabled)
+      )
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId('next')
+          .setEmoji('➡️')
+          .setStyle('PRIMARY')
+          .setDisabled(nextDisabled)
+      );
+  },
   removed: () => {
     return new Discord.MessageEmbed()
       .setTitle('Removed')
@@ -116,9 +133,9 @@ export default {
         activityNameString[0] = role.activityName;
       } else {
         if (
-          (roleString + role.roleID).length > 1023 ||
-          (activityNameString + role.activityName).length > 1023 ||
-          (exactActivityNameString + String(role.exactActivityName)).length > 1023
+          (roleString + role.roleID).length > 1024 ||
+          (activityNameString + role.activityName).length > 1024 ||
+          (exactActivityNameString + String(role.exactActivityName)).length > 1024
         ) {
           arrayCount++;
           roleString[arrayCount] = `<@&${role.roleID}>`;
@@ -130,9 +147,6 @@ export default {
         exactActivityNameString[arrayCount] += ('\n' + role.exactActivityName);
       }
     });
-    console.log('~ roleString', roleString)
-    console.log('~ activityNameString', activityNameString)
-    console.log('~ exactActivityNameString', exactActivityNameString)
     let embeds = [];
     for (let i = 0; i < roleString.length; i++) {
       embeds.push(new Discord.MessageEmbed()
@@ -143,6 +157,9 @@ export default {
       );
     }
     return embeds;
+  },
+  inputTooLong: () => {
+    return ':x: I\'m sorry, but your values are too big for me to handle. :x:'
   },
 
   log: { // -----------------------------------------------------------------------------------------------------

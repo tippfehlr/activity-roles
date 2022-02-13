@@ -42,6 +42,7 @@ export default {
     msg.log.activity();
 
     const [roleID, activityName] = command.args;
+    if(activityName.length > 1024) return msg.inputTooLong();
     const exactActivityName = command.args[2] === 'true' ? true : false;
     const role = command?.guild?.roles.cache.get(roleID);
     if (!role) {  //not sure if it's possible to enter an invalid role but to be safe //actually it is possible to enter @everyone but I don't know id this protects from that //TODO: Possible bug
