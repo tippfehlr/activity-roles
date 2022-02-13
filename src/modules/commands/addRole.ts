@@ -16,6 +16,7 @@ export default {
   testOnly: config.debug,
 
   minArgs: 2,
+  expectedArgs: '<num1> <num2>',
   options: [
     {
       name: 'role',
