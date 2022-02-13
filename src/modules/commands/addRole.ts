@@ -45,11 +45,12 @@ export default {
     const [roleID, activityName] = command.args;
     const exactActivityName = command.args[2] === 'true' ? true : false;
     const role = command?.guild?.roles.cache.get(roleID);
+        command.interaction.reply({content: msg.gameRoleExists(), ephemeral: true});
     if (!role) {  //not sure if it's possible to enter an invalid role but to be safe //actually it is possible to enter @everyone but I don't know id this protects from that //TODO: Possible bug
-      return msg.roleDoesNotExist();
+      command.interaction.reply({content: msg.roleDoesNotExist(), ephemeral: true});
     } else {
       if (await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID, activityName: activityName })) {
-        return msg.gameRoleExists();
+        command.interaction.reply({content: msg.gameRoleExists(), ephemeral: true});
       } else {
         new db.GuildData({
           guildID: command?.guild?.id.toString(),
@@ -60,7 +61,7 @@ export default {
         if (command.guild) db.checkAllRoles(command.guild);
 
         msg.log.addGameRole(String(command?.guild?.name), String(command?.guild?.id), role.name, roleID, activityName, exactActivityName);
-        return msg.setNewGameRole(role.id, activityName, exactActivityName);
+        command.interaction.reply({embeds: [msg.setNewGameRole(role.id, activityName, exactActivityName)], ephemeral: true});
       }
     }
   }
