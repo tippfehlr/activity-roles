@@ -3,7 +3,7 @@ import Discord from 'discord.js'
 
 import config from '../../../config';
 import msg from '../messages';
-import db from '../db';
+import * as db from '../db';
 
 export default {
   names: 'listRoles',

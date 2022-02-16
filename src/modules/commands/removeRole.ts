@@ -6,7 +6,7 @@ import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/
 
 import config from '../../../config';
 import msg from '../messages';
-import db from '../db';
+import * as db from '../db';
 
 export default {
   names: 'deleteRole',

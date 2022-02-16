@@ -11,4 +11,11 @@ const userConfigSchema = new Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('UserConfig', userConfigSchema);
+export const UserConfig = mongoose.model('UserConfig', userConfigSchema);
+export interface UserConfigType {
+  _id:       string;
+  autoRole:  boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v:       number;
+}

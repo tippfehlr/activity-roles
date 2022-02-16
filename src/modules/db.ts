@@ -4,22 +4,27 @@ import mongoose from 'mongoose';
 import config from '../../config';
 import msg from './messages';
 
-async function connect(uri: string) {
+export async function connect(uri: string) {
   await mongoose.connect(uri).then(() => {
     msg.log.mongodbConnect();
   });
 }
 
-import UserConfig from './models/userConfig';
-import GuildConfig from './models/guildConfig';
-import GuildData from './models/guildData';
-import UserData from './models/userData';
+import { UserConfig, UserConfigType } from './models/userConfig';
+import { GuildConfig, GuildConfigType } from './models/guildConfig';
+import { UserData, UserDataType } from './models/userData';
+import { GuildData, GuildDataType } from './models/guildData';
+
+export { UserConfig, UserConfigType } from './models/userConfig';
+export { GuildConfig, GuildConfigType } from './models/guildConfig';
+export { UserData, UserDataType } from './models/userData';
+export { GuildData, GuildDataType } from './models/guildData';
 
 // @param guild: Discord guild object
-async function checkGuild(guild: Discord.Guild): Promise<void> {
+export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
   if (!await GuildConfig.findById(guild.id.toString()).select('_id').lean()) {
-    const channel = await guild.channels.create('game-roles-v2', {type: "GUILD_TEXT"});
+    const channel = await guild.channels.create('game-roles-v2', { type: "GUILD_TEXT" });
     channel.send({ embeds: [msg.newLogChannel()] })
     new GuildConfig({
       _id: guild.id.toString(),
@@ -31,7 +36,7 @@ async function checkGuild(guild: Discord.Guild): Promise<void> {
 
 // @param user: Discord user object
 // @return: User existed before check
-async function checkUser(user: Discord.User): Promise<boolean> {
+export async function checkUser(user: Discord.User): Promise<boolean> {
   msg.log.activity();
   if (!await UserConfig.findById(user.id.toString()).exec()) {
     await new UserConfig({
@@ -45,7 +50,7 @@ async function checkUser(user: Discord.User): Promise<boolean> {
 }
 
 // @param member: Discord member object
-async function checkRoles(member: Discord.GuildMember) {
+export async function checkRoles(member: Discord.GuildMember) {
   msg.log.activity();
   if (member.user.bot) return;
   await checkUser(member.user);
@@ -92,7 +97,7 @@ async function checkRoles(member: Discord.GuildMember) {
             }
           }
         }
-        
+
       }
 
       if (userShouldHaveRole && !userHasRole) { // add role to member
@@ -124,7 +129,7 @@ async function checkRoles(member: Discord.GuildMember) {
   }
 }
 
-async function checkAllRoles(guild: Discord.Guild) {
+export async function checkAllRoles(guild: Discord.Guild) {
   msg.log.activity();
   await checkGuild(guild);
 
@@ -155,7 +160,7 @@ async function checkAllRoles(guild: Discord.Guild) {
           }
           var userShouldHaveRole = false;
           userActivities: {
-            if (guildActivityList[x].only_included_allowed) {
+            if (!guildActivityList[x].exactActivityName) {
               for (const y in userActivityList) {
                 if (userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
                   if (!userActivityList[y].ignored && userActivityList[y].autoRole) {
@@ -208,17 +213,4 @@ async function checkAllRoles(guild: Discord.Guild) {
       }
     }
   });
-}
-
-export default {
-  connect,
-  checkGuild,
-  checkUser,
-  checkRoles,
-  checkAllRoles,
-
-  UserConfig,
-  UserData,
-  GuildConfig,
-  GuildData
 }

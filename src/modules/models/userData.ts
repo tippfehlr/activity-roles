@@ -19,4 +19,14 @@ const userDataSchema = new Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('UserData', userDataSchema);
+export const UserData = mongoose.model('UserData', userDataSchema);
+export interface UserDataType {
+  _id: string;
+  userID: string;
+  activityName: string;
+  autoRole: boolean;
+  ignored: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}

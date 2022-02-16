@@ -1,4 +1,4 @@
-import db from '../../src/modules/db';
+import * as db from '../../src/modules/db';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { User as DiscordUser } from 'discord.js';
 import mongoose from 'mongoose';

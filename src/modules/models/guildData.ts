@@ -19,4 +19,14 @@ const guildDataSchema = new Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('GuildData', guildDataSchema);
+export const GuildData =  mongoose.model('GuildData', guildDataSchema);
+export interface GuildDataType {
+  _id:               string;
+  guildID:           string;
+  roleID:            string;
+  activityName:      string;
+  exactActivityName: boolean;
+  createdAt:         string;
+  updatedAt:         string;
+  __v:               number;
+}

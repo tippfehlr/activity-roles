@@ -12,4 +12,11 @@ const guildConfigSchema = new Schema({
   //more guild settings here
 }, { timestamps: true });
 
-export default mongoose.model('GuildConfig', guildConfigSchema);
+export const GuildConfig =  mongoose.model('GuildConfig', guildConfigSchema);
+export interface GuildConfigType {
+  _id:          string;
+  createdAt:    string;
+  updatedAt:    string;
+  __v:          number;
+  logChannelID: string;
+}

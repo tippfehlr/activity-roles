@@ -2,7 +2,7 @@ import Discord, { Intents } from 'discord.js';
 import WOKcommands from 'wokcommands';
 import path from 'path';
 
-import db from './db';
+import * as db from './db';
 import config from '../../config';
 const testGuildIDs: string[] = ['782687651492790314', '727818725784551495'];
 
