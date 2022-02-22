@@ -1,5 +1,6 @@
 import { ICommand } from 'wokcommands'
-import Discord from 'discord.js'
+import { table } from 'table';
+import fs from 'fs';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -15,30 +16,15 @@ export default {
 
   callback: async command => {
     msg.log.activity();
-    const embeds = msg.roleList(await db.GuildData.find({ guildID: command?.guild?.id }));
-    if (embeds.length > 1) {
-      let i = 0;
-      await command.interaction.reply({ embeds: [embeds[0]], components: [msg.navigationButtonRow(i === 0, i === embeds.length - 1)] });
 
-      const filter = (btnInt: any) => { return command.interaction.user.id === btnInt.user.id }
-
-      const collector = command.channel.createMessageComponentCollector({ filter, time: 1000 * 60 * 3 });
-
-      collector.on('collect', (int: Discord.ButtonInteraction) => {
-        switch (int.customId) {
-          case 'back':
-            i--;
-            int.update({ embeds: [embeds[i]], components: [msg.navigationButtonRow(i === 0, i === embeds.length - 1)] });
-            break;
-          case 'next':
-            i++;
-            int.update({ embeds: [embeds[i]], components: [msg.navigationButtonRow(i === 0, i === embeds.length - 1)] });
-            break;
-        }
-      });
-
-    } else {
-      command.interaction.reply({ embeds: [embeds[0]] });
+    const res: db.GuildDataType[] = await db.GuildData.find({ guildID: command.guild?.id })
+    let array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
+    for (const i in res) {
+      array.push([String(Number(i) + 1), `${command.guild?.roles.cache.find((role) => role.id === res[i].roleID)?.name} <@&${res[i].roleID}>`, res[i].activityName, res[i].exactActivityName.toString()]);
     }
+    const response = table(array, { drawHorizontalLine: (index: number) => { return index === 0 || index === 1 || index === array.length } })
+    fs.writeFileSync(config.listRolesFileName, response);
+    await command.interaction.reply({ /*content: msg.gameRolesListInFile(),*/ files: [config.listRolesFileName] })
+    fs.unlink(config.listRolesFileName, () => {})
   }
 } as ICommand
