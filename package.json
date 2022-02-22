@@ -28,6 +28,6 @@
   "scripts": {
     "prod": "pm2 start ./src/index.ts -a --restart-delay 3000 --name game-roles-v2",
     "start": "ts-node ./src/index.ts",
-    "dev": "nodemon"
+    "dev": "nodemon -i export.json -i gameRolesList.txt"
   }
 }
