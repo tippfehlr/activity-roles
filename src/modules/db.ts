@@ -72,7 +72,6 @@ export async function checkRoles(member: Discord.GuildMember) {
       let role = member.guild.roles.cache.find(_role => _role.id === guildActivity.roleID);
       if (role === undefined) break this_role; //FIXME: What if role gets removed?
 
-      // eslint-disable-next-line no-var
       var userShouldHaveRole = false;
       if (guildActivity.exactActivityName) {
         userActivities: {
