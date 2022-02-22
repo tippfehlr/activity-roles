@@ -15,9 +15,8 @@ export default {
   footerMessage: '© 2022 tippfehlr#3575',
   embedColor: '#0099ff' as ColorResolvable,
   activities: [
-    { name: 'gr!help', type: 'LISTENING' } as ActivityOptions,
-    { name: 'your activities', type: 'LISTENING' } as ActivityOptions,
-    { name: 'with you', type: 'PLAYING' } as ActivitiesOptions
+    { name: '/help', type: 'LISTENING' } as ActivityOptions,
+    { name: 'you', type: 'WATCHING' } as ActivityOptions
   ],
   TOKEN,
   MONGODB_URI
