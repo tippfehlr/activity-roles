@@ -60,6 +60,9 @@ export default {
   roleDoesNotExist: () => {
     return ':x: That role does not exist! :x:';
   },
+  cantUseEveryone: () => {
+    return '*I am powerful, but not **that** powerful!*\nYou can\'t use @everyone as a game role.'
+  },
   gameRoleExists: () => {
     return ':x: That game role already exists in this guild! Edit it with \'/editRole\'. :x:';
   },
@@ -160,6 +163,9 @@ export default {
   },
   inputTooLong: () => {
     return ':x: I\'m sorry, but your values are too big for me to handle. :x:'
+  },
+  gameRolesListInFile: () => {
+    return 'It\'s hard to send lists to Discord, so it\'s in this file. ***hint:** turn off **word wrap** to view the list correctly.*'
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
