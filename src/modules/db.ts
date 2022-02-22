@@ -3,12 +3,7 @@ import mongoose from 'mongoose';
 
 import config from '../../config';
 import msg from './messages';
-
-export async function connect(uri: string) {
-  await mongoose.connect(uri).then(() => {
-    msg.log.mongodbConnect();
-  });
-}
+import { client } from './bot';
 
 import { UserConfig, UserConfigType } from './models/userConfig';
 import { GuildConfig, GuildConfigType } from './models/guildConfig';
@@ -19,6 +14,12 @@ export { UserConfig, UserConfigType } from './models/userConfig';
 export { GuildConfig, GuildConfigType } from './models/guildConfig';
 export { UserData, UserDataType } from './models/userData';
 export { GuildData, GuildDataType } from './models/guildData';
+
+export async function connect(uri: string) {
+  await mongoose.connect(uri).then(() => {
+    msg.log.mongodbConnect();
+  });
+}
 
 // @param guild: Discord guild object
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
@@ -106,8 +107,8 @@ export async function checkRoles(member: Discord.GuildMember) {
         } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
           const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
           const channel = member.guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
-          if (channel) { //TODO: Check for permissions
-            msg.log.errorCantAssignRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivity.activityName, highestBotRole);
+          msg.log.errorCantAssignRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivity.activityName, highestBotRole);
+          if (channel && channel.guild.me?.permissionsIn(channel).has(['SEND_MESSAGES', 'EMBED_LINKS'])) {
             channel.send({ embeds: [msg.errorCantAssignRole(role.id, role.position, member.user.id, guildActivity.activityName, highestBotRole)] });
           }
         }
@@ -118,7 +119,7 @@ export async function checkRoles(member: Discord.GuildMember) {
         } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
           const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
           const channel = member.guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
-          if (channel) {
+          if (channel && channel.guild.me?.permissionsIn(channel).has(['SEND_MESSAGES', 'EMBED_LINKS'])) {
             msg.log.errorCantRemoveRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivity.activityName, highestBotRole);
             channel.send({ embeds: [msg.errorCantRemoveRole(role.id, role.position, member.user.id, guildActivity.activityName, highestBotRole)] });
           }
