@@ -46,7 +46,10 @@ export default {
 
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID });
-    if (!data) return msg.gameRoleDoesNotExist();
+    if (!data) {
+      command.interaction.reply({ content: msg.gameRoleDoesNotExist(), ephemeral: true});
+      return;
+    }
 
     await command.interaction.reply({
       embeds: [msg.removeGameRoleQ(activityName, roleID, data.exactActivityName)],
