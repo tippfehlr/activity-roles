@@ -1,4 +1,5 @@
 .env
+config.ts
 *.log
 node_modules/
 out/
