@@ -30,7 +30,7 @@ export default {
     },
     {
       name: 'excactactivityname',
-      description: 'If the activity name can be a part of a discord presence (for example the activity role \'Chrome\' will trigger when discord presence is \'Google Chrome\')',
+      description: 'If the activity name can be a part of a discord presence',
       required: true,
       type: OptionType.BOOLEAN
     }
