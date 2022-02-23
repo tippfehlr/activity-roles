@@ -4,9 +4,8 @@ import path from 'path';
 
 import * as db from './db';
 import config from '../../config';
-const testGuildIDs: string[] = ['782687651492790314', '727818725784551495'];
 
-export const client: Discord.Client = new Discord.Client({
+export const client= new Discord.Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MEMBERS,
@@ -20,7 +19,7 @@ export const client: Discord.Client = new Discord.Client({
 client.on('ready', () => {
   new WOKcommands(client, {
     commandsDir: path.join(__dirname, '/commands'),
-    testServers: testGuildIDs,
+    testServers: config.testGuildIDs,
     typeScript: true,
     mongoUri: config.MONGODB_URI,
     botOwners: config.botOwners,

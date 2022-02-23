@@ -7,6 +7,7 @@ const MONGODB_URI = process.env.MONGODB_URI as string;
 export default {
   botOwners: ['712702707986595880'],
   debug: true, // register slash commands as testOnly
+  testGuildIDs: ['782687651492790314', '727818725784551495', '837681436865593395'],
   listRolesFileName: 'gameRolesList.txt',
   exportFileName: 'export.json',
   inviteLink: 'https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot%20applications.commands',
