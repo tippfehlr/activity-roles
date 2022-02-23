@@ -109,6 +109,9 @@ export default {
           .setDisabled(nextDisabled)
       );
   },
+  noGameRoles: () => {
+    return 'There are no game roles in this guild.';
+  },
   removed: () => {
     return new Discord.MessageEmbed()
       .setTitle('Removed')
