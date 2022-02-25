@@ -8,4 +8,3 @@ jobs:
         run: npm install --dev arkit
       - name: Run arkit
         run: npx arkit -f src/index.ts -e test/ -o architecture.svg
-      - run: echo "arkit exited with code ${{ job.status }}."
