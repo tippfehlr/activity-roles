@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="207px" preserveAspectRatio="none" style="width:749px;height:207px;" version="1.1" viewBox="0 0 749 207" width="749px" zoomAndPan="magnify"><defs/><g><ellipse cx="327.8692" cy="21.742" fill="#F8F8F8" rx="17.8492" ry="13.242" style="stroke: #383838; stroke-width: 0.5;"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="21" x="317.3692" y="25.4842">src</text><ellipse cx="650.9758" cy="183.242" fill="#F8F8F8" rx="28.4558" ry="13.242" style="stroke: #383838; stroke-width: 0.5;"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="36" x="632.9758" y="186.9842">config</text><!--MD5=[e89cb3d651ad2a6a591ef3194ebcca21]
+entity _models_guildConfig--><rect fill="#F8F8F8" height="34.4844" rx="3" ry="3" style="stroke: #000000; stroke-width: 0.5;" width="132" x="28.0199" y="111"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="112" x="38.0199" y="133.0059">models/guildConfig</text><!--MD5=[47294ddc332c2aeff8bb5a9e9221514e]
+entity _models_guildData--><rect fill="#F8F8F8" height="34.4844" rx="3" ry="3" style="stroke: #000000; stroke-width: 0.5;" width="122" x="172.02" y="111"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="102" x="182.02" y="133.0059">models/guildData</text><!--MD5=[668fb606f2e4d4b44741fca63f0ea521]
+entity _models_userConfig--><rect fill="#F8F8F8" height="34.4844" rx="3" ry="3" style="stroke: #000000; stroke-width: 0.5;" width="130" x="306.02" y="111"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="110" x="316.02" y="133.0059">models/userConfig</text><!--MD5=[cfbd38191c2772d4f40c33dbc4a38bbf]
+entity _models_userData--><rect fill="#F8F8F8" height="34.4844" rx="3" ry="3" style="stroke: #000000; stroke-width: 0.5;" width="120" x="448.02" y="111"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="100" x="458.02" y="133.0059">models/userData</text><ellipse cx="412.791" cy="21.3542" fill="#F8F8F8" rx="54.771" ry="13.3542" style="stroke: #383838; stroke-width: 0.5;"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="74" x="375.791" y="25.0964">modules/bot</text><ellipse cx="370.8104" cy="73.242" fill="#F8F8F8" rx="51.7904" ry="13.242" style="stroke: #383838; stroke-width: 0.5;"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="69" x="336.3104" y="76.9842">modules/db</text><ellipse cx="650.9721" cy="128.0904" fill="#F8F8F8" rx="70.9521" ry="16.5904" style="stroke: #383838; stroke-width: 0.5;"/><text fill="#000000" font-family="Tahoma, sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="115" x="593.4721" y="131.8326">modules/messages</text><!--MD5=[133eb2d16b1e2ad2e3d3126b8e262a63]
+link modules/bot to config--><path d="M459.793,28.721 C539.356,40.367 695.599,68.216 728.02,111 C737.146,123.0438 736.065,132.2085 728.02,145 C717.859,161.1563 698.456,170.4191 681.67,175.6364 " fill="none" id="modules/bot-&gt;config" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="676.558,177.1289,686.3184,178.4461,681.3576,175.7275,684.0762,170.7667,676.558,177.1289" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[2b893cabbacdb484a010dec1a05b5cf4]
+link modules/bot to modules/db--><path d="M402.422,34.991 C397.028,41.347 390.41,49.147 384.643,55.944 " fill="none" id="modules/bot-&gt;modules/db" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="381.18,60.025,390.0523,55.7492,384.4144,56.212,383.9515,50.5741,381.18,60.025" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[c7bb6f1d42fc29ccd6a0cca51eef389a]
+link modules/db to _models_guildConfig--><path d="M329.699,80.957 C288.231,88.056 222.57,99.6182 166.02,111 C165.785,111.0474 165.549,111.0949 165.313,111.1426 " fill="none" id="modules/db-&gt;_models_guildConfig" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="160.301,112.166,169.9192,114.2852,165.2,111.166,168.3192,106.4468,160.301,112.166" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[6fe2218fa7423ccf20837c99db94fd5f]
+link modules/db to _models_guildData--><path d="M344.412,84.219 C326.063,91.266 301.183,100.8216 279.59,109.1142 " fill="none" id="modules/db-&gt;_models_guildData" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="274.752,110.9724,284.5878,111.4793,279.4195,109.1796,281.7193,104.0113,274.752,110.9724" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[0f8128922581f04c47dabe708d0d9318]
+link modules/db to _models_userConfig--><path d="M371.02,86.027 C371.02,91.868 371.02,99.0619 371.02,105.7836 " fill="none" id="modules/db-&gt;_models_userConfig" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="371.02,110.8012,375.02,101.8012,371.02,105.8012,367.02,101.8012,371.02,110.8012" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[9323fad93b8a2d7b5c469ee9c473ee1c]
+link modules/db to _models_userData--><path d="M397.435,84.219 C415.651,91.266 440.351,100.8216 461.787,109.1142 " fill="none" id="modules/db-&gt;_models_userData" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="466.59,110.9724,459.6397,103.9943,461.9269,109.1682,456.753,111.4553,466.59,110.9724" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[b9ca8fce737f63cc10e4c6522244751b]
+link modules/db to modules/messages--><path d="M411.902,81.147 C452.937,88.392 517.937,100.064 574.02,111 C580.988,112.3589 588.303,113.8259 595.536,115.301 " fill="none" id="modules/db-&gt;modules/messages" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="600.524,116.3223,592.5092,110.5985,595.6256,115.3194,590.9046,118.4359,600.524,116.3223" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[73bb008684a3646560e32748b1484d31]
+link modules/messages to config--><path d="M651.02,144.6151 C651.02,150.9128 651.02,158.2033 651.02,164.6647 " fill="none" id="modules/messages-&gt;config" style="stroke: #000000; stroke-width: 0.5;"/><polygon fill="#000000" points="651.02,169.8573,655.02,160.8573,651.02,164.8573,647.02,160.8573,651.02,169.8573" style="stroke: #000000; stroke-width: 0.5;"/><!--MD5=[3e308a5dc5afafd661ce296838b44d74]
+link <b>src</b> to config--><path d="M309.974,23.438 C232.311,28.056 -65.6221,52.051 22.0199,145 C42.6064,166.8331 490.143,178.424 617.489,181.2881 " fill="none" id="&lt;b&gt;src&lt;/b&gt;-&gt;config" style="stroke: #000000; stroke-width: 1.0;"/><polygon fill="#000000" points="622.598,181.4022,613.6894,177.2026,617.5992,181.2908,613.5111,185.2006,622.598,181.4022" style="stroke: #000000; stroke-width: 1.0;"/><!--MD5=[9b9d8e76c365dcd2656524e70d2489ae]
+link <b>src</b> to modules/bot--><path d="M346.282,21.5 C348.481,21.5 350.681,21.5 352.88,21.5 " fill="none" id="&lt;b&gt;src&lt;/b&gt;-&gt;modules/bot" style="stroke: #000000; stroke-width: 1.0;"/><polygon fill="#000000" points="358.013,21.5,349.013,17.5,353.013,21.5,349.013,25.5,358.013,21.5" style="stroke: #000000; stroke-width: 1.0;"/><!--MD5=[a623b95dcddc6c2cc2cf75a71e14cefd]
+link <b>src</b> to modules/db--><path d="M337.139,32.998 C342.963,39.702 350.626,48.524 357.191,56.081 " fill="none" id="&lt;b&gt;src&lt;/b&gt;-&gt;modules/db" style="stroke: #000000; stroke-width: 1.0;"/><polygon fill="#000000" points="360.707,60.128,357.8244,50.7104,357.4279,56.3534,351.785,55.9569,360.707,60.128" style="stroke: #000000; stroke-width: 1.0;"/><script type="text/plantuml"><![CDATA[MD5=[42280f40915d1c35053ed784b9bf8613]
+@startuml
+
+scale max 1920 width
+top to bottom direction
+
+skinparam nodesep 12
+skinparam ranksep 25
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Tahoma
+skinparam defaultFontSize 12
+skinparam roundCorner 6
+skinparam dpi 150
+skinparam arrowColor black
+skinparam arrowThickness 0.5
+skinparam packageTitleAlignment left
+
+skinparam usecase {
+  borderThickness 0.5
+}
+
+skinparam rectangle {
+  borderThickness 0.5
+}
+
+skinparam component {
+  borderThickness 1
+}
+
+
+(<b>src</b>)
+(config)
+rectangle "models/guildConfig" as _models_guildConfig
+rectangle "models/guildData" as _models_guildData
+rectangle "models/userConfig" as _models_userConfig
+rectangle "models/userData" as _models_userData
+(modules/bot)
+(modules/db)
+(modules/messages)
+
+
+(modules/bot) --> (config)
+(modules/bot) --> (modules/db)
+(modules/db) --> _models_guildConfig
+(modules/db) --> _models_guildData
+(modules/db) --> _models_userConfig
+(modules/db) --> _models_userData
+(modules/db) --> (modules/messages)
+(modules/messages) --> (config)
+(<b>src</b>) -[thickness=1]> (config)
+(<b>src</b>) -[thickness=1]> (modules/bot)
+(<b>src</b>) -[thickness=1]> (modules/db)
+
+@enduml
+
+
+' View and edit on https://arkit.pro
+]]></script></g></svg>

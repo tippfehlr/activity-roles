@@ -1,0 +1,11 @@
+name: Generate architecture.svg (arkit)
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install arkit
+        run: npm install --dev arkit
+      - name: Run arkit
+        run: npx arkit -f src/index.ts -e test/ -o architecture.svg
+      - run: echo "arkit exited with code ${{ job.status }}."
