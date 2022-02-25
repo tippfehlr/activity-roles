@@ -20,6 +20,7 @@
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
+    "arkit": "^1.6.4",
     "eslint": "^8.9.0",
     "jest": "^27.5.1",
     "mongodb-memory-server": "^8.4.0",
@@ -31,6 +32,7 @@
     "prod": "pm2 start ./src/index.ts -a --restart-delay 3000 --name game-roles-v2 --interpreter ts-node",
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon -i export.json -i gameRolesList.txt",
-    "tsc": "npx tsc --outDir out/ && powershell -Command \"(gc out\\src\\modules\\bot.js) -replace 'typeScript: true', 'typeScript: false' | Out-File -encoding ASCII out\\src\\modules\\bot.js\""
-    }
+    "tsc": "npx tsc --outDir out/ && powershell -Command \"(gc out/src/modules/bot.js) -replace 'typeScript: true', 'typeScript: false' | Out-File -encoding ASCII out/src/modules/bot.js\"",
+    "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg"
+  }
 }
