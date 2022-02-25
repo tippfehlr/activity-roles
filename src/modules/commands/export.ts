@@ -1,5 +1,4 @@
 import { ICommand } from 'wokcommands'
-import { table } from 'table';
 import fs from 'fs';
 
 import config from '../../../config';
