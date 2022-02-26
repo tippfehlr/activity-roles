@@ -43,9 +43,9 @@ client.on('ready', () => {
 
 client.on('presenceUpdate', async function (oldMember, newMember) {
   if (!newMember?.user || !newMember.guild || !newMember.member) return;
+  if (newMember.member.user.bot) return;
   if (newMember.user?.id in processingUser) return;
   processingUser[newMember.user?.id] = true;
-  if (newMember.member.user.bot) return;
   await db.checkGuild(newMember.guild);
   await db.checkUser(newMember.user);
 
