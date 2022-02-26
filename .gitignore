@@ -3,5 +3,5 @@ config.ts
 *.log
 node_modules/
 out/
-gameRolesList.txt
+activityRolesList.txt
 export.json

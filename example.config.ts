@@ -8,7 +8,7 @@ export default {
   botOwners: ['000000000000000000'], // your id here
   debug: false, // register slash commands as testOnly
   testGuildIDs: ['000000000000000000'], // if run in debug mode test guild id here
-  listRolesFileName: 'gameRolesList.txt', // the name of the file that gets send on /listroles
+  listRolesFileName: 'activityRolesList.txt', // the name of the file that gets send on /listroles
   exportFileName: 'export.json',// the name of the file that gets send on /export
   inviteLink: 'https://discord.com/api/oauth2/authorize?client_id=000000000000000000&permissions=8&scope=bot%20applications.commands', //bot user id here (at ?client_id=)
   botLogoLink: '', // profile picture of the bot

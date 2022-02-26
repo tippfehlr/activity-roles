@@ -11,7 +11,7 @@ import * as db from '../db';
 export default {
   names: 'deleteRole',
   category: 'Configuration',
-  description: 'Deletes a gamerole from your guild.',
+  description: 'Deletes an activity role from your guild.',
   requiredPermissions: ['ADMINISTRATOR'],
 
   slash: true,
@@ -47,12 +47,12 @@ export default {
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID });
     if (!data) {
-      command.interaction.reply({ content: msg.gameRoleDoesNotExist(), ephemeral: true});
+      command.interaction.reply({ content: msg.activityRoleDoesNotExist(), ephemeral: true});
       return;
     }
 
     await command.interaction.reply({
-      embeds: [msg.removeGameRoleQ(activityName, roleID, data.exactActivityName)],
+      embeds: [msg.removeActivityRoleQ(activityName, roleID, data.exactActivityName)],
       components: [msg.removeButtonRow()],
       ephemeral: true
     });
