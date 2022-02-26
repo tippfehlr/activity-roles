@@ -2,7 +2,8 @@
 
 [![Invite me](https://img.shields.io/static/v1?style=flat&logo=discord&logoColor=FFF&label=&message=invite%20me&color=7289DA)](https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot)
 
-A discord bot that gives and removes roles from users dependent on their discord presence.
+A discord bot that gives and removes roles from users dependent on their discord presence. \
+Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 ## Vocabulary
   - **activityName:** the name of a discord presence.
