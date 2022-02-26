@@ -1,12 +1,12 @@
 {
-  "name": "game-roles-v2",
+  "name": "activity-roles",
   "main": "src/index.ts",
   "test": "src/tests",
   "license": "AGPL-3.0",
   "author": "tippfehlr",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tippf3hlr/game-roles-v2.git"
+    "url": "https://github.com/tippf3hlr/activity-roles.git"
   },
   "dependencies": {
     "discord.js": "^13.6.0",
@@ -31,7 +31,7 @@
   "scripts": {
     "prod": "pm2 start ./src/index.ts -a --restart-delay 3000 --name game-roles-v2 --interpreter ts-node",
     "start": "ts-node ./src/index.ts",
-    "dev": "nodemon -i export.json -i gameRolesList.txt",
+    "dev": "nodemon -i export.json -i activityRolesList.txt",
     "tsc": "npx tsc --outDir out/ && powershell -Command \"(gc out/src/modules/bot.js) -replace 'typeScript: true', 'typeScript: false' | Out-File -encoding ASCII out/src/modules/bot.js\"",
     "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg"
   }

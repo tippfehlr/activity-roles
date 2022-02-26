@@ -7,7 +7,7 @@ import * as db from '../db';
 export default {
   names: 'addRole',
   category: 'Configuration',
-  description: 'Adds a gamerole to your guild.',
+  description: 'Adds an activity role to your guild.',
   requiredPermissions: ['ADMINISTRATOR'],
 
   slash: true,
@@ -53,7 +53,7 @@ export default {
       return;
     }
     if (await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID, activityName: activityName })) {
-      command.interaction.reply({ content: msg.gameRoleExists(), ephemeral: true });
+      command.interaction.reply({ content: msg.activityRoleExists(), ephemeral: true });
       return;
     } else {
       new db.GuildData({
@@ -63,8 +63,8 @@ export default {
         exactActivityName: exactActivityName
       }).save();
       if (command.guild) db.checkAllRoles(command.guild);
-      msg.log.addGameRole(String(command?.guild?.name), String(command?.guild?.id), role.name, roleID, activityName, exactActivityName);
-      command.interaction.reply({ embeds: [msg.setNewGameRole(role.id, activityName, exactActivityName)], ephemeral: true });
+      msg.log.addActivityRole(String(command?.guild?.name), String(command?.guild?.id), role.name, roleID, activityName, exactActivityName);
+      command.interaction.reply({ embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName)], ephemeral: true });
     }
   }
 } as ICommand

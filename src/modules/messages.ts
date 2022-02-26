@@ -31,7 +31,7 @@ export default {
       .addField('Error:', 'Missing permissions')
       .addField('Activity Name:', activityName)
       .addField('My highest role:', `#${highestBotRole}`, true)
-      .addField('GameRole:', `#${rolePosition}`, true)
+      .addField('ActivityRole:', `#${rolePosition}`, true)
       .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
       .setFooter('© 2021 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
@@ -44,12 +44,12 @@ export default {
       .addField('Error:', 'Missing permissions')
       .addField('Activity Name:', activityName)
       .addField('My highest role:', `#${highestBotRole}`, true)
-      .addField('GameRole:', `#${rolePosition}`, true)
+      .addField('ActivityRole:', `#${rolePosition}`, true)
       .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
       .setFooter('© 2021-2022 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
-  setNewGameRole: (roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
+  setNewActivityRole: (roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
       .setTitle('Set!')
@@ -63,13 +63,13 @@ export default {
   cantUseEveryone: () => {
     return '*I am powerful, but not **that** powerful!*\nYou can\'t use @everyone as a game role.';
   },
-  gameRoleExists: () => {
+  activityRoleExists: () => {
     return ':x: That game role already exists in this guild! Edit it with \'/editRole\'. :x:';
   },
-  gameRoleDoesNotExist: () => {
+  activityRoleDoesNotExist: () => {
     return ':x: That game role does not exists in this guild! Create it with \'/addRole\'. :x:';
   },
-  removeGameRoleQ: (activityName: string, roleID: string, exactActivityName: boolean) => {
+  removeActivityRoleQ: (activityName: string, roleID: string, exactActivityName: boolean) => {
     return new Discord.MessageEmbed()
       .setTitle('Do you really want to delete this game role?')
       .setColor(config.embedColor)
@@ -109,7 +109,7 @@ export default {
           .setDisabled(nextDisabled)
       );
   },
-  noGameRoles: () => {
+  noActivityRoles: () => {
     return 'There are no game roles in this guild.';
   },
   removed: () => {
@@ -167,7 +167,7 @@ export default {
   inputTooLong: () => {
     return ':x: I\'m sorry, but your values are too big for me to handle. :x:';
   },
-  gameRolesListInFile: () => {
+  activityRolesListInFile: () => {
     return 'It\'s hard to send lists to Discord, so it\'s in this file. ***hint:** turn off **word wrap** to view the list correctly.*'
   },
 
@@ -178,7 +178,7 @@ export default {
     addUser: async (userName: Discord.User["username"], userID: Discord.User["id"]): Promise<void> => {
       console.log(`\nMONGODB     > Added user ${userName} (${userID}) to the database.`);
     },
-    addGameRole: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"], roleName: Discord.Role["name"], roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
+    addActivityRole: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"], roleName: Discord.Role["name"], roleID: Discord.Role["id"], activityName: string, exactActivityName: boolean) => {
       console.log(`\nMONGODB     > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`);
     },
     mongodbConnect: async (): Promise<void> => {
