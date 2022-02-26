@@ -5,7 +5,7 @@ import path from 'path';
 import * as db from './db';
 import config from '../../config';
 
-export const client= new Discord.Client({
+export const client = new Discord.Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MEMBERS,
@@ -16,6 +16,8 @@ export const client= new Discord.Client({
   ]
 });
 
+var processingUser: any = [];
+
 client.on('ready', () => {
   new WOKcommands(client, {
     commandsDir: path.join(__dirname, '/commands'),
@@ -23,13 +25,13 @@ client.on('ready', () => {
     typeScript: true,
     mongoUri: config.MONGODB_URI,
     botOwners: config.botOwners,
-    // disabledDefaultCommands: [
+    disabledDefaultCommands: [
       // 'help',
       // 'command',
-      // 'language',
-      // 'prefix',
+      'language',
+      'prefix',
       // 'requiredrole'
-    // ],
+    ],
   });
 
   client.user?.setPresence({
@@ -39,7 +41,10 @@ client.on('ready', () => {
   });
 });
 
-client.on('presenceUpdate', async function (oldMember: any, newMember: any) {
+client.on('presenceUpdate', async function (oldMember, newMember) {
+  if (!newMember?.user || !newMember.guild || !newMember.member) return;
+  if (newMember.user?.id in processingUser) return;
+  processingUser[newMember.user?.id] = true;
   if (newMember.member.user.bot) return;
   await db.checkGuild(newMember.guild);
   await db.checkUser(newMember.user);
@@ -50,16 +55,17 @@ client.on('presenceUpdate', async function (oldMember: any, newMember: any) {
         if (err) console.error(err);
         if (!docs) {
           new db.UserData({
-            userID: newMember.user.id.toString(),
+            userID: newMember.user?.id.toString(),
             activityName: newMember.activities[i].name,
             autoRole: true,
             ignored: false
           }).save();
-          console.log(`\nMONGODB > New activity: ${newMember.user.username} (${newMember.user.id}) plays ${newMember.activities[i].name}.`);
+          console.log(`\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`);
         }
       }).lean();
     }
   }
+  delete processingUser[newMember.user?.id];
   db.checkRoles(newMember.member);
 });
 
