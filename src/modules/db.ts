@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 
 import config from '../../config';
 import msg from './messages';
-import { client } from './bot';
 
 import { UserConfig, UserConfigType } from './models/userConfig';
 import { GuildConfig, GuildConfigType } from './models/guildConfig';
