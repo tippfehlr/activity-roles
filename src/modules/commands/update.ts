@@ -16,6 +16,6 @@ export default {
   callback: async command => {
     msg.log.activity();
     if(command.guild) db.checkAllRoles(command.guild);
-    return 'ok';
+    command.interaction.reply({content: msg.ok(), ephemeral: true});
   },
 } as ICommand

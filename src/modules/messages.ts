@@ -6,6 +6,9 @@ import config from '../../config';
 //TODO edit setFooter as they are marked as deprecated
 
 export default {
+  ok: () => {
+    return 'ok';
+  },
   highestBotRoleUndefined: async (guildID: Discord.BaseGuild["id"], guildName: Discord.BaseGuild["name"]) => {
     console.error(`guild.me.roles.highest.position === undefined on guild: ${guildName}(${guildID})`);
   },
@@ -40,12 +43,12 @@ export default {
     return new Discord.MessageEmbed()
       .setColor('#ff0000')
       .setTitle('Error')
-      .setDescription(`Can't remove <@&${roleID}> to <@${userID}>`)
+      .setDescription(`Can't remove <@&${roleID}> from <@${userID}>`)
       .addField('Error:', 'Missing permissions')
       .addField('Activity Name:', activityName)
       .addField('My highest role:', `#${highestBotRole}`, true)
-      .addField('ActivityRole:', `#${rolePosition}`, true)
-      .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
+      .addField(`<@&${roleID}>:`, `#${rolePosition}`, true)
+      .addField('Solution:', 'Move my any of my roles higher than the role I should remove.')
       .setFooter('© 2021-2022 tippfehlr#3575', config.botOwnerLogoLink)
       .setTimestamp();
   },
