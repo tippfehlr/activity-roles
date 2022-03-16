@@ -23,6 +23,6 @@ export default {
     }
     fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
     await command.interaction.reply({ files: [config.exportFileName] });
-    fs.unlink(config.exportFileName, () => { });
+    fs.unlinkSync(config.exportFileName);
   }
 } as ICommand;
