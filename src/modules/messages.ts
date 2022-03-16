@@ -175,6 +175,9 @@ export default {
   },
 
   log: { // -----------------------------------------------------------------------------------------------------
+    login: async (userName: string, discriminator: string, id: string) => {
+      console.log(`\nDiscord.JS  > Logged in as ${userName}#${discriminator} (${id})`);
+    },
     addGuild: async (guildName: Discord.BaseGuild["name"], guildID: Discord.BaseGuild["id"]): Promise<void> => {
       console.log(`\nMONGODB     > Added guild ${guildName} (${guildID}) to the database.`);
     },

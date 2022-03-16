@@ -4,6 +4,7 @@ import path from 'path';
 
 import * as db from './db';
 import config from '../../config';
+import msg from './messages';
 
 export const client = new Discord.Client({
   intents: [
@@ -39,6 +40,7 @@ client.on('ready', () => {
     afk: false,
     activities: config.activities
   });
+  msg.log.login(String(client.user?.username), String(client.user?.discriminator), String(client.user?.id));
 });
 
 client.on('presenceUpdate', async function (oldMember, newMember) {
