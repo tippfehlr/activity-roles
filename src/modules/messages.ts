@@ -130,48 +130,11 @@ export default {
       .setTitle('Error')
       .setColor('RED');
   },
-  roleList: (data: { roleID: string, activityName: string, exactActivityName: boolean }[]) => {
-    let roleString = [''];
-    let exactActivityNameString = [''];
-    let activityNameString = [''];
-    let arrayCount = 0;
-    data.forEach(role => {
-      if (roleString[0] === '') {
-        roleString[0] = `<@&${role.roleID}>`;
-        exactActivityNameString[0] = String(role.exactActivityName);
-        activityNameString[0] = role.activityName;
-      } else {
-        if (
-          (roleString + role.roleID).length > 1024 ||
-          (activityNameString + role.activityName).length > 1024 ||
-          (exactActivityNameString + String(role.exactActivityName)).length > 1024
-        ) {
-          arrayCount++;
-          roleString[arrayCount] = `<@&${role.roleID}>`;
-          activityNameString[arrayCount] = role.activityName;
-          exactActivityNameString[arrayCount] = String(role.roleID);
-        }
-        roleString[arrayCount] += ('\n' + `<@&${role.roleID}>`);
-        activityNameString[arrayCount] += ('\n' + role.activityName);
-        exactActivityNameString[arrayCount] += ('\n' + role.exactActivityName);
-      }
-    });
-    let embeds = [];
-    for (let i = 0; i < roleString.length; i++) {
-      embeds.push(new Discord.MessageEmbed()
-        .addField('Role', roleString[i], true)
-        .addField('ActivityName', activityNameString[i], true)
-        .addField('exactActivityName', exactActivityNameString[i], true)
-        .setColor(config.embedColor)
-      );
-    }
-    return embeds;
-  },
   inputTooLong: () => {
     return ':x: I\'m sorry, but your values are too big for me to handle. :x:';
   },
   activityRolesListInFile: () => {
-    return 'It\'s hard to send lists to Discord, so it\'s in this file. ***hint:** turn off **word wrap** to view the list correctly.*'
+    return 'It\'s hard to send lists to Discord, so it\'s in this file. ***hint:** turn off **word wrap** to view the list correctly.*';
   },
 
   log: { // -----------------------------------------------------------------------------------------------------

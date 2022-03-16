@@ -1,13 +1,12 @@
 import Discord from 'discord.js';
 import mongoose from 'mongoose';
 
-import config from '../../config';
 import msg from './messages';
 
-import { UserConfig, UserConfigType } from './models/userConfig';
-import { GuildConfig, GuildConfigType } from './models/guildConfig';
-import { UserData, UserDataType } from './models/userData';
-import { GuildData, GuildDataType } from './models/guildData';
+import { UserConfig } from './models/userConfig';
+import { GuildConfig } from './models/guildConfig';
+import { UserData } from './models/userData';
+import { GuildData } from './models/guildData';
 
 export { UserConfig, UserConfigType } from './models/userConfig';
 export { GuildConfig, GuildConfigType } from './models/guildConfig';
@@ -25,7 +24,7 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
   if (!await GuildConfig.findById(guild.id.toString()).select('_id').lean()) {
     const channel = await guild.channels.create('game-roles-v2', { type: "GUILD_TEXT" });
-    channel.send({ embeds: [msg.newLogChannel()] })
+    channel.send({ embeds: [msg.newLogChannel()] });
     new GuildConfig({
       _id: guild.id.toString(),
       logChannelID: channel.id.toString()
@@ -69,10 +68,10 @@ export async function checkRoles(member: Discord.GuildMember) {
   for (const guildActivity of guildActivityList) {
     this_role: {
       const userHasRole: boolean = member.roles.cache.has(guildActivity.roleID);
-      let role = member.guild.roles.cache.find(_role => _role.id === guildActivity.roleID);
-      if (role === undefined) break this_role; //FIXME: What if role gets removed?
+      const role = member.guild.roles.cache.find(_role => _role.id === guildActivity.roleID);
+      if (role === undefined) break this_role; //FIXME: What if role gets removed? -> add log message role not found
 
-      var userShouldHaveRole = false;
+      let userShouldHaveRole = false;
       if (guildActivity.exactActivityName) {
         userActivities: {
           const userActivityListFiltered = userActivityList.filter((elmt: { activityName: string }) => elmt.activityName === guildActivity.activityName);
@@ -157,7 +156,7 @@ export async function checkAllRoles(guild: Discord.Guild) {
           } else {
             role = role as Discord.Role;
           }
-          var userShouldHaveRole = false;
+          let userShouldHaveRole = false;
           userActivities: {
             if (!guildActivityList[x].exactActivityName) {
               for (const y in userActivityList) {
@@ -187,7 +186,6 @@ export async function checkAllRoles(guild: Discord.Guild) {
               msg.log.addedRoleToMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
             } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
               const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
-              const logChannelID = _guildConfig.logChannelID;
               const channel = guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
               if (channel) {
                 msg.log.errorCantAssignRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivityList[x].activityName, highestBotRole);
@@ -200,7 +198,6 @@ export async function checkAllRoles(guild: Discord.Guild) {
               msg.log.removedRoleFromMember(role.name, guildActivityList[x].roleID, member.user.username, member.user.id, member.guild.name, member.guild.id);
             } else if ('logChannelID' in await GuildConfig.findById(member.guild.id.toString()).lean()) {
               const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
-              const logChannelID = _guildConfig.logChannelID;
               const channel = guild.channels.cache.find(_channel => _channel.id === _guildConfig.logChannelID && _channel.isText()) as Discord.TextChannel;
               if (channel) {
                 msg.log.errorCantRemoveRole(role.name, role.id, role.position, member.user.username, member.user.id, guildActivityList[x].activityName, highestBotRole);

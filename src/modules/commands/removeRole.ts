@@ -1,6 +1,6 @@
 //mention that no roles are removed and maybe there is an extra command
 
-import { ICommand } from 'wokcommands'
+import { ICommand } from 'wokcommands';
 import Discord from 'discord.js';
 import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
@@ -47,7 +47,7 @@ export default {
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID });
     if (!data) {
-      command.interaction.reply({ content: msg.activityRoleDoesNotExist(), ephemeral: true});
+      command.interaction.reply({ content: msg.activityRoleDoesNotExist(), ephemeral: true });
       return;
     }
 
@@ -57,7 +57,7 @@ export default {
       ephemeral: true
     });
 
-    const filter = (btnInt: any) => { return command.interaction.user.id === btnInt.user.id }
+    const filter = (btnInt: any) => { return command.interaction.user.id === btnInt.user.id; };
 
     const collector = command.channel.createMessageComponentCollector({ filter, max: 1, time: 1000 * 60 });
 
@@ -78,4 +78,4 @@ export default {
       }
     });
   }
-} as ICommand
+} as ICommand;

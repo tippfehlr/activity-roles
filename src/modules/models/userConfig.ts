@@ -13,9 +13,9 @@ const userConfigSchema = new Schema({
 
 export const UserConfig = mongoose.model('UserConfig', userConfigSchema);
 export interface UserConfigType {
-  _id:       string;
-  autoRole:  boolean;
+  _id: string;
+  autoRole: boolean;
   createdAt: string;
   updatedAt: string;
-  __v:       number;
+  __v: number;
 }

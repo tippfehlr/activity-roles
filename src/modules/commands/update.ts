@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands'
+import { ICommand } from 'wokcommands';
 
 import msg from '../messages';
 import * as db from '../db';
@@ -15,7 +15,7 @@ export default {
 
   callback: async command => {
     msg.log.activity();
-    if(command.guild) db.checkAllRoles(command.guild);
-    command.interaction.reply({content: msg.ok(), ephemeral: true});
+    if (command.guild) db.checkAllRoles(command.guild);
+    command.interaction.reply({ content: msg.ok(), ephemeral: true });
   },
-} as ICommand
+} as ICommand;

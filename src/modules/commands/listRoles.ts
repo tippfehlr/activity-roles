@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands'
+import { ICommand } from 'wokcommands';
 import { table } from 'table';
 import fs from 'fs';
 
@@ -17,18 +17,34 @@ export default {
   callback: async command => {
     msg.log.activity();
 
-    const res: db.GuildDataType[] = await db.GuildData.find({ guildID: command.guild?.id })
+    const res: db.GuildDataType[] = await db.GuildData.find({
+      guildID: command.guild?.id,
+    });
     if (res.length === 0) {
       command.interaction.reply({ content: msg.noActivityRoles() });
       return;
     }
-    let array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
+    const array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
     for (const i in res) {
-      array.push([String(Number(i) + 1), `${command.guild?.roles.cache.find((role) => role.id === res[i].roleID)?.name} <@&${res[i].roleID}>`, res[i].activityName, res[i].exactActivityName.toString()]);
+      array.push([
+        String(Number(i) + 1),
+        `${command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name
+        } <@&${res[i].roleID}>`,
+        res[i].activityName,
+        res[i].exactActivityName.toString(),
+      ]);
     }
-    const response = table(array, { drawHorizontalLine: (index: number) => { return index === 0 || index === 1 || index === array.length } })
+    const response = table(array, {
+      drawHorizontalLine: (index: number) => {
+        return index === 0 || index === 1 || index === array.length;
+      },
+    });
     fs.writeFileSync(config.listRolesFileName, response);
-    await command.interaction.reply({ /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName] })
-    fs.unlink(config.listRolesFileName, () => { })
-  }
-} as ICommand
+    await command.interaction.reply({
+      /*content: msg.activityRolesListInFile(),*/ files: [
+        config.listRolesFileName,
+      ],
+    });
+    fs.unlinkSync(config.listRolesFileName);
+  },
+} as ICommand;

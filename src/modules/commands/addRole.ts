@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands'
+import { ICommand } from 'wokcommands';
 import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
@@ -48,7 +48,7 @@ export default {
       command.interaction.reply({ content: msg.roleDoesNotExist(), ephemeral: true });
       return;
     }
-    if(role.name === '@everyone'){
+    if (role.name === '@everyone') {
       command.interaction.reply({ content: msg.cantUseEveryone(), ephemeral: true });
       return;
     }
@@ -67,4 +67,4 @@ export default {
       command.interaction.reply({ embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName)], ephemeral: true });
     }
   }
-} as ICommand
+} as ICommand;
