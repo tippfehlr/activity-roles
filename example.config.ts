@@ -10,11 +10,14 @@ export default {
   debug: false, // register slash commands as testOnly
   testGuildIDs: ['000000000000000000'], // if run in debug mode test guild id here
   listRolesFileName: 'activityRolesList.txt', // the name of the file that gets send on /listroles
-  exportFileName: 'export.json',// the name of the file that gets send on /export
-  inviteLink: 'https://discord.com/api/oauth2/authorize?client_id=000000000000000000&permissions=8&scope=bot%20applications.commands', //bot user id here (at ?client_id=)
+  exportFileName: 'export.json', // the name of the file that gets send on /export
+  inviteLink:
+    'https://discord.com/api/oauth2/authorize?client_id=000000000000000000&permissions=8&scope=bot%20applications.commands', //bot user id here (at ?client_id=)
   botLogoLink: '', // profile picture of the bot
   botOwnerLogoLink: '', // link to profile picture of author :)
   footerMessage: '© 2022 tippfehlr#3575', // author credits :)
+  author: 'tippfehlr#3575', // author credits :)
+  host: '', // credits to you!
   embedColor: '#0099ff' as ColorResolvable, // the color of most embeds
   activities: [
     { name: '/help', type: 'LISTENING' } as ActivityOptions,
