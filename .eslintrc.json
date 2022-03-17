@@ -7,7 +7,7 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "semi": 1,
-    "quotes": ["warn", "single", { "avoidEscape": true }]
+    "semi": 1
+    // "quotes": ["warn", "single", { "avoidEscape": true }]
   }
 }
