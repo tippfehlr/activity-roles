@@ -146,7 +146,7 @@ export default {
   log: {
     // -----------------------------------------------------------------------------------------------------
     login: async (userName: string, discriminator: string, id: string) => {
-      console.log(`\nDiscord.JS  > Logged in as ${userName}#${discriminator} (${id})`);
+      console.log(`Discord.JS  > Logged in as ${userName}#${discriminator} (${id})`);
     },
     addGuild: async (
       guildName: Discord.BaseGuild['name'],
