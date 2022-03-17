@@ -62,7 +62,7 @@ export default {
       ephemeral: true
     });
 
-    const filter = (btnInt: any) => {
+    const filter = (btnInt: Discord.MessageComponentInteraction<'cached'>) => {
       return command.interaction.user.id === btnInt.user.id;
     };
 
