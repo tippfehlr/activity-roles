@@ -17,8 +17,6 @@ export const client = new Discord.Client({
   ]
 });
 
-var processingUser: any = [];
-
 client.on('ready', () => {
   new WOKcommands(client, {
     commandsDir: path.join(__dirname, '/commands'),
@@ -27,12 +25,12 @@ client.on('ready', () => {
     mongoUri: config.MONGODB_URI,
     botOwners: config.botOwners,
     disabledDefaultCommands: [
-      // 'help',
+      'help',
       // 'command',
       'language',
-      'prefix',
+      'prefix'
       // 'requiredrole'
-    ],
+    ]
   });
 
   client.user?.setPresence({
@@ -40,34 +38,46 @@ client.on('ready', () => {
     afk: false,
     activities: config.activities
   });
-  msg.log.login(String(client.user?.username), String(client.user?.discriminator), String(client.user?.id));
+  msg.log.login(
+    String(client.user?.username),
+    String(client.user?.discriminator),
+    String(client.user?.id)
+  );
 });
 
+const processingUser = new Map<string, boolean>();
 client.on('presenceUpdate', async function (oldMember, newMember) {
   if (!newMember?.user || !newMember.guild || !newMember.member) return;
   if (newMember.member.user.bot) return;
-  if (newMember.user?.id in processingUser) return;
-  processingUser[newMember.user?.id] = true;
+  if (processingUser.has(newMember.user?.id)) return;
+  processingUser.set(newMember.user?.id, true);
   await db.checkGuild(newMember.guild);
   await db.checkUser(newMember.user);
 
   for (const i in newMember.activities) {
     if (newMember.activities[i].name !== 'Custom Status') {
-      db.UserData.findOne({ userID: newMember.user.id.toString(), activityName: newMember.activities[i].name }, (err: any, docs: any) => {
-        if (err) console.error(err);
-        if (!docs) {
-          new db.UserData({
-            userID: newMember.user?.id.toString(),
-            activityName: newMember.activities[i].name,
-            autoRole: true,
-            ignored: false
-          }).save();
-          console.log(`\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`);
+      db.UserData.findOne(
+        {
+          userID: newMember.user.id.toString(),
+          activityName: newMember.activities[i].name
+        },
+        (docs: db.UserDataType) => {
+          if (!docs) {
+            new db.UserData({
+              userID: newMember.user?.id.toString(),
+              activityName: newMember.activities[i].name,
+              autoRole: true,
+              ignored: false
+            }).save();
+            console.log(
+              `\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`
+            );
+          }
         }
-      }).lean();
+      ).lean();
     }
   }
-  delete processingUser[newMember.user?.id];
+  processingUser.delete(newMember.user?.id);
   db.checkRoles(newMember.member);
 });
 
@@ -80,7 +90,7 @@ client.on('guildDelete', function (guild) {
   console.log(`\nthe client left ${guild.name}`);
 });
 
-client.on('disconnect', function (event) {
+client.on('disconnect', function () {
   console.log('\nDISCORD.JS > The WebSocket has closed and will no longer attempt to reconnect');
 });
 
