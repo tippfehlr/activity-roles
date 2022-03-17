@@ -17,5 +17,5 @@ export default {
     msg.log.activity();
     if (command.guild) db.checkAllRoles(command.guild);
     command.interaction.reply({ content: msg.ok(), ephemeral: true });
-  },
+  }
 } as ICommand;

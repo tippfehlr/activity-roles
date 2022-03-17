@@ -40,14 +40,19 @@ export default {
     }
   ],
 
-
   callback: async command => {
     msg.log.activity();
 
     const [roleID, activityName] = command.args;
-    const data = await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID });
+    const data = await db.GuildData.findOne({
+      guildID: command?.guild?.id.toString(),
+      roleID: roleID
+    });
     if (!data) {
-      command.interaction.reply({ content: msg.activityRoleDoesNotExist(), ephemeral: true });
+      command.interaction.reply({
+        content: msg.activityRoleDoesNotExist(),
+        ephemeral: true
+      });
       return;
     }
 
@@ -57,14 +62,23 @@ export default {
       ephemeral: true
     });
 
-    const filter = (btnInt: any) => { return command.interaction.user.id === btnInt.user.id; };
+    const filter = (btnInt: any) => {
+      return command.interaction.user.id === btnInt.user.id;
+    };
 
-    const collector = command.channel.createMessageComponentCollector({ filter, max: 1, time: 1000 * 60 });
+    const collector = command.channel.createMessageComponentCollector({
+      filter,
+      max: 1,
+      time: 1000 * 60
+    });
 
     collector.on('collect', (int: Discord.ButtonInteraction) => {
       switch (int.customId) {
         case 'remove':
-          db.GuildData.deleteOne({ guildID: command?.guild?.id.toString(), roleID: roleID }).then((res) => {
+          db.GuildData.deleteOne({
+            guildID: command?.guild?.id.toString(),
+            roleID: roleID
+          }).then(res => {
             if (res.deletedCount > 0) {
               int.update({ embeds: [msg.removed()], components: [] });
             } else {

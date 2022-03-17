@@ -1,25 +1,28 @@
 import mongoose, { Schema } from 'mongoose';
 
-const userDataSchema = new Schema({
-  userID: {
-    type: String,
-    required: true
+const userDataSchema = new Schema(
+  {
+    userID: {
+      type: String,
+      required: true
+    },
+    activityName: {
+      type: String,
+      required: true
+    },
+    autoRole: {
+      type: Boolean,
+      required: true
+    },
+    ignored: {
+      type: Boolean,
+      required: true
+    }
   },
-  activityName: {
-    type: String,
-    required: true
-  },
-  autoRole: {
-    type: Boolean,
-    required: true
-  },
-  ignored: {
-    type: Boolean,
-    required: true
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-export const UserData = mongoose.model('UserData', userDataSchema);
+export const UserData = mongoose.model('UserData', userDataSchema, 'UserData');
 export interface UserDataType {
   _id: string;
   userID: string;

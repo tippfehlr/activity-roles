@@ -36,7 +36,6 @@ export default {
     }
   ],
 
-
   callback: async command => {
     msg.log.activity();
 
@@ -52,8 +51,17 @@ export default {
       command.interaction.reply({ content: msg.cantUseEveryone(), ephemeral: true });
       return;
     }
-    if (await db.GuildData.findOne({ guildID: command?.guild?.id.toString(), roleID: roleID, activityName: activityName })) {
-      command.interaction.reply({ content: msg.activityRoleExists(), ephemeral: true });
+    if (
+      await db.GuildData.findOne({
+        guildID: command?.guild?.id.toString(),
+        roleID: roleID,
+        activityName: activityName
+      })
+    ) {
+      command.interaction.reply({
+        content: msg.activityRoleExists(),
+        ephemeral: true
+      });
       return;
     } else {
       new db.GuildData({
@@ -63,8 +71,18 @@ export default {
         exactActivityName: exactActivityName
       }).save();
       if (command.guild) db.checkAllRoles(command.guild);
-      msg.log.addActivityRole(String(command?.guild?.name), String(command?.guild?.id), role.name, roleID, activityName, exactActivityName);
-      command.interaction.reply({ embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName)], ephemeral: true });
+      msg.log.addActivityRole(
+        String(command?.guild?.name),
+        String(command?.guild?.id),
+        role.name,
+        roleID,
+        activityName,
+        exactActivityName
+      );
+      command.interaction.reply({
+        embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName)],
+        ephemeral: true
+      });
     }
   }
 } as ICommand;

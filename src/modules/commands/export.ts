@@ -16,10 +16,19 @@ export default {
   callback: async command => {
     msg.log.activity();
 
-    const res: db.GuildDataType[] = await db.GuildData.find({ guildID: command.guild?.id });
+    const res: db.GuildDataType[] = await db.GuildData.find({
+      guildID: command.guild?.id
+    });
     const array = [];
     for (const i in res) {
-      array.push([String(Number(i) + 1), `${command.guild?.roles.cache.find((role) => role.id === res[i].roleID)?.name} <@&${res[i].roleID}>`, res[i].activityName, res[i].exactActivityName.toString()]);
+      array.push([
+        String(Number(i) + 1),
+        `${command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name} <@&${
+          res[i].roleID
+        }>`,
+        res[i].activityName,
+        res[i].exactActivityName.toString()
+      ]);
     }
     fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
     await command.interaction.reply({ files: [config.exportFileName] });

@@ -18,7 +18,7 @@ export default {
     msg.log.activity();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
-      guildID: command.guild?.id,
+      guildID: command.guild?.id
     });
     if (res.length === 0) {
       command.interaction.reply({ content: msg.noActivityRoles() });
@@ -28,23 +28,21 @@ export default {
     for (const i in res) {
       array.push([
         String(Number(i) + 1),
-        `${command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name
-        } <@&${res[i].roleID}>`,
+        command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name +
+          ` <@&${res[i].roleID}>`,
         res[i].activityName,
-        res[i].exactActivityName.toString(),
+        res[i].exactActivityName.toString()
       ]);
     }
     const response = table(array, {
       drawHorizontalLine: (index: number) => {
         return index === 0 || index === 1 || index === array.length;
-      },
+      }
     });
     fs.writeFileSync(config.listRolesFileName, response);
     await command.interaction.reply({
-      /*content: msg.activityRolesListInFile(),*/ files: [
-        config.listRolesFileName,
-      ],
+      /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName]
     });
     fs.unlinkSync(config.listRolesFileName);
-  },
+  }
 } as ICommand;
