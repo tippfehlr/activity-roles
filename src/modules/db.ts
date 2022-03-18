@@ -13,13 +13,22 @@ export { GuildConfig, GuildConfigType } from './models/guildConfig';
 export { UserData, UserDataType } from './models/userData';
 export { GuildData, GuildDataType } from './models/guildData';
 
+/**
+ * Connect to the MongoDB database.
+ * @param {string} uri - the URI of the database to connect to.
+ * @returns None
+ */
 export async function connect(uri: string) {
   await mongoose.connect(uri).then(() => {
     msg.log.mongodbConnect();
   });
 }
 
-// @param guild: Discord guild object
+/**
+ * Checks if the guild is in the database.
+ * @param {Discord.Guild} guild - The guild to check.
+ * @returns None
+ */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
   if (!(await GuildConfig.findById(guild.id.toString()).select('_id').lean())) {
@@ -35,8 +44,11 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
   }
 }
 
-// @param user: Discord user object
-// @return: User existed before check
+/**
+ * Checks if the user is in the database.
+ * @param {Discord.User} user - the user to check for a UserConfig object
+ * @returns {Promise<boolean>} - whether or not the user has a UserConfig object in the database.
+ */
 export async function checkUser(user: Discord.User): Promise<boolean> {
   msg.log.activity();
   if (!(await UserConfig.findById(user.id.toString()).exec())) {
@@ -50,7 +62,11 @@ export async function checkUser(user: Discord.User): Promise<boolean> {
   return true;
 }
 
-// @param member: Discord member object
+/**
+ * Checks the user's roles and automatically assigns them to the appropriate role.
+ * @param {Discord.GuildMember} member - The member to check.
+ * @returns None
+ */
 export async function checkRoles(member: Discord.GuildMember) {
   msg.log.activity();
   if (member.user.bot) return;
@@ -200,6 +216,11 @@ export async function checkRoles(member: Discord.GuildMember) {
   }
 }
 
+/**
+ * Checks all roles in the guild and their roles accordingly.
+ * @param {Discord.Guild} guild - The guild to check.
+ * @returns None
+ */
 export async function checkAllRoles(guild: Discord.Guild) {
   msg.log.activity();
   await checkGuild(guild);
