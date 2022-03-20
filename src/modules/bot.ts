@@ -56,25 +56,22 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
 
   for (const i in newMember.activities) {
     if (newMember.activities[i].name !== 'Custom Status') {
-      db.UserData.findOne(
-        {
-          userID: newMember.user.id.toString(),
-          activityName: newMember.activities[i].name
-        },
-        (docs: db.UserDataType) => {
-          if (!docs) {
-            new db.UserData({
-              userID: newMember.user?.id.toString(),
-              activityName: newMember.activities[i].name,
-              autoRole: true,
-              ignored: false
-            }).save();
-            console.log(
-              `\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`
-            );
-          }
-        }
-      ).lean();
+      const docs = await db.UserData.findOne({
+        userID: newMember.user.id.toString(),
+        activityName: newMember.activities[i].name
+      }).lean();
+
+      if (!docs) {
+        new db.UserData({
+          userID: newMember.user?.id.toString(),
+          activityName: newMember.activities[i].name,
+          autoRole: true,
+          ignored: false
+        }).save();
+        console.log(
+          `\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`
+        );
+      }
     }
   }
   processingUser.delete(newMember.user?.id);
