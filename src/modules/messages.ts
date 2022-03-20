@@ -409,7 +409,6 @@ export default {
       return new Discord.MessageEmbed()
         .setTitle('Activity Roles Help')
         .setColor(config.embedColor)
-        .setThumbnail(config.botLogoLink)
         .setFooter({
           // = Made and hosted by <author>.
           // or
@@ -420,10 +419,29 @@ export default {
           iconURL: config.botAuthorLogoLink
         })
         .setDescription(
-          "A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing. \n\
-          Intended to show which people play what game and to therefore give them access to specific channels etc. \n\
-          Open source at https://github.com/tippf3hlr/activity-roles/"
-        );
+          "A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing. \n\n\
+          Intended to show which people play what game and to therefore give them access to specific channels etc."
+        )
+        .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
+        .addField('Invite', config.inviteLink)
+        .addField(
+          'Commands:\n`/addRole <role> <activityName> [exactActivityName]`',
+          "Adds a new activity role to your guild. Requires the 'MANAGE_ROLES' permission."
+        )
+        .addField(
+          '`/export`',
+          "Exports all game roles in your guild as a JSON file. Requires the 'MANAGE_ROLES' permission."
+        )
+        .addField('`/help`', 'Shows this help page.')
+        .addField(
+          '`/listRoles`',
+          "Lists all game roles in your guild. Requires the 'MANAGE_ROLES' permission."
+        )
+        .addField(
+          '`/removeRole <role> <activityName`',
+          "Deletes an activity role from your guild. Requires the 'MANAGE_ROLES' permission."
+        )
+        .addField('`/update`', 'Updates all activity roles.');
     }
   }
 };

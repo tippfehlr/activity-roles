@@ -10,6 +10,7 @@ export default {
   names: 'listRoles',
   category: 'Information',
   description: 'Lists all game roles in your guild.',
+  requiredPermissions: ['MANAGE_ROLES'],
 
   slash: true,
   testOnly: config.debug,

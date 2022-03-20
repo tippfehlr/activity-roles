@@ -9,6 +9,7 @@ export default {
   names: 'export',
   category: 'Information',
   description: 'Exports all game roles in your guild as a JSON file.',
+  requiredPermissions: ['MANAGE_ROLES'],
 
   slash: true,
   testOnly: config.debug,

@@ -8,7 +8,7 @@ export default {
   names: 'addRole',
   category: 'Configuration',
   description: 'Adds an activity role to your guild.',
-  requiredPermissions: ['ADMINISTRATOR'],
+  requiredPermissions: ['MANAGE_ROLES'],
 
   slash: true,
   testOnly: config.debug,

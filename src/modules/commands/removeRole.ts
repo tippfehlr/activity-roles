@@ -12,13 +12,13 @@ export default {
   names: 'deleteRole',
   category: 'Configuration',
   description: 'Deletes an activity role from your guild.',
-  requiredPermissions: ['ADMINISTRATOR'],
+  requiredPermissions: ['MANAGE_ROLES'],
 
   slash: true,
   testOnly: config.debug,
 
   minArgs: 2,
-  expectedArgs: '<arg1> <arg2> [arg3]',
+  expectedArgs: '<arg1> <arg2>',
   options: [
     {
       name: 'role',
@@ -31,12 +31,6 @@ export default {
       description: 'The name of the discord presence I was looking for',
       required: true,
       type: OptionType.STRING
-    },
-    {
-      name: 'removemembers',
-      description: 'If I should remove the role from accounts who got it from me.',
-      required: false,
-      type: OptionType.BOOLEAN
     }
   ],
 

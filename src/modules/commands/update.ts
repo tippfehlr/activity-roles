@@ -7,8 +7,7 @@ import config from '../../../config';
 export default {
   names: 'update',
   category: 'Utility',
-  description: 'Updates all game roles',
-  requiredPermissions: ['ADMINISTRATOR'],
+  description: 'Updates all activity roles.',
 
   slash: true,
   testOnly: config.debug,
