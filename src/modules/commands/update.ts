@@ -14,7 +14,7 @@ export default {
   testOnly: config.debug,
 
   callback: async command => {
-    msg.log.activity();
+    msg.log.command();
     if (command.guild) db.checkAllRoles(command.guild);
     command.interaction.reply({ content: msg.ok(), ephemeral: true });
   }

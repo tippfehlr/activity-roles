@@ -37,7 +37,7 @@ export default {
   ],
 
   callback: async command => {
-    msg.log.activity();
+    msg.log.command();
 
     const [roleID, activityName] = command.args;
     if (activityName.length > 1024) return msg.inputTooLong();

@@ -41,7 +41,7 @@ export default {
   ],
 
   callback: async command => {
-    msg.log.activity();
+    msg.log.command();
 
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({

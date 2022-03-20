@@ -15,7 +15,7 @@ export default {
   testOnly: config.debug,
 
   callback: async command => {
-    msg.log.activity();
+    msg.log.command();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
       guildID: command.guild?.id
