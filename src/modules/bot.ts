@@ -26,10 +26,12 @@ client.on('ready', () => {
     botOwners: config.botOwners,
     disabledDefaultCommands: [
       'help',
-      // 'command',
+      'command',
       'language',
-      'prefix'
-      // 'requiredrole'
+      'prefix',
+      'requiredrole',
+      'channelonly'
+      // 'slash'
     ]
   });
 
