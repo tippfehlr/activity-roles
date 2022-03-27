@@ -13,6 +13,7 @@ export default {
 
   slash: true,
   testOnly: config.debug,
+  guildOnly: true,
 
   callback: async command => {
     msg.log.command();

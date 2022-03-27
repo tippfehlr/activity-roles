@@ -16,6 +16,7 @@ export default {
 
   slash: true,
   testOnly: config.debug,
+  guildOnly: true,
 
   minArgs: 2,
   expectedArgs: '<arg1> <arg2>',

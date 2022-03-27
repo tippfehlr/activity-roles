@@ -12,6 +12,7 @@ export default {
 
   slash: true,
   testOnly: config.debug,
+  guildOnly: true,
 
   minArgs: 2,
   expectedArgs: '<num1> <num2>',
