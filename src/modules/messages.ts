@@ -158,6 +158,15 @@ export default {
       .addField('Has to be exact', exactActivityName.toString());
   },
   /**
+   * Creates a Discord.MessageEmbed that asks the user if they really want to remove all activities from their account.
+   * @returns {Discord.MessageEmbed} - A Discord.MessageEmbed that asks the user if they really want to remove all activities from their account.
+   */
+  removeAllActivities: () => {
+    return new Discord.MessageEmbed()
+      .setTitle('Do you really want to remove **ALL** activities from your account?')
+      .setColor('RED');
+  },
+  /**
    * Creates a MessageActionRow object that contains a remove button and a cancel button.
    * @returns {Discord.MessageActionRow} - the Discord.MessageActionRow() object.
    */
@@ -195,11 +204,18 @@ export default {
       );
   },
   /**
-   * Returns a string that tells the user that there are no game roles in the guild.
-   * @returns {string} - A string that tells the user that there are no game roles in the guild.
+   * Returns a string that tells the user that there are no activity roles in the guild.
+   * @returns {string} - A string that tells the user that there are no activity roles in the guild.
    */
   noActivityRoles: () => {
-    return 'There are no game roles in this guild.';
+    return 'There are no activity roles in this guild.';
+  },
+  /**
+   * Returns a string that tells the user that there are no activities for their account.
+   * @returns {string} - A string that tells the user that there are no activities for their account.
+   */
+  noActivities: () => {
+    return 'There are no activities stored for your user.';
   },
   /**
    * Returns aEmbed object with the title "Removed" and a red color.
@@ -235,6 +251,35 @@ export default {
    */
   activityRolesListInFile: () => {
     return "It's hard to send lists to Discord, so it's in this file. ***hint:** turn off **word wrap** to view the list correctly.*";
+  },
+  /**
+   * Creates a base embed for the list activities command.
+   * @param {Discord.User['id']} userName - the user's name.
+   * @param {Discord.User['discriminator']} userDiscriminator - the user's discriminator.
+   * @returns {Discord.MessageEmbed} - the embed to send.
+   */
+  listActivitiesBaseEmbed: (
+    userName: Discord.User['id'],
+    userDiscriminator: Discord.User['discriminator']
+  ) => {
+    return new Discord.MessageEmbed()
+      .setTitle(`Activity List for @${userName}#${userDiscriminator}`)
+      .setColor(config.embedColor)
+      .setDescription(
+        'This is a list of all the activities that you have stored for this user.\n\
+        Delete them with `/deleteActivity` or `/deleteAllActivities` and add one with `/addActivity`.\n\n'
+      );
+  },
+  activityMissing: () => {
+    return 'This activity does not exists on your account.';
+  },
+  activityDeleted: (activityName: string) => {
+    return `Removed activity \`${activityName}\` from your account.`;
+  },
+  removedActivitiesCount(removedActivitiesCount: number) {
+    return new Discord.MessageEmbed()
+      .setTitle(`Removed ${removedActivitiesCount} activities.`)
+      .setColor('RED');
   },
 
   log: {
@@ -438,7 +483,7 @@ export default {
           "Lists all game roles in your guild. Requires the 'MANAGE_ROLES' permission."
         )
         .addField(
-          '`/removeRole <role> <activityName`',
+          '`/removeRole <role> <activityName>`',
           "Deletes an activity role from your guild. Requires the 'MANAGE_ROLES' permission."
         )
         .addField('`/update`', 'Updates all activity roles.');
