@@ -70,7 +70,7 @@ export default {
       .addField('Activity Name:', activityName)
       .addField('My highest role:', `#${highestBotRole}`, true)
       .addField('ActivityRole:', `#${rolePosition}`, true)
-      .addField('Solution:', 'Move my any of my roles higher than the role I should give.')
+      .addField('Solution:', 'Move any of my roles higher than the role I should give.')
       .setTimestamp();
   },
   /**
@@ -96,7 +96,7 @@ export default {
       .addField('Activity Name:', activityName)
       .addField('My highest role:', `#${highestBotRole}`, true)
       .addField(`<@&${roleID}>:`, `#${rolePosition}`, true)
-      .addField('Solution:', 'Move my any of my roles higher than the role I should remove.')
+      .addField('Solution:', 'Move any of my roles higher than the role I should remove.')
       .setTimestamp();
   },
   /**
