@@ -1,3 +1,5 @@
+// TODO: also show which roles are assigned to which activity.
+
 import { ICommand } from 'wokcommands';
 import config from '../../../config';
 import msg from '../messages';
