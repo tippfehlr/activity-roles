@@ -9,7 +9,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  names: 'deleteRole',
+  names: 'removeactivityrole',
   category: 'Configuration',
   description: 'Deletes an activity role from your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
