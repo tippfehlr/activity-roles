@@ -2,7 +2,7 @@
 
 [![Invite me](https://img.shields.io/static/v1?style=flat&logo=discord&logoColor=FFF&label=&message=invite%20me&color=7289DA)](https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot)
 
-A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing. \
+A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing.\
 Intended to show which people play what game and to therefore give them access to specific channels etc.
 Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
@@ -22,9 +22,9 @@ I always try to make things self-explanatory, but if something is unclear feel f
 ## Privacy
 The bot has activity data linked to discord accounts, but **I will never do anything with that data that differs from the intended usage from the bot (except looking at it and being sad because nobody uses it).**
 
-Additionally you can completely opt out of the collection and manage your activities yourself if you wish to still get the roles. (WIP)
+Additionally you can completely opt out of the collection with `/toggleAutoRole` and manage your activities yourself if you wish to still get the roles.
 
 ## Contribution
 
-Any form of contribution is highly appreciated, may it be a bug, a PR or a feature request. \
+Any form of contribution is highly appreciated, may it be a bug, a PR or a feature request.\
 Help about the project structure can be found in [architecture.md](./architecture.md).
