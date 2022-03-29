@@ -6,7 +6,7 @@ import * as db from '../db';
 export default {
   names: ['toggleautorole'],
   category: 'User Configuration',
-  description: 'Enables or disables automatic role assignment',
+  description: 'Enables/Disables automatic role assignment',
 
   slash: true,
   testOnly: config.debug,

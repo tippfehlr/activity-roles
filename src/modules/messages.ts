@@ -489,22 +489,26 @@ export default {
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
         .addField(
-          'Commands:\n`/addRole <role> <activityName> [exactActivityName]`',
-          "Adds a new activity role to your guild. Requires the 'MANAGE_ROLES' permission."
+          'Commands:\n`/addActivityRole <role> <Activity> [exactActivityName]`',
+          'Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.'
         )
+        .addField('`/deleteActivity <Activity>`', 'Removes an activity from your account.')
+        .addField('`/deleteAllActivities`', 'Removes all activities from your account.')
         .addField(
           '`/export`',
-          "Exports all game roles in your guild as a JSON file. Requires the 'MANAGE_ROLES' permission."
+          'Exports all game roles in your guild as a JSON file. Requires the `MANAGE_ROLES` permission.'
         )
         .addField('`/help`', 'Shows this help page.')
+        .addField('`/listActivities`', 'Lists all activities in your account.')
         .addField(
           '`/listRoles`',
-          "Lists all game roles in your guild. Requires the 'MANAGE_ROLES' permission."
+          'Lists all game roles in your guild. Requires the `MANAGE_ROLES` permission.'
         )
         .addField(
-          '`/removeRole <role> <activityName>`',
-          "Deletes an activity role from your guild. Requires the 'MANAGE_ROLES' permission."
+          '`/removeActivityRole <role> <activityName>`',
+          'Deletes an activity role from your guild. Requires the `MANAGE_ROLES` permission.'
         )
+        .addField('`/toggleAutoRole [true/false]`', 'Enables/Disables automatic role assignment')
         .addField('`/update`', 'Updates all activity roles.');
     }
   }
