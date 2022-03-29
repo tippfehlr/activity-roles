@@ -31,9 +31,10 @@ export async function connect(uri: string) {
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
-  if (!(await GuildConfig.findById(guild.id).select('_id').lean())) {
-    const channel = await guild.channels.create('game-roles-v2', {
-      type: 'GUILD_TEXT'
+  if (!(await GuildConfig.findById(guild.id))) {
+    const channel = await guild.channels.create('activity-roles', {
+      type: 'GUILD_TEXT',
+      topic: 'This channel is used to log bot errors.'
     });
     channel.send({ embeds: [msg.newLogChannel()] });
     new GuildConfig({
