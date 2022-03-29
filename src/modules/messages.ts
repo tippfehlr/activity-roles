@@ -281,6 +281,25 @@ export default {
       .setTitle(`Removed ${removedActivitiesCount} activities.`)
       .setColor('RED');
   },
+  userStatus(autoRole: boolean) {
+    return new Discord.MessageEmbed()
+      .setTitle('User Status')
+      .setDescription(
+        `The bot is currently ${autoRole ? '**enabled**' : '**disabled**'} for this user.\n\n\
+        You can change this with the command \`/toggleAutoRole\`.`
+      )
+      .setColor(autoRole ? 'GREEN' : 'RED');
+  },
+  modifiedAutoRole(autoRole: boolean) {
+    return new Discord.MessageEmbed()
+      .setTitle(
+        `Automatic role assignment for your account is now ${
+          autoRole ? '**enabled**' : '**disabled**'
+        }.`
+      )
+      .setDescription('You can change this with the command `/toggleAutoRole`.')
+      .setColor(autoRole ? 'GREEN' : 'RED');
+  },
 
   log: {
     // -----------------------------------------------------------------------------------------------------
