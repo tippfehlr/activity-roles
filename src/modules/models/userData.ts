@@ -13,10 +13,6 @@ const userDataSchema = new Schema(
     autoRole: {
       type: Boolean,
       required: true
-    },
-    ignored: {
-      type: Boolean,
-      required: true
     }
   },
   { timestamps: true }
@@ -28,7 +24,6 @@ export interface UserDataType {
   userID: string;
   activityName: string;
   autoRole: boolean;
-  ignored: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;

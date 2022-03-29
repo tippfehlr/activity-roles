@@ -99,7 +99,7 @@ export async function checkRoles(member: Discord.GuildMember) {
 
           for (const y in userActivityListFiltered) {
             if (userActivityListFiltered[y]) {
-              if (!userActivityListFiltered[y].ignored && userActivityListFiltered[y].autoRole) {
+              if (userActivityListFiltered[y].autoRole) {
                 userShouldHaveRole = true;
                 break userActivities;
               }
@@ -110,7 +110,7 @@ export async function checkRoles(member: Discord.GuildMember) {
         userActivities: {
           for (const y in userActivityList) {
             if (userActivityList[y].activityName.includes(guildActivity.activityName)) {
-              if (!userActivityList[y].ignored && userActivityList[y].autoRole) {
+              if (userActivityList[y].autoRole) {
                 userShouldHaveRole = true;
                 break userActivities;
               }
@@ -257,7 +257,7 @@ export async function checkAllRoles(guild: Discord.Guild) {
             if (!guildActivityList[x].exactActivityName) {
               for (const y in userActivityList) {
                 if (userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
-                  if (!userActivityList[y].ignored && userActivityList[y].autoRole) {
+                  if (userActivityList[y].autoRole) {
                     userShouldHaveRole = true;
                     break userActivities;
                   }
@@ -270,10 +270,7 @@ export async function checkAllRoles(guild: Discord.Guild) {
               );
               for (const y in userActivityListFiltered) {
                 if (userActivityListFiltered[y]) {
-                  if (
-                    !userActivityListFiltered[y].ignored &&
-                    userActivityListFiltered[y].autoRole
-                  ) {
+                  if (userActivityListFiltered[y].autoRole) {
                     userShouldHaveRole = true;
                     break userActivities;
                   }
