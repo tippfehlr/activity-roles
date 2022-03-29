@@ -54,7 +54,7 @@ export default {
     }
     if (
       await db.GuildData.findOne({
-        guildID: command?.guild?.id.toString(),
+        guildID: command?.guild?.id,
         roleID: roleID,
         activityName: activityName
       })
@@ -66,7 +66,7 @@ export default {
       return;
     } else {
       new db.GuildData({
-        guildID: command?.guild?.id.toString(),
+        guildID: command?.guild?.id,
         roleID: roleID,
         activityName: activityName,
         exactActivityName: exactActivityName

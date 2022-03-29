@@ -40,7 +40,7 @@ export default {
 
     const [roleID, activityName] = command.args;
     const data = await db.GuildData.findOne({
-      guildID: command?.guild?.id.toString(),
+      guildID: command?.guild?.id,
       roleID: roleID
     });
     if (!data) {
@@ -71,7 +71,7 @@ export default {
       switch (int.customId) {
         case 'remove':
           db.GuildData.deleteOne({
-            guildID: command?.guild?.id.toString(),
+            guildID: command?.guild?.id,
             roleID: roleID
           }).then(res => {
             if (res.deletedCount > 0) {

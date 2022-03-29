@@ -31,16 +31,16 @@ export async function connect(uri: string) {
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
-  if (!(await GuildConfig.findById(guild.id.toString()).select('_id').lean())) {
+  if (!(await GuildConfig.findById(guild.id).select('_id').lean())) {
     const channel = await guild.channels.create('game-roles-v2', {
       type: 'GUILD_TEXT'
     });
     channel.send({ embeds: [msg.newLogChannel()] });
     new GuildConfig({
-      _id: guild.id.toString(),
-      logChannelID: channel.id.toString()
+      _id: guild.id,
+      logChannelID: channel.id
     }).save();
-    msg.log.addGuild(guild.name, guild.id.toString());
+    msg.log.addGuild(guild.name, guild.id);
   }
 }
 
@@ -51,12 +51,12 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
  */
 export async function checkUser(user: Discord.User): Promise<boolean> {
   msg.log.activity();
-  if (!(await UserConfig.findById(user.id.toString()).exec())) {
+  if (!(await UserConfig.findById(user.id).exec())) {
     await new UserConfig({
-      _id: user.id.toString(),
+      _id: user.id,
       autoRole: true
     }).save();
-    msg.log.addUser(user.username, user.id.toString());
+    msg.log.addUser(user.username, user.id);
     return false;
   }
   return true;
@@ -73,11 +73,11 @@ export async function checkRoles(member: Discord.GuildMember) {
   if (member.user.bot) return;
   await checkUser(member.user);
   await checkGuild(member.guild);
-  const doc = await UserConfig.findById(member.user.id.toString());
+  const doc = await UserConfig.findById(member.user.id);
   if (!doc.autoRole) return;
 
-  const guildActivityList = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
-  const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
+  const guildActivityList = await GuildData.find({ guildID: member.guild.id }).lean();
+  const userActivityList = await UserData.find({ userID: member.user.id }).lean();
   const highestBotRole = member?.guild?.me?.roles.highest.position;
   if (highestBotRole === undefined) {
     msg.highestBotRoleUndefined(member.guild.name, member.guild.id);
@@ -131,10 +131,8 @@ export async function checkRoles(member: Discord.GuildMember) {
             member.guild.name,
             member.guild.id
           );
-        } else if (
-          'logChannelID' in (await GuildConfig.findById(member.guild.id.toString()).lean())
-        ) {
-          const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
+        } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
+          const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
           const channel = member.guild.channels.cache.find(
             _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
           ) as Discord.TextChannel;
@@ -176,10 +174,8 @@ export async function checkRoles(member: Discord.GuildMember) {
             member.guild.name,
             member.guild.id
           );
-        } else if (
-          'logChannelID' in (await GuildConfig.findById(member.guild.id.toString()).lean())
-        ) {
-          const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
+        } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
+          const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
           const channel = member.guild.channels.cache.find(
             _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
           ) as Discord.TextChannel;
@@ -224,7 +220,7 @@ export async function checkAllRoles(guild: Discord.Guild) {
   await checkGuild(guild);
 
   const guildActivityList = await GuildData.find({
-    guildID: guild.id.toString()
+    guildID: guild.id
   }).lean();
   const highestBotRole: number | undefined = guild?.me?.roles.highest.position;
   if (highestBotRole === undefined) return;
@@ -234,11 +230,11 @@ export async function checkAllRoles(guild: Discord.Guild) {
       if (member.user.bot) break user;
       await checkUser(member.user);
 
-      const doc = await UserConfig.findById(member.user.id.toString());
+      const doc = await UserConfig.findById(member.user.id);
       if (!doc.autoRole) break user;
 
       const userActivityList = await UserData.find({
-        userID: member.user.id.toString()
+        userID: member.user.id
       }).lean();
 
       for (const x in guildActivityList) {
@@ -291,10 +287,8 @@ export async function checkAllRoles(guild: Discord.Guild) {
                 member.guild.name,
                 member.guild.id
               );
-            } else if (
-              'logChannelID' in (await GuildConfig.findById(member.guild.id.toString()).lean())
-            ) {
-              const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
+            } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
+              const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
               const channel = guild.channels.cache.find(
                 _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
               ) as Discord.TextChannel;
@@ -333,10 +327,8 @@ export async function checkAllRoles(guild: Discord.Guild) {
                 member.guild.name,
                 member.guild.id
               );
-            } else if (
-              'logChannelID' in (await GuildConfig.findById(member.guild.id.toString()).lean())
-            ) {
-              const _guildConfig = await GuildConfig.findById(member.guild.id.toString()).lean();
+            } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
+              const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
               const channel = guild.channels.cache.find(
                 _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
               ) as Discord.TextChannel;

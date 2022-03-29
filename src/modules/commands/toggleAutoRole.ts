@@ -43,10 +43,7 @@ export default {
     if (disableUser === undefined) {
       command.interaction.reply({ embeds: [msg.userStatus(res.autoRole)] });
     } else {
-      await db.UserConfig.findOneAndUpdate(
-        { userID: command.user.id.toString() },
-        { autoRole: disableUser }
-      );
+      await db.UserConfig.findOneAndUpdate({ userID: command.user.id }, { autoRole: disableUser });
       command.interaction.reply({ embeds: [msg.modifiedAutoRole(disableUser)] });
     }
   }
