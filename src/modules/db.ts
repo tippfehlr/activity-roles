@@ -67,6 +67,7 @@ export async function checkUser(user: Discord.User): Promise<boolean> {
  * @param {Discord.GuildMember} member - The member to check.
  * @returns None
  */
+//TODO: REFACTOR THIS
 export async function checkRoles(member: Discord.GuildMember) {
   msg.log.activity();
   if (member.user.bot) return;
@@ -75,12 +76,8 @@ export async function checkRoles(member: Discord.GuildMember) {
   const doc = await UserConfig.findById(member.user.id.toString());
   if (!doc.autoRole) return;
 
-  const guildActivityList = await GuildData.find({
-    guildID: member.guild.id.toString()
-  }).lean();
-  const userActivityList = await UserData.find({
-    userID: member.user.id.toString()
-  }).lean();
+  const guildActivityList = await GuildData.find({ guildID: member.guild.id.toString() }).lean();
+  const userActivityList = await UserData.find({ userID: member.user.id.toString() }).lean();
   const highestBotRole = member?.guild?.me?.roles.highest.position;
   if (highestBotRole === undefined) {
     msg.highestBotRoleUndefined(member.guild.name, member.guild.id);
@@ -99,6 +96,7 @@ export async function checkRoles(member: Discord.GuildMember) {
           const userActivityListFiltered = userActivityList.filter(
             (elmt: { activityName: string }) => elmt.activityName === guildActivity.activityName
           );
+
           for (const y in userActivityListFiltered) {
             if (userActivityListFiltered[y]) {
               if (!userActivityListFiltered[y].ignored && userActivityListFiltered[y].autoRole) {
