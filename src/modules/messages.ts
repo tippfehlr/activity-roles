@@ -311,7 +311,7 @@ export default {
      * @returns None
      */
     login: async (userName: string, discriminator: string, id: string) => {
-      console.log(`Discord.JS  > Logged in as ${userName}#${discriminator} (${id})`);
+      console.log(`Discord     > Logged in as ${userName}#${discriminator} (${id})`);
     },
     /**
      * Logs that a guild has been added to the database.
@@ -323,7 +323,7 @@ export default {
       guildName: Discord.BaseGuild['name'],
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
-      console.log(`\nMONGODB     > Added guild ${guildName} (${guildID}) to the database.`);
+      console.log(`\nMongoDB     > Added guild ${guildName} (${guildID}) to the database.`);
     },
     /**
      * Logs that a user has been added to the database.
@@ -335,7 +335,7 @@ export default {
       userName: Discord.User['username'],
       userID: Discord.User['id']
     ): Promise<void> => {
-      console.log(`\nMONGODB     > Added user ${userName} (${userID}) to the database.`);
+      console.log(`\nMongoDB     > Added user ${userName} (${userID}) to the database.`);
     },
     /**
      * Logs that a new activity role has been added to the database.
@@ -356,7 +356,7 @@ export default {
       exactActivityName: boolean
     ) => {
       console.log(
-        `\nMONGODB     > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`
+        `\nMongoDB     > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`
       );
     },
     /**
@@ -364,7 +364,7 @@ export default {
      * @returns None
      */
     mongodbConnect: async (): Promise<void> => {
-      console.log('MONGODB     > Connected to DB!');
+      console.log('MongoDB     > Connected to DB!');
     },
     /**
      * Logs when a role is added to a member.
@@ -385,7 +385,7 @@ export default {
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
       console.log(
-        `\nDISCORD.JS  > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
+        `\nDiscord     > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
       );
     },
     /**
@@ -406,7 +406,7 @@ export default {
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
       console.log(
-        `\nDISCORD.JS  > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
+        `\nDiscord     > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
       );
     },
     /**
