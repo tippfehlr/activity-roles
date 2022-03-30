@@ -1,9 +1,29 @@
 import Discord from 'discord.js';
 import config from '../../config';
 
-//? TODO: remove activity dots before a log message is written to stdout
 //? TODO: Different languages?
-//TODO edit setFooter as they are marked as deprecated
+
+/*
+Maybe use something like this to switch between strings and embeds 'on the fly' without changing other files.
+It should still be possible to use ephemeral messages.
+
+type BaseObject = { guild?: Discord.Guild; ephemeral?: boolean };
+class BaseMessage {
+  content: string | undefined = undefined;
+  embeds: Discord.MessageEmbed[] | undefined = undefined;
+  ephemeral = false;
+  constructor(ephemeral = false) {
+    if (ephemeral) this.ephemeral = ephemeral;
+  }
+}
+
+class highestBotRoleUndefined extends BaseMessage {
+  constructor(object?: BaseObject & { channel?: Discord.Channel }) {
+    super(object?.ephemeral);
+    this.content = 'The highest bot role is undefined.';
+  }
+}
+*/
 
 export default {
   /**
