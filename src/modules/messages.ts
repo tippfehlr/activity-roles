@@ -126,6 +126,13 @@ export default {
     return ':x: That role does not exist! :x:';
   },
   /**
+   * Returns a string that says that the channel does not exist.
+   * @returns {string} A string that says that the channel does not exist.
+   */
+  channelDoesNotExist: () => {
+    return ':x: That channel does not exist! :x:';
+  },
+  /**
    * Returns a string that tells the user that they can't use @everyone as a game role.
    * @returns {string} A string that tells the user that they can't use @everyone as a game role.
    */
@@ -300,8 +307,33 @@ export default {
       .setDescription('You can change this with the command `/toggleAutoRole`.')
       .setColor(autoRole ? 'GREEN' : 'RED');
   },
+  alreadyIsLogChannel: () => {
+    return new Discord.MessageEmbed()
+      .setDescription('This channel already is your log channel.')
+      .setColor('RED');
+  },
+  logChannelSet: (channel: Discord.GuildBasedChannel) => {
+    return new Discord.MessageEmbed()
+      .setTitle('Set Log Channel')
+      .setDescription(`Your log channel is now set to <#${channel.id}>.`)
+      .setColor('GREEN');
+  },
 
   log: {
+    /**
+     * A function that prints a dot to the console.  This is used to show database activity.
+     * @returns None
+     */
+    activity: async (): Promise<void> => {
+      // process.stdout.write('.');
+    },
+    /**
+     * A function that prints a colon to the console.  This is used to show user activity.
+     * @returns None
+     */
+    command: async (): Promise<void> => {
+      // process.stdout.write(':');
+    },
     // -----------------------------------------------------------------------------------------------------
     /**
      * Logs that the bot is logged in to Discord.
@@ -408,20 +440,6 @@ export default {
       console.log(
         `\nDiscord     > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
       );
-    },
-    /**
-     * A function that prints a dot to the console.  This is used to show database activity.
-     * @returns None
-     */
-    activity: async (): Promise<void> => {
-      process.stdout.write('.');
-    },
-    /**
-     * A function that prints a colon to the console.  This is used to show user activity.
-     * @returns None
-     */
-    command: async (): Promise<void> => {
-      process.stdout.write(':');
     },
     /**
      * Logs an error to the console that the bot can't assign a role to a user.
