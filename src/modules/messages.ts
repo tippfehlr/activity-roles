@@ -1,5 +1,8 @@
 import Discord from 'discord.js';
 import config from '../../config';
+import pino from 'pino';
+
+export const log = pino();
 
 //? TODO: Different languages?
 
@@ -38,18 +41,6 @@ export default {
    * @param {Discord.BaseGuild['id']} guildID - the ID of the guild that the error occurred in.
    * @param {Discord.BaseGuild['name']} guildName - the name of the guild that the error occurred in.
    * @returns None
-   */
-  highestBotRoleUndefined: async (
-    guildID: Discord.BaseGuild['id'],
-    guildName: Discord.BaseGuild['name']
-  ) => {
-    console.error(
-      `guild.me.roles.highest.position === undefined on guild: ${guildName}(${guildID})`
-    );
-  },
-  /**
-   * Creates a new log channel embed.
-   * @returns {Discord.MessageEmbed} A new log channel embed.
    */
   newLogChannel: (): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
@@ -354,7 +345,6 @@ export default {
     command: async (): Promise<void> => {
       // process.stdout.write(':');
     },
-    // -----------------------------------------------------------------------------------------------------
     /**
      * Logs that the bot is logged in to Discord.
      * @param {string} userName - the bot's name
@@ -363,7 +353,7 @@ export default {
      * @returns None
      */
     login: async (userName: string, discriminator: string, id: string) => {
-      console.log(`Discord     > Logged in as ${userName}#${discriminator} (${id})`);
+      log.info(`Logged in to Discord as ${userName}#${discriminator} (${id})`);
     },
     /**
      * Logs that a guild has been added to the database.
@@ -375,7 +365,7 @@ export default {
       guildName: Discord.BaseGuild['name'],
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
-      console.log(`\nMongoDB     > Added guild ${guildName} (${guildID}) to the database.`);
+      log.info(`Added guild ${guildName} (${guildID}) to the database.`);
     },
     /**
      * Logs that a user has been added to the database.
@@ -387,7 +377,7 @@ export default {
       userName: Discord.User['username'],
       userID: Discord.User['id']
     ): Promise<void> => {
-      console.log(`\nMongoDB     > Added user ${userName} (${userID}) to the database.`);
+      log.info(`Added user ${userName} (${userID}) to the database.`);
     },
     /**
      * Logs that a new activity role has been added to the database.
@@ -407,8 +397,8 @@ export default {
       activityName: string,
       exactActivityName: boolean
     ) => {
-      console.log(
-        `\nMongoDB     > New game role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, has to be exact: ${exactActivityName}`
+      log.info(
+        `New activity role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}`
       );
     },
     /**
@@ -416,7 +406,14 @@ export default {
      * @returns None
      */
     mongodbConnect: async (): Promise<void> => {
-      console.log('MongoDB     > Connected to DB!');
+      log.info('Connected to MongoDB database.');
+    },
+    newActivity: async (
+      username: Discord.User['username'],
+      userID: Discord.User['id'],
+      activityName: string
+    ) => {
+      log.info(`New activity: ${username} (${userID}) plays ${activityName}.`);
     },
     /**
      * Logs when a role is added to a member.
@@ -436,8 +433,8 @@ export default {
       guildName: Discord.BaseGuild['name'],
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
-      console.log(
-        `\nDiscord     > added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
+      log.info(
+        `Added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
       );
     },
     /**
@@ -457,8 +454,8 @@ export default {
       guildName: Discord.BaseGuild['name'],
       guildID: Discord.BaseGuild['id']
     ): Promise<void> => {
-      console.log(
-        `\nDiscord     > removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
+      log.info(
+        `Removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
       );
     },
     /**
@@ -479,7 +476,7 @@ export default {
       activityName: string,
       highestBotRole: number
     ): Promise<void> => {
-      console.log(
+      log.info(
         `Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
       );
     },
@@ -501,7 +498,7 @@ export default {
       activityName: string,
       highestBotRole: number
     ): Promise<void> => {
-      console.log(
+      log.info(
         `Error: Can't remove role ${roleName} (${roleID}, rolePosition: ${rolePosition}) from user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
       );
     }
@@ -545,6 +542,10 @@ export default {
         .addField(
           '`/removeActivityRole <role> <activityName>`',
           'Deletes an activity role from your guild. Requires the `MANAGE_ROLES` permission.'
+        )
+        .addField(
+          '`/setLogChannel [channel]`',
+          'Sets the log channel. Requires the `MANAGE_ROLES` permission.'
         )
         .addField('`/toggleAutoRole [true/false]`', 'Enables/Disables automatic role assignment')
         .addField('`/update`', 'Updates all activity roles.');

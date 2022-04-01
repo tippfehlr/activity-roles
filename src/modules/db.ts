@@ -80,10 +80,7 @@ export async function checkRoles(member: Discord.GuildMember) {
   const guildActivityList = await GuildData.find({ guildID: member.guild.id }).lean();
   const userActivityList = await UserData.find({ userID: member.user.id }).lean();
   const highestBotRole = member?.guild?.me?.roles.highest.position;
-  if (highestBotRole === undefined) {
-    msg.highestBotRoleUndefined(member.guild.name, member.guild.id);
-    return;
-  }
+  if (highestBotRole === undefined) return;
 
   for (const guildActivity of guildActivityList) {
     this_role: {

@@ -4,7 +4,7 @@ import path from 'path';
 
 import * as db from './db';
 import config from '../../config';
-import msg from './messages';
+import msg, { log } from './messages';
 
 export const client = new Discord.Client({
   intents: [
@@ -32,7 +32,12 @@ client.on('ready', () => {
       'requiredrole',
       'channelonly'
       // 'slash'
-    ]
+    ],
+    logger: {
+      log: (a: string) => log.info(a),
+      warn: (a: string) => log.warn(a),
+      error: (a: string) => log.error(a)
+    }
   });
 
   client.user?.setPresence({
@@ -70,8 +75,10 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
           autoRole: true,
           ignored: false
         }).save();
-        console.log(
-          `\nMONGODB > New activity: ${newMember.user?.username} (${newMember.user?.id}) plays ${newMember.activities[i].name}.`
+        msg.log.newActivity(
+          newMember.user.username,
+          newMember.user.id,
+          newMember.activities[i].name
         );
       }
     }
