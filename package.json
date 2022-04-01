@@ -26,7 +26,6 @@
     "arkit": "^1.6.4",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",
-    "mongodb-memory-server": "^8.4.0",
     "pino-pretty": "^7.6.0",
     "prettier": "^2.6.0",
     "ts-node": "^10.5.0",
