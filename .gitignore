@@ -8,3 +8,6 @@ export.json
 
 # my script to start with pino-logflare, hidden because of credentials
 dev-logflare.cmd
+
+# my release script
+release.cmd
