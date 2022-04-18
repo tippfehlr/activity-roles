@@ -32,6 +32,7 @@ export default {
       command.interaction.reply({ content: msg.channelDoesNotExist(), ephemeral: true });
       return;
     }
+
     if (!channel) {
       changeLogChannel(command, command.channel);
     } else {
@@ -44,6 +45,10 @@ async function changeLogChannel(
   command: ICallbackObject,
   channel: Discord.GuildBasedChannel
 ): Promise<void> {
+  if (!channel.isText()) {
+    command.interaction.reply({ embeds: [msg.noTextChannel(channel.id)], ephemeral: true });
+    return;
+  }
   const currentLogChannel: db.GuildConfigType | null = await db.GuildConfig.findById(
     command.guild?.id
   );
@@ -53,5 +58,6 @@ async function changeLogChannel(
   }
   await db.GuildConfig.updateOne({ _id: command.guild?.id }, { logChannelID: channel.id });
   command.interaction.reply({ embeds: [msg.logChannelSet(channel)], ephemeral: true });
+  channel.send({ embeds: [msg.newLogChannel()] });
   return;
 }

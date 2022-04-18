@@ -47,10 +47,14 @@ export default {
       .setColor(config.embedColor)
       .setTitle('Logs')
       .setDescription(
-        "I will send logs to this channel. You can change it's name or move it, or define a different channel with `/setLogChannel`.\n\
-        Be careful: IF there is an error, there will probably be many error messages"
-      )
-      .setTimestamp();
+        "I will send important messages to this channel. You can change it's name or move it, or define a different channel with `/setLogChannel`."
+      );
+  },
+  noTextChannel(channelID: string) {
+    return new Discord.MessageEmbed()
+      .setColor('RED')
+      .setTitle('Error')
+      .setDescription(`<#${channelID}> isn't a text channel.`);
   },
   /**
    * @returns {Discord.MessageEmbed} a Set! Embed
@@ -523,6 +527,7 @@ export default {
         )
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
+        .addField('Support Guild', config.supportGuildLink)
         .addField(
           'Commands:\n`/addActivityRole <role> <Activity> [exactActivityName]`',
           'Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.'
