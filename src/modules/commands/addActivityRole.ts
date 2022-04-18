@@ -5,7 +5,7 @@ import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  names: 'addActivityRole',
+  names: 'addActivityRole'.toLowerCase(),
   category: 'Configuration',
   description: 'Adds an activity role to your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
@@ -18,19 +18,19 @@ export default {
   expectedArgs: '<num1> <num2>',
   options: [
     {
-      name: 'role',
+      name: 'role'.toLowerCase(),
       description: 'the role I assign',
       required: true,
       type: OptionType.ROLE
     },
     {
-      name: 'activityName',
+      name: 'activityName'.toLowerCase(),
       description: 'The name of the discord presence I look for',
       required: true,
       type: OptionType.STRING
     },
     {
-      name: 'exactActivityName',
+      name: 'exactActivityName'.toLowerCase(),
       description: 'If the activity name can be a part of a discord presence',
       required: true,
       type: OptionType.BOOLEAN
