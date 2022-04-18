@@ -412,12 +412,24 @@ export default {
     mongodbConnect: async (): Promise<void> => {
       log.info('Connected to MongoDB database.');
     },
+    /**
+     *
+     * @param username the username of the user
+     * @param userID the id of the user
+     * @param guildName the name of the guild
+     * @param guildID the id of the guild
+     * @param activityName the name of the activity
+     */
     newActivity: async (
       username: Discord.User['username'],
       userID: Discord.User['id'],
+      guildName: Discord.Guild['name'],
+      guildID: Discord.Guild['id'],
       activityName: string
     ) => {
-      log.info(`New activity: ${username} (${userID}) plays ${activityName}.`);
+      log.info(
+        `New activity: ${username} (${userID}) from guild ${guildName} (${guildID}) plays ${activityName}.`
+      );
     },
     /**
      * Logs when a role is added to a member.

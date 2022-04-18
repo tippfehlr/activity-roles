@@ -78,6 +78,8 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
         msg.log.newActivity(
           newMember.user.username,
           newMember.user.id,
+          newMember.guild.name,
+          newMember.guild.id,
           newMember.activities[i].name
         );
       }
