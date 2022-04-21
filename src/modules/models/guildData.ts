@@ -17,6 +17,10 @@ const guildDataSchema = new Schema(
     exactActivityName: {
       type: Boolean,
       required: true
+    },
+    live: {
+      type: Boolean,
+      required: true
     }
   },
   { timestamps: true }

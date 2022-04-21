@@ -19,9 +19,8 @@ export { GuildData, GuildDataType } from './models/guildData';
  * @returns None
  */
 export async function connect(uri: string) {
-  await mongoose.connect(uri).then(() => {
-    msg.log.mongodbConnect();
-  });
+  await mongoose.connect(uri);
+  msg.log.mongodbConnect();
 }
 
 /**
@@ -34,7 +33,7 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
   if (!(await GuildConfig.findById(guild.id))) {
     const channel = await guild.channels.create('activity-roles', {
       type: 'GUILD_TEXT',
-      topic: 'This channel is used to log bot errors.'
+      topic: 'This channel is used by Activity Roles'
     });
     channel.send({ embeds: [msg.newLogChannel()] });
     new GuildConfig({

@@ -124,14 +124,16 @@ export default {
   setNewActivityRole: (
     roleID: Discord.Role['id'],
     activityName: string,
-    exactActivityName: boolean
+    exactActivityName: boolean,
+    live: boolean
   ) => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
       .setTitle('Set!')
       .addField('Role:', '<@&' + roleID + '>')
       .addField('Activity:', activityName)
-      .addField('has to be exact:', exactActivityName.toString());
+      .addField('exact activity name:', exactActivityName.toString())
+      .addField('live:', live.toString());
   },
   /**
    * Returns a string that says that the role does not exist.
@@ -399,10 +401,11 @@ export default {
       roleName: Discord.Role['name'],
       roleID: Discord.Role['id'],
       activityName: string,
-      exactActivityName: boolean
+      exactActivityName: boolean,
+      live: boolean
     ) => {
       log.info(
-        `New activity role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}`
+        `New activity role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}`
       );
     },
     /**
