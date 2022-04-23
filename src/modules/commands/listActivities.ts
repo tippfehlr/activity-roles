@@ -5,7 +5,7 @@ import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  names: 'listactivities',
+  name: 'listActivities',
   category: 'User Configuration',
   description: 'Lists all activities recorded on your account.',
 

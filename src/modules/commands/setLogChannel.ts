@@ -6,7 +6,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  names: 'setLogChannel',
+  name: 'setLogChannel',
   category: 'Configuration',
   description:
     'Sets a different log channel for the bot. If nothing provided, sets the current channel.',

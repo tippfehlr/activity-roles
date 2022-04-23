@@ -8,7 +8,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'deleteallactivities',
+  name: 'deleteAllActivities',
   category: 'User Configuration',
   description: 'Removes all activities from your account.',
 

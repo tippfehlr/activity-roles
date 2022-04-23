@@ -6,7 +6,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  names: 'export',
+  name: 'export',
   category: 'Information',
   description: 'Exports all game roles in your guild as a JSON file.',
   requiredPermissions: ['MANAGE_ROLES'],

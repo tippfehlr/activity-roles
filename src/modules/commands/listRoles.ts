@@ -7,7 +7,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  names: 'listRoles',
+  name: 'listRoles',
   category: 'Information',
   description: 'Lists all game roles in your guild.',
   requiredPermissions: ['MANAGE_ROLES'],

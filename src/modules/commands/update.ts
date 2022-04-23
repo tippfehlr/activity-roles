@@ -5,7 +5,7 @@ import * as db from '../db';
 import config from '../../../config';
 
 export default {
-  names: 'update',
+  name: 'update',
   category: 'Utility',
   description: 'Updates all activity roles.',
 

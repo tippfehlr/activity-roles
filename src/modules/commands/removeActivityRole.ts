@@ -9,7 +9,7 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  names: 'removeactivityrole',
+  name: 'removeActivityRole',
   category: 'Configuration',
   description: 'Deletes an activity role from your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
@@ -28,7 +28,7 @@ export default {
       type: OptionType.ROLE
     },
     {
-      name: 'activityname',
+      name: 'activity_name',
       description: 'The name of the discord presence I was looking for',
       required: true,
       type: OptionType.STRING

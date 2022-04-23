@@ -3,7 +3,7 @@ import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  name: 'deleteactivity',
+  name: 'deleteActivity',
   category: 'User Configuration',
   description: 'Removes an activity from your account.',
 

@@ -4,7 +4,7 @@ import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  names: 'addActivityRole'.toLowerCase(),
+  name: 'addActivityRole',
   category: 'Configuration',
   description: 'Adds an activity role to your guild.',
   requiredPermissions: ['MANAGE_ROLES'],

@@ -4,7 +4,7 @@ import config from '../../../config';
 import msg from '../messages';
 
 export default {
-  names: 'help',
+  name: 'help',
   category: 'Help',
   description: 'Shows the help page',
 
