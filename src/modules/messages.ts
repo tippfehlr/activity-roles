@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import config from '../../config';
 import pino from 'pino';
+import { UserDataType } from './db';
 
 export const log = pino();
 
@@ -64,13 +65,15 @@ export default {
   },
   /**
    * Creates an error embed that tells the user that they can't assign the role they want to the user.
+   * @param {Discord.Role} assign - true if assigning, false if removing.
    * @param {Discord.Role['id']} roleID - The ID of the role they tried to assign.
    * @param {Discord.Role['position']} rolePosition - The position of the role they tried to assign.
    * @param {Discord.User['id']} userID - The ID of the user they tried to assign the role to.
    * @param {string} activityName - The name of the activity.
    * @param {number} highestBotRole - The position of the highest role the bot has.
    */
-  errorCantAssignRole: (
+  errorCantAssignRemoveRole: (
+    assign: boolean,
     roleID: Discord.Role['id'],
     rolePosition: Discord.Role['position'],
     userID: Discord.User['id'],
@@ -86,32 +89,6 @@ export default {
       .addField('My highest role:', `#${highestBotRole}`, true)
       .addField('ActivityRole:', `#${rolePosition}`, true)
       .addField('Solution:', 'Move any of my roles higher than the role I should give.')
-      .setTimestamp();
-  },
-  /**
-   * Creates an error message embed that tells the user that they can't remove a role from a user.
-   * @param {Discord.Role['id']} roleID - the ID of the role that the user is trying to remove.
-   * @param {Discord.Role['position']} rolePosition - the position of the role that the user is trying to remove.
-   * @param {Discord.User['id']} userID - the ID of the user that the role is being removed from.
-   * @param {string} activityName - the name of the activity.
-   * @param {number} highestBotRole - The position of the highest role the bot has.
-   */
-  errorCantRemoveRole: (
-    roleID: Discord.Role['id'],
-    rolePosition: Discord.Role['position'],
-    userID: Discord.User['id'],
-    activityName: string,
-    highestBotRole: number
-  ) => {
-    return new Discord.MessageEmbed()
-      .setColor('#ff0000')
-      .setTitle('Error')
-      .setDescription(`Can't remove <@&${roleID}> from <@${userID}>`)
-      .addField('Error:', 'Missing permissions')
-      .addField('Activity Name:', activityName)
-      .addField('My highest role:', `#${highestBotRole}`, true)
-      .addField(`<@&${roleID}>:`, `#${rolePosition}`, true)
-      .addField('Solution:', 'Move any of my roles higher than the role I should remove.')
       .setTimestamp();
   },
   /**
@@ -201,30 +178,6 @@ export default {
       )
       .addComponents(
         new Discord.MessageButton().setCustomId('cancel').setLabel('Cancel').setStyle('SECONDARY')
-      );
-  },
-  //! not needed
-  /**
-   * Creates a MessageActionRow with the back and next buttons.
-   * @param {boolean} lastDisabled - Whether or not the back button should be disabled.
-   * @param {boolean} nextDisabled - Whether or not the next button should be disabled.
-   * @returns {Discord.MessageActionRow}
-   */
-  navigationButtonRow: (lastDisabled: boolean, nextDisabled: boolean) => {
-    return new Discord.MessageActionRow()
-      .addComponents(
-        new Discord.MessageButton()
-          .setCustomId('back')
-          .setEmoji('⬅️')
-          .setStyle('PRIMARY')
-          .setDisabled(lastDisabled)
-      )
-      .addComponents(
-        new Discord.MessageButton()
-          .setCustomId('next')
-          .setEmoji('➡️')
-          .setStyle('PRIMARY')
-          .setDisabled(nextDisabled)
       );
   },
   /**
@@ -436,49 +389,35 @@ export default {
     },
     /**
      * Logs when a role is added to a member.
+     * @param {boolean} added - true if the role was added, false if it was removed.
      * @param {string} roleName - the name of the role that was added.
      * @param {string} roleID - the ID of the role that was added.
      * @param {string} userName - the name of the user that was added.
      * @param {string} userID - the ID of the user that was added.
      * @param {string} guildName - the name of the guild that the role was added to.
      * @param {string} guildID - the ID of the guild that the role was added to.
+     * @param {boolean} live - whether the role is a live role mode.
      * @returns None
      */
-    addedRoleToMember: async (
+    addedRemovedRoleToFromMember: async (
+      added: boolean,
       roleName: Discord.Role['name'],
       roleID: Discord.Role['id'],
       userName: Discord.User['username'],
       userID: Discord.User['id'],
       guildName: Discord.BaseGuild['name'],
-      guildID: Discord.BaseGuild['id']
+      guildID: Discord.BaseGuild['id'],
+      live: boolean
     ): Promise<void> => {
       log.info(
-        `Added Role ${roleName} (${roleID}) to user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
-      );
-    },
-    /**
-     * Logs when a role is removed from a member.
-     * @param {string} roleName - the name of the role that was removed from the member.
-     * @param {string} roleID - the ID of the role that was removed from the member.
-     * @param {string} userName - the name of the user that had the role removed.
-     * @param {string} userID - the ID of the user that had the role removed.
-     * @param {string} guildName - the name of the guild that the member was removed from.
-     * @param {string} guildID - the ID of the guild that the
-     */
-    removedRoleFromMember: async (
-      roleName: Discord.Role['name'],
-      roleID: Discord.Role['id'],
-      userName: Discord.User['username'],
-      userID: Discord.User['id'],
-      guildName: Discord.BaseGuild['name'],
-      guildID: Discord.BaseGuild['id']
-    ): Promise<void> => {
-      log.info(
-        `Removed Role ${roleName} (${roleID}) from user: ${userName} (${userID}) on guild: ${guildName} (${guildID})`
+        `${added ? 'Added' : 'Removed'} Role ${roleName} (${roleID}) ${
+          added ? 'to' : 'from'
+        } user: ${userName} (${userID}) on guild: ${guildName} (${guildID}) live: ${live}`
       );
     },
     /**
      * Logs an error to the console that the bot can't assign a role to a user.
+     * @param {string} assign - true if assigning, false if removing.
      * @param {string} roleName - The name of the role that couldn't be assigned.
      * @param {string} roleID - The ID of the role that couldn't be assigned.
      * @param {number} rolePosition - The position of the role that couldn't be assigned.
@@ -486,7 +425,8 @@ export default {
      * @param {string} userID - The ID of the user that the role couldn't be added to.
      * @param {string} activityName - The name of the activity that couldn't be assigned.
      */
-    errorCantAssignRole: async (
+    errorCantAssignRemoveRole: async (
+      assign: boolean,
       roleName: Discord.Role['name'],
       roleID: Discord.Role['id'],
       rolePosition: Discord.Role['position'],
@@ -499,27 +439,8 @@ export default {
         `Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
       );
     },
-    /**
-     * Logs an error to the console that the bot can't remove a role from a user.
-     * @param {string} roleName - The name of the role that couldn't be removed.
-     * @param {string} roleID - The ID of the role that couldn't be removed.
-     * @param {number} rolePosition - The position of the role that couldn't be removed from.
-     * @param {string} userName - The name of the user that the role couldn't be removed from.
-     * @param {string} userID - The ID of the user that the role couldn't be removed from.
-     * @param {string} activityName - The name of the activity that couldn't be assigned.
-     */
-    errorCantRemoveRole: async (
-      roleName: Discord.Role['name'],
-      roleID: Discord.Role['id'],
-      rolePosition: Discord.Role['position'],
-      userName: Discord.User['username'],
-      userID: Discord.User['id'],
-      activityName: string,
-      highestBotRole: number
-    ): Promise<void> => {
-      log.info(
-        `Error: Can't remove role ${roleName} (${roleID}, rolePosition: ${rolePosition}) from user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
-      );
+    duplicateActivity: async (userActivityListFiltered: UserDataType[]) => {
+      log.warn(userActivityListFiltered, 'Encountered duplicate activity');
     }
   },
   help: {

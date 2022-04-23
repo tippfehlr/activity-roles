@@ -36,4 +36,5 @@ export interface GuildDataType {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  live: boolean;
 }
