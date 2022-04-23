@@ -1,5 +1,4 @@
 import { ICommand } from 'wokcommands';
-import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -18,22 +17,29 @@ export default {
   expectedArgs: '<num1> <num2>',
   options: [
     {
-      name: 'role'.toLowerCase(),
+      name: 'role',
       description: 'the role I assign',
       required: true,
-      type: OptionType.ROLE
+      type: 'ROLE'
     },
     {
-      name: 'activityName'.toLowerCase(),
+      name: 'activity_name',
       description: 'The name of the discord presence I look for',
       required: true,
-      type: OptionType.STRING
+      type: 'STRING'
     },
     {
-      name: 'exactActivityName'.toLowerCase(),
+      name: 'exact_activity_name',
       description: 'If the activity name can be a part of a discord presence',
       required: true,
-      type: OptionType.BOOLEAN
+      type: 'BOOLEAN'
+    },
+    {
+      name: 'live',
+      description:
+        "If the role should be removed when the activity isn't in the users presence anymore.",
+      required: true,
+      type: 'BOOLEAN'
     }
   ],
 
@@ -42,7 +48,9 @@ export default {
 
     const [roleID, activityName] = command.args;
     if (activityName.length > 1024) return msg.inputTooLong();
+    console.log(command.args);
     const exactActivityName = command.args[2] === 'true';
+    const live = command.args[3] === 'true';
     const role = command?.guild?.roles.cache.get(roleID);
     if (!role) {
       command.interaction.reply({ content: msg.roleDoesNotExist(), ephemeral: true });
@@ -69,7 +77,8 @@ export default {
         guildID: command?.guild?.id,
         roleID: roleID,
         activityName: activityName,
-        exactActivityName: exactActivityName
+        exactActivityName: exactActivityName,
+        live: live
       }).save();
       if (command.guild) db.checkAllRoles(command.guild);
       msg.log.addActivityRole(
@@ -78,10 +87,11 @@ export default {
         role.name,
         roleID,
         activityName,
-        exactActivityName
+        exactActivityName,
+        live
       );
       command.interaction.reply({
-        embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName)],
+        embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName, live)],
         ephemeral: true
       });
     }

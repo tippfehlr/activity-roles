@@ -53,7 +53,7 @@ client.on('ready', () => {
 });
 
 const processingUser = new Map<string, boolean>();
-client.on('presenceUpdate', async function (oldMember, newMember) {
+client.on('presenceUpdate', async (oldMember, newMember) => {
   if (!newMember?.user || !newMember.guild || !newMember.member) return;
   if (newMember.member.user.bot) return;
   if (processingUser.has(newMember.user?.id)) return;
@@ -61,17 +61,17 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
   await db.checkGuild(newMember.guild);
   await db.checkUser(newMember.user);
 
-  for (const i in newMember.activities) {
-    if (newMember.activities[i].name !== 'Custom Status') {
+  for (const activity of newMember.activities) {
+    if (activity.name !== 'Custom Status') {
       const docs = await db.UserData.findOne({
         userID: newMember.user.id,
-        activityName: newMember.activities[i].name
+        activityName: activity.name
       }).lean();
 
       if (!docs) {
         new db.UserData({
           userID: newMember.user?.id,
-          activityName: newMember.activities[i].name,
+          activityName: activity.name,
           autoRole: true,
           ignored: false
         }).save();
@@ -80,7 +80,7 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
           newMember.user.id,
           newMember.guild.name,
           newMember.guild.id,
-          newMember.activities[i].name
+          activity.name
         );
       }
     }
@@ -88,21 +88,21 @@ client.on('presenceUpdate', async function (oldMember, newMember) {
   processingUser.delete(newMember.user?.id);
   db.checkRoles(newMember.member);
 });
-
-client.on('guildCreate', function (guild) {
+//TODO: move to messages
+client.on('guildCreate', guild => {
   console.log(`\nDISCORD.JS > the client joined ${guild.name}`);
   db.checkGuild(guild);
 });
 
-client.on('guildDelete', function (guild) {
+client.on('guildDelete', guild => {
   console.log(`\nthe client left ${guild.name}`);
 });
 
-client.on('disconnect', function () {
+client.on('disconnect', () => {
   console.log('\nDISCORD.JS > The WebSocket has closed and will no longer attempt to reconnect');
 });
 
-client.on('error', function (error) {
+client.on('error', error => {
   console.error(`\nDISCORD.JS > The client's WebSocket encountered a connection error: ${error}`);
 });
 

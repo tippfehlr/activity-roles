@@ -17,6 +17,10 @@ const guildDataSchema = new Schema(
     exactActivityName: {
       type: Boolean,
       required: true
+    },
+    live: {
+      type: Boolean,
+      required: true
     }
   },
   { timestamps: true }
@@ -32,4 +36,5 @@ export interface GuildDataType {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  live: boolean;
 }

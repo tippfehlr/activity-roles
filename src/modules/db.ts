@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 
 import msg from './messages';
 
-import { UserConfig } from './models/userConfig';
-import { GuildConfig } from './models/guildConfig';
-import { UserData } from './models/userData';
-import { GuildData } from './models/guildData';
+import { UserConfig, UserConfigType } from './models/userConfig';
+import { GuildConfig, GuildConfigType } from './models/guildConfig';
+import { UserData, UserDataType } from './models/userData';
+import { GuildData, GuildDataType } from './models/guildData';
 
 export { UserConfig, UserConfigType } from './models/userConfig';
 export { GuildConfig, GuildConfigType } from './models/guildConfig';
@@ -19,9 +19,8 @@ export { GuildData, GuildDataType } from './models/guildData';
  * @returns None
  */
 export async function connect(uri: string) {
-  await mongoose.connect(uri).then(() => {
-    msg.log.mongodbConnect();
-  });
+  await mongoose.connect(uri);
+  msg.log.mongodbConnect();
 }
 
 /**
@@ -31,18 +30,18 @@ export async function connect(uri: string) {
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
-  if (!(await GuildConfig.findById(guild.id))) {
-    const channel = await guild.channels.create('activity-roles', {
-      type: 'GUILD_TEXT',
-      topic: 'This channel is used to log bot errors.'
-    });
-    channel.send({ embeds: [msg.newLogChannel()] });
-    new GuildConfig({
-      _id: guild.id,
-      logChannelID: channel.id
-    }).save();
-    msg.log.addGuild(guild.name, guild.id);
-  }
+  if (await GuildConfig.findById(guild.id)) return;
+  if (!guild.me?.permissions.has('MANAGE_CHANNELS')) return;
+  const channel = await guild.channels.create('activity-roles', {
+    type: 'GUILD_TEXT',
+    topic: 'This channel is used by Activity Roles'
+  });
+  channel.send({ embeds: [msg.newLogChannel()] });
+  new GuildConfig({
+    _id: guild.id,
+    logChannelID: channel.id
+  }).save();
+  msg.log.addGuild(guild.name, guild.id);
 }
 
 /**
@@ -63,149 +62,167 @@ export async function checkUser(user: Discord.User): Promise<boolean> {
   return true;
 }
 
+function userHasActivity(
+  userActivityList: UserDataType[],
+  activity: string,
+  exact: boolean
+): boolean {
+  let filter;
+  if (exact) filter = (elmt: UserDataType) => elmt.activityName === activity;
+  else filter = (elmt: UserDataType) => elmt.activityName.includes(activity);
+  const userActivityListFiltered = userActivityList.filter(filter);
+  if (userActivityListFiltered.length > 0) msg.log.duplicateActivity(userActivityListFiltered);
+  if (userActivityListFiltered.length > 0 && userActivityListFiltered[0].autoRole) return true;
+  return false;
+}
+
+function userHasLiveActivity(
+  member: Discord.GuildMember,
+  activity: string,
+  exact: boolean
+): boolean {
+  if (!member.presence) return false;
+  let filter;
+  if (exact) filter = (elmt: Discord.Activity) => elmt.name === activity;
+  else filter = (elmt: Discord.Activity) => elmt.name.includes(activity);
+  const userActivityListFiltered = member.presence.activities.filter(filter);
+  if (userActivityListFiltered.length > 0) return true;
+  return false;
+}
+
+async function manageUserRole(
+  addRole: boolean,
+  role: Discord.Role,
+  highestBotRole: number,
+  member: Discord.GuildMember,
+  guildActivityRole: GuildDataType,
+  guildConfig: GuildConfigType,
+  live: boolean
+) {
+  if (role.position < highestBotRole && member.guild.me?.permissions.has('MANAGE_ROLES')) {
+    if (addRole) member.roles.add(role);
+    else member.roles.remove(role);
+    msg.log.addedRemovedRoleToFromMember(
+      addRole,
+      role.name,
+      guildActivityRole.roleID,
+      member.user.username,
+      member.user.id,
+      member.guild.name,
+      member.guild.id,
+      live
+    );
+    return;
+  }
+  msg.log.errorCantAssignRemoveRole(
+    addRole,
+    role.name,
+    role.id,
+    role.position,
+    member.user.username,
+    member.user.id,
+    guildActivityRole.activityName,
+    highestBotRole
+  );
+  const logChannel = member.guild.channels.cache.find(
+    channel => channel.id === guildConfig.logChannelID
+  );
+  if (!logChannel?.isText()) return;
+  if (!logChannel.guild.me?.permissionsIn(logChannel).has(['SEND_MESSAGES', 'EMBED_LINKS'])) return;
+  logChannel.send({
+    embeds: [
+      msg.errorCantAssignRemoveRole(
+        addRole,
+        role.id,
+        role.position,
+        member.user.id,
+        guildActivityRole.activityName,
+        highestBotRole
+      )
+    ]
+  });
+}
+
+async function checkMemberRoles(
+  member: Discord.GuildMember,
+  guildConfig: GuildConfigType,
+  guildActivityRoles: GuildDataType[],
+  onlyLive: boolean
+) {
+  if (member.user.bot) return;
+  await checkUser(member.user);
+  const userConfig: UserConfigType | null = await UserConfig.findById(member.user.id);
+  if (!userConfig?.autoRole) return;
+
+  let userActivityList: UserDataType[] | null = null;
+  if (!onlyLive) {
+    userActivityList = await UserData.find({ userID: member.user.id }).lean();
+  }
+  const highestBotRole = member?.guild?.me?.roles.highest.position;
+  if (highestBotRole === undefined) return;
+
+  for (const guildActivityRole of guildActivityRoles) {
+    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
+    const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
+    if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
+
+    let userShouldHaveRole;
+    if (guildActivityRole.live) {
+      userShouldHaveRole = userHasLiveActivity(
+        member,
+        guildActivityRole.activityName,
+        guildActivityRole.exactActivityName
+      );
+    } else {
+      userShouldHaveRole = userHasActivity(
+        userActivityList!, // won't be called if onlyLive is true
+        guildActivityRole.activityName,
+        guildActivityRole.exactActivityName
+      );
+    }
+
+    if (userShouldHaveRole && !userHasRole) {
+      manageUserRole(
+        true,
+        role,
+        highestBotRole,
+        member,
+        guildActivityRole,
+        guildConfig,
+        guildActivityRole.live
+      );
+      return;
+    } else if (!userShouldHaveRole && userHasRole) {
+      manageUserRole(
+        false,
+        role,
+        highestBotRole,
+        member,
+        guildActivityRole,
+        guildConfig,
+        guildActivityRole.live
+      );
+      return;
+    }
+  }
+}
+
 /**
  * Checks the user's roles and automatically assigns them to the appropriate role.
  * @param {Discord.GuildMember} member - The member to check.
  * @returns None
  */
-//TODO: REFACTOR THIS
 export async function checkRoles(member: Discord.GuildMember) {
   msg.log.activity();
-  if (member.user.bot) return;
-  await checkUser(member.user);
   await checkGuild(member.guild);
-  const doc = await UserConfig.findById(member.user.id);
-  if (!doc.autoRole) return;
-
-  const guildActivityList = await GuildData.find({ guildID: member.guild.id }).lean();
-  const userActivityList = await UserData.find({ userID: member.user.id }).lean();
-  const highestBotRole = member?.guild?.me?.roles.highest.position;
-  if (highestBotRole === undefined) return;
-
-  for (const guildActivity of guildActivityList) {
-    this_role: {
-      const userHasRole: boolean = member.roles.cache.has(guildActivity.roleID);
-      const role = member.guild.roles.cache.find(_role => _role.id === guildActivity.roleID);
-      if (role === undefined) break this_role; //FIXME: What if role gets removed? -> add log message role not found
-
-      let userShouldHaveRole = false;
-      if (guildActivity.exactActivityName) {
-        userActivities: {
-          const userActivityListFiltered = userActivityList.filter(
-            (elmt: { activityName: string }) => elmt.activityName === guildActivity.activityName
-          );
-
-          for (const y in userActivityListFiltered) {
-            if (userActivityListFiltered[y]) {
-              if (userActivityListFiltered[y].autoRole) {
-                userShouldHaveRole = true;
-                break userActivities;
-              }
-            }
-          }
-        }
-      } else {
-        userActivities: {
-          for (const y in userActivityList) {
-            if (userActivityList[y].activityName.includes(guildActivity.activityName)) {
-              if (userActivityList[y].autoRole) {
-                userShouldHaveRole = true;
-                break userActivities;
-              }
-            }
-          }
-        }
-      }
-
-      if (userShouldHaveRole && !userHasRole) {
-        // add role to member
-        if (role.position < highestBotRole) {
-          member.roles.add(role);
-          msg.log.addedRoleToMember(
-            role.name,
-            guildActivity.roleID,
-            member.user.username,
-            member.user.id,
-            member.guild.name,
-            member.guild.id
-          );
-        } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
-          const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
-          const channel = member.guild.channels.cache.find(
-            _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
-          ) as Discord.TextChannel;
-          msg.log.errorCantAssignRole(
-            role.name,
-            role.id,
-            role.position,
-            member.user.username,
-            member.user.id,
-            guildActivity.activityName,
-            highestBotRole
-          );
-          if (
-            channel &&
-            channel.guild.me?.permissionsIn(channel).has(['SEND_MESSAGES', 'EMBED_LINKS'])
-          ) {
-            channel.send({
-              embeds: [
-                msg.errorCantAssignRole(
-                  role.id,
-                  role.position,
-                  member.user.id,
-                  guildActivity.activityName,
-                  highestBotRole
-                )
-              ]
-            });
-          }
-        }
-      } else if (!userShouldHaveRole && userHasRole) {
-        // remove role from member
-        if (role.position < highestBotRole) {
-          member.roles.remove(role);
-          msg.log.removedRoleFromMember(
-            role.name,
-            guildActivity.roleID,
-            member.user.username,
-            member.user.id,
-            member.guild.name,
-            member.guild.id
-          );
-        } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
-          const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
-          const channel = member.guild.channels.cache.find(
-            _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
-          ) as Discord.TextChannel;
-          if (
-            channel &&
-            channel.guild.me?.permissionsIn(channel).has(['SEND_MESSAGES', 'EMBED_LINKS'])
-          ) {
-            msg.log.errorCantRemoveRole(
-              role.name,
-              role.id,
-              role.position,
-              member.user.username,
-              member.user.id,
-              guildActivity.activityName,
-              highestBotRole
-            );
-            channel.send({
-              embeds: [
-                msg.errorCantRemoveRole(
-                  role.id,
-                  role.position,
-                  member.user.id,
-                  guildActivity.activityName,
-                  highestBotRole
-                )
-              ]
-            });
-          }
-        }
-      }
-    }
-  }
+  const guildConfig: GuildConfigType | null = await GuildConfig.findById(member.guild.id);
+  if (!guildConfig) return;
+  const guildActivityRoles: GuildDataType[] = await GuildData.find({
+    guildID: member.guild.id
+  }).lean();
+  if (guildActivityRoles.length === 0) return;
+  const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
+  checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
 }
 
 /**
@@ -215,147 +232,17 @@ export async function checkRoles(member: Discord.GuildMember) {
  */
 export async function checkAllRoles(guild: Discord.Guild) {
   msg.log.activity();
-  await checkGuild(guild);
 
-  const guildActivityList = await GuildData.find({
+  await checkGuild(guild);
+  const guildConfig: GuildConfigType | null = await GuildConfig.findById(guild.id);
+  if (!guildConfig) return;
+  const guildActivityRoles: GuildDataType[] = await GuildData.find({
     guildID: guild.id
   }).lean();
-  const highestBotRole: number | undefined = guild?.me?.roles.highest.position;
-  if (highestBotRole === undefined) return;
+  if (guildActivityRoles.length === 0) return;
+  const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
 
-  guild.members.cache.forEach(async member => {
-    user: {
-      if (member.user.bot) break user;
-      await checkUser(member.user);
-
-      const doc = await UserConfig.findById(member.user.id);
-      if (!doc.autoRole) break user;
-
-      const userActivityList = await UserData.find({
-        userID: member.user.id
-      }).lean();
-
-      for (const x in guildActivityList) {
-        this_role: {
-          const userHasRole: boolean = member.roles.cache.has(guildActivityList[x].roleID);
-          let role: Discord.Role | undefined = member.guild.roles.cache.find(
-            _role => _role.id === guildActivityList[x].roleID
-          );
-          if (role === undefined) {
-            break this_role; //FIXME: What if role gets removed?
-          } else {
-            role = role as Discord.Role;
-          }
-          let userShouldHaveRole = false;
-          userActivities: {
-            if (!guildActivityList[x].exactActivityName) {
-              for (const y in userActivityList) {
-                if (userActivityList[y].activityName.includes(guildActivityList[x].activityName)) {
-                  if (userActivityList[y].autoRole) {
-                    userShouldHaveRole = true;
-                    break userActivities;
-                  }
-                }
-              }
-            } else {
-              const userActivityListFiltered = userActivityList.filter(
-                (elmt: { activityName: string }) =>
-                  elmt.activityName === guildActivityList[x].activityName
-              );
-              for (const y in userActivityListFiltered) {
-                if (userActivityListFiltered[y]) {
-                  if (userActivityListFiltered[y].autoRole) {
-                    userShouldHaveRole = true;
-                    break userActivities;
-                  }
-                }
-              }
-            }
-          }
-
-          if (userShouldHaveRole && !userHasRole) {
-            // add role to member
-            if (role.position < highestBotRole) {
-              member.roles.add(role);
-              msg.log.addedRoleToMember(
-                role.name,
-                guildActivityList[x].roleID,
-                member.user.username,
-                member.user.id,
-                member.guild.name,
-                member.guild.id
-              );
-            } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
-              const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
-              const channel = guild.channels.cache.find(
-                _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
-              ) as Discord.TextChannel;
-              if (channel) {
-                msg.log.errorCantAssignRole(
-                  role.name,
-                  role.id,
-                  role.position,
-                  member.user.username,
-                  member.user.id,
-                  guildActivityList[x].activityName,
-                  highestBotRole
-                );
-                channel.send({
-                  embeds: [
-                    msg.errorCantAssignRole(
-                      role.id,
-                      role.position,
-                      member.user.id,
-                      guildActivityList[x].activityName,
-                      highestBotRole
-                    )
-                  ]
-                });
-              }
-            }
-          } else if (!userShouldHaveRole && userHasRole) {
-            // remove role from member
-            if (role.position < highestBotRole) {
-              member.roles.remove(role);
-              msg.log.removedRoleFromMember(
-                role.name,
-                guildActivityList[x].roleID,
-                member.user.username,
-                member.user.id,
-                member.guild.name,
-                member.guild.id
-              );
-            } else if ('logChannelID' in (await GuildConfig.findById(member.guild.id).lean())) {
-              const _guildConfig = await GuildConfig.findById(member.guild.id).lean();
-              const channel = guild.channels.cache.find(
-                _channel => _channel.id === _guildConfig.logChannelID && _channel.isText()
-              ) as Discord.TextChannel;
-              if (channel) {
-                msg.log.errorCantRemoveRole(
-                  role.name,
-                  role.id,
-                  role.position,
-                  member.user.username,
-                  member.user.id,
-                  guildActivityList[x].activityName,
-                  highestBotRole
-                );
-                channel.send({
-                  embeds: [
-                    msg.errorCantRemoveRole(
-                      role.id,
-                      role.position,
-                      member.user.id,
-                      guildActivityList[x].activityName,
-                      highestBotRole
-                    )
-                  ]
-                });
-              }
-            }
-          }
-        }
-      }
-    }
-  });
+  for (const member of guild.members.cache.values()) {
+    checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
+  }
 }
