@@ -1,4 +1,4 @@
-import Discord, { Intents } from 'discord.js';
+import Discord from 'discord.js';
 import WOKcommands from 'wokcommands';
 import path from 'path';
 
@@ -8,12 +8,10 @@ import msg, { log } from './messages';
 
 export const client = new Discord.Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_PRESENCES,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.DIRECT_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+    Discord.Intents.FLAGS.GUILDS,
+    Discord.Intents.FLAGS.GUILD_PRESENCES,
+    Discord.Intents.FLAGS.GUILD_MESSAGES,
+    Discord.Intents.FLAGS.DIRECT_MESSAGES
   ]
 });
 
@@ -54,6 +52,7 @@ client.on('ready', () => {
 
 const processingUser = new Map<string, boolean>();
 client.on('presenceUpdate', async (oldMember, newMember) => {
+  await newMember.member?.fetch();
   if (!newMember?.user || !newMember.guild || !newMember.member) return;
   if (newMember.member.user.bot) return;
   if (processingUser.has(newMember.user?.id)) return;
@@ -88,23 +87,19 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
   processingUser.delete(newMember.user?.id);
   db.checkRoles(newMember.member);
 });
-//TODO: move to messages
+
 client.on('guildCreate', guild => {
-  console.log(`\nDISCORD.JS > the client joined ${guild.name}`);
+  log.info(`Joined guild ${guild.name} (${guild.id})`);
   db.checkGuild(guild);
 });
 
-client.on('guildDelete', guild => {
-  console.log(`\nthe client left ${guild.name}`);
-});
+client.on('guildDelete', guild => log.info(`Left guild ${guild.name} (${guild.id})`));
 
 client.on('disconnect', () => {
-  console.log('\nDISCORD.JS > The WebSocket has closed and will no longer attempt to reconnect');
+  log.warn('The Discord WebSocket has closed and will no longer attempt to reconnect');
 });
 
-client.on('error', error => {
-  console.error(`\nDISCORD.JS > The client's WebSocket encountered a connection error: ${error}`);
-});
+client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
 
 export function connect() {
   client.login(config.TOKEN);

@@ -93,13 +93,16 @@ function userHasLiveActivity(
 async function manageUserRole(
   addRole: boolean,
   role: Discord.Role,
-  highestBotRole: number,
+  highestBotRole: Discord.Role,
   member: Discord.GuildMember,
   guildActivityRole: GuildDataType,
   guildConfig: GuildConfigType,
   live: boolean
 ) {
-  if (role.position < highestBotRole && member.guild.me?.permissions.has('MANAGE_ROLES')) {
+  if (
+    highestBotRole.comparePositionTo(role) > 0 &&
+    member.guild.me?.permissions.has('MANAGE_ROLES')
+  ) {
     if (addRole) member.roles.add(role);
     else member.roles.remove(role);
     msg.log.addedRemovedRoleToFromMember(
@@ -122,7 +125,7 @@ async function manageUserRole(
     member.user.username,
     member.user.id,
     guildActivityRole.activityName,
-    highestBotRole
+    highestBotRole.position
   );
   const logChannel = member.guild.channels.cache.find(
     channel => channel.id === guildConfig.logChannelID
@@ -137,7 +140,7 @@ async function manageUserRole(
         role.position,
         member.user.id,
         guildActivityRole.activityName,
-        highestBotRole
+        highestBotRole.position
       )
     ]
   });
@@ -158,10 +161,11 @@ async function checkMemberRoles(
   if (!onlyLive) {
     userActivityList = await UserData.find({ userID: member.user.id }).lean();
   }
-  const highestBotRole = member?.guild?.me?.roles.highest.position;
-  if (highestBotRole === undefined) return;
+  const highestBotRole = member?.guild?.me?.roles.highest;
+  if (!highestBotRole) return;
 
   for (const guildActivityRole of guildActivityRoles) {
+    await member.fetch();
     const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
     const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
     if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
