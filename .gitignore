@@ -10,4 +10,4 @@ export.json
 dev-logflare.cmd
 
 # my release script
-release.cmd
+release.sh
