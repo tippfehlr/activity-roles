@@ -9,7 +9,7 @@
   "rules": {
     "semi": 1,
     "@typescript-eslint/no-non-null-assertion": "off",
-    "guard-for-in": "warn"
+    "guard-for-in": "off"
     // "quotes": ["warn", "single", { "avoidEscape": true }]
   }
 }
