@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import mongoose from 'mongoose';
 
 import msg from './messages';
+import config from '../../config';
 
 import { UserConfig, UserConfigType } from './models/userConfig';
 import { GuildConfig, GuildConfigType } from './models/guildConfig';
@@ -245,4 +246,19 @@ export async function checkAllRoles(guild: Discord.Guild) {
   for (const member of guild.members.cache.values()) {
     checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
   }
+}
+export async function setGuildCheckInterval(client: Discord.Client) {
+  if (!config.guildCheckInterval.enabled) return;
+  let guild: GuildDataType[];
+  if (config.guildCheckInterval.onlyWithLiveRole)
+    guild = await GuildData.find({ live: true }).lean();
+  else guild = await GuildData.find().lean();
+  const guildIDs = [...new Set(guild.map(elmt => elmt.guildID))];
+
+  client.guilds.cache
+    .filter(guild => guildIDs.includes(guild.id))
+    .forEach(guild => {
+      setInterval(() => checkAllRoles(guild), config.guildCheckInterval.interval);
+    });
+  msg.log.checkGuildIntervalEnabled(guild.length);
 }
