@@ -441,6 +441,13 @@ export default {
     },
     duplicateActivity: async (userActivityListFiltered: UserDataType[]) => {
       log.warn(userActivityListFiltered, 'Encountered duplicate activity');
+    },
+    checkGuildIntervalEnabled: async (guildCount: number) => {
+      log.info(
+        `guild check interval enabled on ${guildCount} (${
+          config.guildCheckInterval.onlyWithLiveRole ? 'onlyLive' : 'all'
+        }) guilds with interval: ${config.guildCheckInterval.interval / 1000} seconds`
+      );
     }
   },
   help: {

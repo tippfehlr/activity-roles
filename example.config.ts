@@ -22,6 +22,12 @@ export default {
     { name: '/help', type: 'LISTENING' } as ActivityOptions,
     { name: 'you', type: 'WATCHING' } as ActivityOptions
   ],
+  // if enabled, will call checkAllRoles() on all guilds that have activity or live roles at the interval specified below. Used to assign roles even when presenceUpdate isn't called.
+  guildCheckInterval: {
+    enabled: false,
+    interval: 1000 * 10,
+    onlyWithLiveRole: true
+  },
   TOKEN,
   MONGODB_URI
 };

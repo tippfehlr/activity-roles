@@ -48,6 +48,7 @@ client.on('ready', () => {
     String(client.user?.discriminator),
     String(client.user?.id)
   );
+  db.setGuildCheckInterval(client);
 });
 
 const processingUser = new Map<string, boolean>();
