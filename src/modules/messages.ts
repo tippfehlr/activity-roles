@@ -478,8 +478,12 @@ export default {
         .addField('Invite', config.inviteLink)
         .addField('Support Guild', config.supportGuildLink)
         .addField(
-          'Commands:\n`/addActivityRole <role> <Activity> [exactActivityName]`',
-          'Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.'
+          'Commands:\n`/addActivityRole <role> <activity> <exactActivityName> <live>`',
+          "Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.\n\
+          `<role>` is the role that gets added to users when they have the right `<activity>`.\n\
+          If `<exactActivityName>` is set to True, the role will only be added if the user has the exact activity name.\n\
+          If it is false, `<activity>` can also just be a substring of the user's activity name.\n\
+          If `<live>` is set to True, the role will be only added when the user currently has the activity, and gets removed once it doesn't anymore."
         )
         .addField('`/deleteActivity <Activity>`', 'Removes an activity from your account.')
         .addField('`/deleteAllActivities`', 'Removes all activities from your account.')
