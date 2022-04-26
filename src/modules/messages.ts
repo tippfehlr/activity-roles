@@ -150,13 +150,19 @@ export default {
    * @param {boolean} exactActivityName - whether or not the activity name has to be exact.
    * @returns {Discord.MessageEmbed} - the Discord.MessageEmbed object.
    */
-  removeActivityRoleQ: (activityName: string, roleID: string, exactActivityName: boolean) => {
+  removeActivityRoleQ: (
+    activityName: string,
+    roleID: string,
+    exactActivityName: boolean,
+    live: boolean
+  ) => {
     return new Discord.MessageEmbed()
       .setTitle('Do you really want to delete this game role?')
       .setColor(config.embedColor)
       .addField('Activity Name', activityName.toString())
       .addField('Role', '<@&' + roleID + '>')
-      .addField('Has to be exact', exactActivityName.toString());
+      .addField('Has to be exact', exactActivityName.toString())
+      .addField('Live', live.toString());
   },
   /**
    * Creates a Discord.MessageEmbed that asks the user if they really want to remove all activities from their account.

@@ -39,7 +39,7 @@ export default {
     msg.log.command();
 
     const [roleID, activityName] = command.args;
-    const data = await db.GuildData.findOne({
+    const data: db.GuildDataType | null = await db.GuildData.findOne({
       guildID: command?.guild?.id,
       roleID: roleID
     });
@@ -52,7 +52,7 @@ export default {
     }
 
     await command.interaction.reply({
-      embeds: [msg.removeActivityRoleQ(activityName, roleID, data.exactActivityName)],
+      embeds: [msg.removeActivityRoleQ(activityName, roleID, data.exactActivityName, data.live)],
       components: [msg.removeButtonRow()],
       ephemeral: true
     });
