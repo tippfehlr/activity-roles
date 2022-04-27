@@ -3,7 +3,8 @@
 [![](https://img.shields.io/static/v1?style=flat&logo=discord&logoColor=FFF&label=&message=join%20support%20guild&color=7289DA)](https://discord.gg/3K9Yx4ufN7)
 [![](https://img.shields.io/github/license/tippf3hlr/activity-roles)](./LICENSE)
 [![](https://img.shields.io/github/issues/tippf3hlr/activity-roles)](https://github.com/tippf3hlr/activity-roles/issues)
-[![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles)](https://github.com/tippf3hlr/activity-roles#changelog)\
+[![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles)](https://github.com/tippf3hlr/activity-roles#changelog)
+[![](https://img.shields.io/librariesio/github/tippf3hlr/activity-roles)](https://libraries.io/github/tippf3hlr/activity-roles)\
 A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing.\
 Intended to show which people play what game and therefore give them access to specific channels etc.\
 Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
