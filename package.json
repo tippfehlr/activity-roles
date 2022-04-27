@@ -1,7 +1,7 @@
 {
   "name": "activity-roles",
   "description": "A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "src/index.ts",
   "test": "src/tests",
   "license": "AGPL-3.0",

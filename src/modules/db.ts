@@ -74,7 +74,7 @@ function userHasActivity(
     filter = (elmt: UserDataType) =>
       elmt.activityName.toLowerCase().includes(activity.toLowerCase());
   const userActivityListFiltered = userActivityList.filter(filter);
-  if (userActivityListFiltered.length > 0) msg.log.duplicateActivity(userActivityListFiltered);
+  if (userActivityListFiltered.length > 1) msg.log.duplicateActivity(userActivityListFiltered);
   if (userActivityListFiltered.length > 0 && userActivityListFiltered[0].autoRole) return true;
   return false;
 }

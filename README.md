@@ -40,6 +40,9 @@ Help about the project structure can be found in [architecture.md](./architectur
 
 ## Changelog
 
+![](https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge)\
+Fix `Encountered duplicate activity` warn: Only show if more than one activity is found.
+
 ![](https://img.shields.io/badge/version-v1.2.0-blue?style=for-the-badge)\
 Add `/activityStats`: Shows activities in this guild.
 
