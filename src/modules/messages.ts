@@ -294,6 +294,14 @@ export default {
       .setDescription(`Your log channel is now set to <#${channel.id}>.`)
       .setColor('GREEN');
   },
+  noMembersWithActivities: () => {
+    return 'There are no members with activities in this guild.';
+  },
+  baseActivityStats: () => {
+    return new Discord.MessageEmbed()
+      .setDescription('**Activities in this guild: percent of members having this activity**')
+      .setColor(config.embedColor);
+  },
 
   log: {
     /**
@@ -477,8 +485,9 @@ export default {
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
         .addField('Support Guild', config.supportGuildLink)
+        .addField('Commands:\n`/activityStats`', 'Shows activities in this guild.')
         .addField(
-          'Commands:\n`/addActivityRole <role> <activity> <exactActivityName> <live>`',
+          '`/addActivityRole <role> <activity> <exactActivityName> <live>`',
           "Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.\n\
           `<role>` is the role that gets added to users when they have the right `<activity>`.\n\
           If `<exactActivityName>` is set to True, the role will only be added if the user has the exact activity name.\n\
