@@ -299,7 +299,7 @@ export default {
   },
   baseActivityStats: () => {
     return new Discord.MessageEmbed()
-      .setDescription('**Activities in this guild: percent of members having this activity**')
+      .setDescription('**Activities in this guild**')
       .setColor(config.embedColor);
   },
 

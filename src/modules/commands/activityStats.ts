@@ -17,7 +17,7 @@ export default {
   callback: async command => {
     msg.log.command();
 
-    const minPercentBold = 15; // maybe put in config.ts
+    const minPercentBold = 50; // maybe put in config.ts
 
     const memberIDs = command.guild?.members.cache
       .filter(member => !member.user.bot)
@@ -40,21 +40,13 @@ export default {
     const activities = Object.keys(heatMap).sort((a, b) => heatMap[b] - heatMap[a]);
     const embed = msg.baseActivityStats();
     for (const activity of activities) {
-      if (
-        `${embed.description}\n\`${activity}\`: ${
-          (heatMap[activity] / userData.length) * 100 > minPercentBold ? '**' : ''
-        }${(heatMap[activity] / userData.length) * 100}%${
-          (heatMap[activity] / userData.length) * 100 > minPercentBold ? '**' : ''
-        }`.length > 2048
-      )
-        break;
-      embed.setDescription(
-        `${embed.description}\n\`${activity}\`: ${
-          (heatMap[activity] / userData.length) * 100 > minPercentBold ? '**' : ''
-        }${(heatMap[activity] / userData.length) * 100}%${
-          (heatMap[activity] / userData.length) * 100 > minPercentBold ? '**' : ''
-        }`
-      );
+      const appendString = `${embed.description}\n${
+        (heatMap[activity] / memberIDs.length) * 100 > minPercentBold ? '**' : ''
+      }\`${activity}\`: ${heatMap[activity]} / ${memberIDs.length} member${
+        (heatMap[activity] / memberIDs.length) * 100 > minPercentBold ? '**' : ''
+      }`;
+      if (appendString.length > 2048) break;
+      embed.setDescription(appendString);
     }
     command.interaction.reply({ embeds: [embed] });
   }

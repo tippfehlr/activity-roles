@@ -25,9 +25,10 @@ export default {
         command.user?.username,
         command.user?.discriminator
       );
-      for (const activity of res) {
+      res.sort((a, b) => b.activityName.localeCompare(a.activityName) * -1);
+      res.forEach(activity => {
         addToDescription += '`' + activity.activityName + '`\n';
-      }
+      });
       baseEmbed.setDescription(baseEmbed.description + addToDescription);
 
       command.interaction.reply({ embeds: [baseEmbed] });

@@ -40,6 +40,10 @@ Help about the project structure can be found in [architecture.md](./architectur
 
 ## Changelog
 
+![](https://img.shields.io/badge/version-v1.2.2-blue?style=for-the-badge)
+ - Make `/listActivities` sorted
+ - Fix `/activityStats` not showing the correct number of users and increase minimum user threshold for bold text to 50%.
+
 ![](https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge)\
 Fix `Encountered duplicate activity` warn: Only show if more than one activity is found.
 
