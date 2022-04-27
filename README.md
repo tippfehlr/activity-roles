@@ -36,19 +36,19 @@ Help about the project structure can be found in [architecture.md](./architectur
 
 ## License
 
-![AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-orange?style=for-the-badge)
+[![](https://img.shields.io/badge/license-AGPL--3.0-orange?style=for-the-badge)](./LICENSE)
 
 ## Changelog
 
-![](https://img.shields.io/badge/version-v1.2.2-blue?style=for-the-badge)
+[![](https://img.shields.io/badge/version-v1.2.2-blue?style=for-the-badge)]()
  - Make `/listActivities` sorted
  - Fix `/activityStats` not showing the correct number of users and increase minimum user threshold for bold text to 50%.
 
-![](https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge)\
+[![](https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge)]()\
 Fix `Encountered duplicate activity` warn: Only show if more than one activity is found.
 
-![](https://img.shields.io/badge/version-v1.2.0-blue?style=for-the-badge)\
+[![](https://img.shields.io/badge/version-v1.2.0-blue?style=for-the-badge)]()\
 Add `/activityStats`: Shows activities in this guild.
 
-![](https://img.shields.io/badge/version-v1.1.2-blue?style=for-the-badge)\
+[![](https://img.shields.io/badge/version-v1.1.2-blue?style=for-the-badge)]()\
 Make the not exact activity names non-case-sensitive
