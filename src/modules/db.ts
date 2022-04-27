@@ -70,7 +70,9 @@ function userHasActivity(
 ): boolean {
   let filter;
   if (exact) filter = (elmt: UserDataType) => elmt.activityName === activity;
-  else filter = (elmt: UserDataType) => elmt.activityName.includes(activity);
+  else
+    filter = (elmt: UserDataType) =>
+      elmt.activityName.toLowerCase().includes(activity.toLowerCase());
   const userActivityListFiltered = userActivityList.filter(filter);
   if (userActivityListFiltered.length > 0) msg.log.duplicateActivity(userActivityListFiltered);
   if (userActivityListFiltered.length > 0 && userActivityListFiltered[0].autoRole) return true;
@@ -85,7 +87,8 @@ function userHasLiveActivity(
   if (!member.presence) return false;
   let filter;
   if (exact) filter = (elmt: Discord.Activity) => elmt.name === activity;
-  else filter = (elmt: Discord.Activity) => elmt.name.includes(activity);
+  else
+    filter = (elmt: Discord.Activity) => elmt.name.toLowerCase().includes(activity.toLowerCase());
   const userActivityListFiltered = member.presence.activities.filter(filter);
   if (userActivityListFiltered.length > 0) return true;
   return false;
