@@ -3,7 +3,14 @@ import config from '../../config';
 import pino from 'pino';
 import { UserDataType } from './db';
 
-export const log = pino();
+export const log = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true
+    }
+  }
+});
 
 //? TODO: Different languages?
 
