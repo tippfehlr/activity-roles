@@ -99,6 +99,12 @@ export default {
       .setTimestamp();
   },
   /**
+   * @returns {string} 'There was an error while executing this command!'
+   **/
+  errorWhileExecutingCommand: () => {
+    return 'There was an error while executing this command!';
+  },
+  /**
    * Creates an embed that shows the user that their activity role has been set.
    * @param {Discord.Role['id']} roleID - the ID of the role that was set.
    * @param {string} activityName - the name of the activity that the role is set to.
@@ -139,6 +145,9 @@ export default {
    */
   cantUseEveryone: () => {
     return "*I am powerful, but not **that** powerful!*\nYou can't use @everyone as a game role.";
+  },
+  commandGuildOnly: () => {
+    return 'This command can only be used in a guild.';
   },
   /**
    * Returns a string that tells the user that the role they are trying to create already exists.
@@ -295,7 +304,7 @@ export default {
       .setDescription('This channel already is your log channel.')
       .setColor('RED');
   },
-  logChannelSet: (channel: Discord.GuildBasedChannel) => {
+  logChannelSet: (channel: Discord.TextBasedChannel) => {
     return new Discord.MessageEmbed()
       .setTitle('Set Log Channel')
       .setDescription(`Your log channel is now set to <#${channel.id}>.`)

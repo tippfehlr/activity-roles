@@ -1,4 +1,4 @@
-import { ICallbackObject, ICommand } from 'wokcommands';
+import { Command, CommandInteraction } from '../commandHandler';
 import Discord from 'discord.js';
 
 import config from '../../../config';
@@ -6,13 +6,12 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'setLogChannel',
+  name: 'setlogchannel',
   category: 'Configuration',
   description:
     'Sets a different log channel for the bot. If nothing provided, sets the current channel.',
   requiredPermissions: ['MANAGE_ROLES'],
 
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
   options: [
@@ -24,40 +23,34 @@ export default {
     }
   ],
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
-    let channel: Discord.GuildBasedChannel | undefined;
-    if (command.args[0]) channel = command?.guild?.channels.cache.get(command.args[0]);
-    if (command.args[0] && !channel) {
-      command.interaction.reply({ content: msg.channelDoesNotExist(), ephemeral: true });
-      return;
-    }
-
-    if (!channel) {
-      changeLogChannel(command, command.channel);
+    const channel = interaction.options.getChannel('channel');
+    if (channel) {
+      if (channel?.type === 'GUILD_TEXT') {
+        changeLogChannel(interaction, channel);
+      } else {
+        interaction.reply({ embeds: [msg.noTextChannel(channel.id)], ephemeral: true });
+      }
     } else {
-      changeLogChannel(command, channel);
+      if (interaction.channel) changeLogChannel(interaction, interaction.channel);
     }
   }
-} as ICommand;
+} as Command;
 
 async function changeLogChannel(
-  command: ICallbackObject,
-  channel: Discord.GuildBasedChannel
+  interaction: CommandInteraction,
+  channel: Discord.TextBasedChannel
 ): Promise<void> {
-  if (!channel.isText()) {
-    command.interaction.reply({ embeds: [msg.noTextChannel(channel.id)], ephemeral: true });
-    return;
-  }
   const currentLogChannel: db.GuildConfigType | null = await db.GuildConfig.findById(
-    command.guild?.id
+    interaction.guild!.id
   );
   if (currentLogChannel?.logChannelID === channel.id) {
-    command.interaction.reply({ embeds: [msg.alreadyIsLogChannel()], ephemeral: true });
+    interaction.reply({ embeds: [msg.alreadyIsLogChannel()], ephemeral: true });
     return;
   }
-  await db.GuildConfig.updateOne({ _id: command.guild?.id }, { logChannelID: channel.id });
-  command.interaction.reply({ embeds: [msg.logChannelSet(channel)], ephemeral: true });
+  await db.GuildConfig.updateOne({ _id: interaction.guild!.id }, { logChannelID: channel.id });
+  interaction.reply({ embeds: [msg.logChannelSet(channel)], ephemeral: true });
   channel.send({ embeds: [msg.newLogChannel()] });
   return;
 }

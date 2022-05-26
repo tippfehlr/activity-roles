@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 import { table } from 'table';
 import fs from 'fs';
 
@@ -7,30 +7,29 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'listRoles',
+  name: 'listroles',
   category: 'Information',
   description: 'Lists all game roles in your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
 
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
-      guildID: command.guild?.id
+      guildID: interaction.guild!.id
     });
     if (res.length === 0) {
-      command.interaction.reply({ content: msg.noActivityRoles() });
+      interaction.reply({ content: msg.noActivityRoles() });
       return;
     }
     const array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
     for (const i in res) {
       array.push([
         String(Number(i) + 1),
-        command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name +
+        interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
           ` <@&${res[i].roleID}>`,
         res[i].activityName,
         res[i].exactActivityName.toString()
@@ -42,9 +41,9 @@ export default {
       }
     });
     fs.writeFileSync(config.listRolesFileName, response);
-    await command.interaction.reply({
+    await interaction.reply({
       /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName]
     });
     fs.unlinkSync(config.listRolesFileName);
   }
-} as ICommand;
+} as Command;

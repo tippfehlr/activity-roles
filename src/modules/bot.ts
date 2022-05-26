@@ -1,10 +1,9 @@
 import Discord from 'discord.js';
-import WOKcommands from 'wokcommands';
-import path from 'path';
 
 import * as db from './db';
 import config from '../../config';
 import msg, { log } from './messages';
+import CommandHandler from './commandHandler';
 
 export const client = new Discord.Client({
   intents: [
@@ -16,28 +15,7 @@ export const client = new Discord.Client({
 });
 
 client.on('ready', () => {
-  new WOKcommands(client, {
-    commandsDir: path.join(__dirname, '/commands'),
-    testServers: config.testGuildIDs,
-    typeScript: true,
-    mongoUri: config.MONGODB_URI,
-    botOwners: config.botOwners,
-    disabledDefaultCommands: [
-      'help',
-      'command',
-      'language',
-      'prefix',
-      'requiredrole',
-      'channelonly'
-      // 'slash'
-    ],
-    logger: {
-      log: (a: string) => log.info(a),
-      warn: (a: string) => log.warn(a),
-      error: (a: string) => log.error(a)
-    }
-  });
-
+  new CommandHandler(client);
   client.user?.setPresence({
     status: 'online',
     afk: false,
@@ -103,5 +81,5 @@ client.on('disconnect', () => {
 client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
 
 export function connect() {
-  client.login(config.TOKEN);
+  return client.login(config.TOKEN);
 }

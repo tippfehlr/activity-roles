@@ -1,29 +1,29 @@
 // TODO: also show which roles are assigned to which activity.
 
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
+
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  name: 'listActivities',
+  name: 'listactivities',
   category: 'User Configuration',
   description: 'Lists all activities recorded on your account.',
 
-  slash: true,
   testOnly: config.debug,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
-    const res: db.UserDataType[] = await db.UserData.find({ userID: command.user?.id });
+    const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
     if (res.length === 0) {
-      command.interaction.reply({ content: msg.noActivities() });
+      interaction.reply({ content: msg.noActivities() });
       return;
     } else {
       let addToDescription = '';
       const baseEmbed = msg.listActivitiesBaseEmbed(
-        command.user?.username,
-        command.user?.discriminator
+        interaction.user?.username,
+        interaction.user?.discriminator
       );
       res.sort((a, b) => b.activityName.localeCompare(a.activityName) * -1);
       res.forEach(activity => {
@@ -31,7 +31,7 @@ export default {
       });
       baseEmbed.setDescription(baseEmbed.description + addToDescription);
 
-      command.interaction.reply({ embeds: [baseEmbed] });
+      interaction.reply({ embeds: [baseEmbed] });
     }
   }
-} as ICommand;
+} as Command;

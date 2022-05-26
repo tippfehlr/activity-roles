@@ -1,79 +1,77 @@
 //mention that no roles are removed and maybe there is an extra command
 
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 import Discord from 'discord.js';
-import { ApplicationCommandOptionTypes as OptionType } from 'discord.js/typings/enums';
 
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'removeActivityRole',
+  name: 'removeactivityrole',
   category: 'Configuration',
   description: 'Deletes an activity role from your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
 
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
 
-  minArgs: 2,
-  expectedArgs: '<arg1> <arg2>',
   options: [
     {
       name: 'role',
       description: 'the role I used to assign',
       required: true,
-      type: OptionType.ROLE
+      type: 'ROLE'
     },
     {
       name: 'activity_name',
       description: 'The name of the discord presence I was looking for',
       required: true,
-      type: OptionType.STRING
+      type: 'STRING'
     }
   ],
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
-    const [roleID, activityName] = command.args;
+    const role = interaction.options.getRole('role')!;
+    const activityName = interaction.options.getString('activity_name')!;
+
     const data: db.GuildDataType | null = await db.GuildData.findOne({
-      guildID: command?.guild?.id,
-      roleID: roleID
+      guildID: interaction?.guild!.id,
+      roleID: role.id
     });
     if (!data) {
-      command.interaction.reply({
+      interaction.reply({
         content: msg.activityRoleDoesNotExist(),
         ephemeral: true
       });
       return;
     }
 
-    await command.interaction.reply({
-      embeds: [msg.removeActivityRoleQ(activityName, roleID, data.exactActivityName, data.live)],
+    await interaction.reply({
+      embeds: [msg.removeActivityRoleQ(activityName, role.id, data.exactActivityName, data.live)],
       components: [msg.removeButtonRow()],
       ephemeral: true
     });
 
     const filter = (btnInt: Discord.MessageComponentInteraction<'cached'>) => {
-      return command.interaction.user.id === btnInt.user.id;
+      return interaction.user.id === btnInt.user.id;
     };
 
-    const collector = command.channel.createMessageComponentCollector({
+    const collector = interaction.channel?.createMessageComponentCollector({
       filter,
       max: 1,
       time: 1000 * 60
     });
 
-    collector.on('collect', (int: Discord.ButtonInteraction) => {
+    collector?.on('collect', (int: Discord.ButtonInteraction) => {
       switch (int.customId) {
         case 'remove':
           db.GuildData.deleteOne({
-            guildID: command?.guild?.id,
-            roleID: roleID
-          }).then(res => {
+            guildID: interaction?.guild!.id,
+            roleID: role.id
+          }).then((res: { deletedCount: number }) => {
             if (res.deletedCount > 0) {
               int.update({ embeds: [msg.removed()], components: [] });
             } else {
@@ -87,4 +85,4 @@ export default {
       }
     });
   }
-} as ICommand;
+} as Command;

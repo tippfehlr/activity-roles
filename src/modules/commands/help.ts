@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -8,11 +8,10 @@ export default {
   category: 'Help',
   description: 'Shows the help page',
 
-  slash: true,
   testOnly: config.debug,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
-    command.interaction.reply({ embeds: [msg.help.helpEmbed()] });
+    interaction.reply({ embeds: [msg.help.helpEmbed()] });
   }
-} as ICommand;
+} as Command;

@@ -1,9 +1,10 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
+
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  name: 'deleteActivity',
+  name: 'deleteactivity',
   category: 'User Configuration',
   description: 'Removes an activity from your account.',
 
@@ -16,23 +17,23 @@ export default {
     }
   ],
 
-  slash: true,
   testOnly: config.debug,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
-    const res: db.UserDataType[] = await db.UserData.find({ userID: command.user?.id });
-    const activities: string[] = [];
+    const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
+    const activityNames: string[] = [];
     for (const activity of res) {
-      activities.push(activity.activityName);
+      activityNames.push(activity.activityName);
     }
-    if (activities.includes(command.args[0])) {
-      await db.UserData.deleteOne({ userID: command.user?.id, activityName: command.args[0] });
-      command.interaction.reply({ content: msg.activityDeleted(command.args[0]) });
+    const activityName = interaction.options.getString('activity')!;
+    if (activityNames.includes(activityName)) {
+      await db.UserData.deleteOne({ userID: interaction.user?.id, activityName: activityName });
+      interaction.reply({ content: msg.activityDeleted(activityName) });
     } else {
-      command.interaction.reply({ content: msg.activityMissing() });
+      interaction.reply({ content: msg.activityMissing() });
       return;
     }
   }
-} as ICommand;
+} as Command;

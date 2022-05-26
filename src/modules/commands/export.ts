@@ -1,4 +1,4 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 import fs from 'fs';
 
 import config from '../../../config';
@@ -11,21 +11,20 @@ export default {
   description: 'Exports all game roles in your guild as a JSON file.',
   requiredPermissions: ['MANAGE_ROLES'],
 
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
-      guildID: command.guild?.id
+      guildID: interaction.guild!.id
     });
     const array = [];
     for (const i in res) {
       array.push([
         String(Number(i) + 1),
-        `${command.guild?.roles.cache.find(role => role.id === res[i].roleID)?.name} <@&${
+        `${interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name} <@&${
           res[i].roleID
         }>`,
         res[i].activityName,
@@ -33,7 +32,7 @@ export default {
       ]);
     }
     fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
-    await command.interaction.reply({ files: [config.exportFileName] });
+    await interaction.reply({ files: [config.exportFileName] });
     fs.unlinkSync(config.exportFileName);
   }
-} as ICommand;
+} as Command;

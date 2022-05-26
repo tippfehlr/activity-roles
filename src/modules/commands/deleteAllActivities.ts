@@ -1,6 +1,6 @@
 //mention that no roles are removed and maybe there is an extra command
 
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 import Discord from 'discord.js';
 
 import config from '../../../config';
@@ -8,50 +8,54 @@ import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'deleteAllActivities',
+  name: 'deleteallactivities',
   category: 'User Configuration',
   description: 'Removes all activities from your account.',
 
-  slash: true,
   testOnly: config.debug,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
-    const res = await db.UserData.find({ userID: command.user?.id });
+    const res = await db.UserData.find({ userID: interaction.user?.id });
     if (!res.length) {
-      command.interaction.reply({ content: msg.noActivities() });
+      interaction.reply({ content: msg.noActivities() });
       return;
     }
 
-    await command.interaction.reply({
+    await interaction.reply({
       embeds: [msg.removeAllActivities()],
       components: [msg.removeButtonRow()],
       ephemeral: true
     });
 
     const filter = (btnInt: Discord.MessageComponentInteraction<'cached'>) => {
-      return command.interaction.user.id === btnInt.user.id;
+      return interaction.user.id === btnInt.user.id;
     };
 
-    const collector = command.channel.createMessageComponentCollector({
+    const collector = interaction.channel?.createMessageComponentCollector({
       filter,
       max: 1,
       time: 1000 * 60
     });
 
-    collector.on('collect', (int: Discord.ButtonInteraction) => {
-      switch (int.customId) {
+    collector?.on('collect', (buttonInteraction: Discord.ButtonInteraction) => {
+      switch (buttonInteraction.customId) {
         case 'remove':
-          db.UserData.deleteMany({ userID: command.user?.id }).then(res => {
-            int.update({ embeds: [msg.removedActivitiesCount(res.deletedCount)], components: [] });
-          });
+          db.UserData.deleteMany({ userID: interaction.user?.id }).then(
+            (res: { deletedCount: number }) => {
+              buttonInteraction.update({
+                embeds: [msg.removedActivitiesCount(res.deletedCount)],
+                components: []
+              });
+            }
+          );
 
           break;
         case 'cancel':
-          int.update({ embeds: [msg.cancelled()], components: [] });
+          buttonInteraction.update({ embeds: [msg.cancelled()], components: [] });
           break;
       }
     });
   }
-} as ICommand;
+} as Command;

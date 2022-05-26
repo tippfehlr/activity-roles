@@ -11,5 +11,5 @@ Execution starts at [src/index.ts](./src/index.ts) which
 
 ## Access diagram
 
-**src** is [src/index.ts](./src/index.ts): [architecture.svg](./architecture.svg) \
-[src/modules/commands/](./src/modules/commands/) is used by [wokcommands](https://github.com/AlexzanderFlores/WOKCommands) and therefore by [bot.ts](./src/modules/bot.ts), but it isn't shown on the diagram.
+**src** is [src/index.ts](./src/index.ts): [architecture.svg](./architecture.svg)\
+[src/modules/commands/](./src/modules/commands/) is used by [src/modules/commandHandler.ts](./src/modules/commandHandler.ts) but isn't shown on the diagram because the files aren't imported but dynamically 'require()d'.

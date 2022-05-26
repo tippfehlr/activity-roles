@@ -1,37 +1,34 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 
 export default {
-  name: 'activityStats'.toLowerCase(),
+  name: 'activitystats',
   category: 'Information',
   description: 'Shows an aggregation of activities of users in this guild.',
   requiredPermissions: [],
-
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
-
     const minPercentBold = 50; // maybe put in config.ts
 
-    const memberIDs = command.guild?.members.cache
+    await interaction.guild!.members.fetch();
+    const memberIDs = interaction.guild!.members.cache
       .filter(member => !member.user.bot)
       .map(member => member.id);
     if (!memberIDs) {
-      command.interaction.reply({ embeds: [msg.errorEmbed()] });
+      interaction.reply({ embeds: [msg.errorEmbed()] });
       return;
     }
     const userData = ((await db.UserData.find({}).lean()) as db.UserDataType[]).filter(
       (user: db.UserDataType) => memberIDs.includes(user.userID)
     );
     if (!userData) {
-      command.interaction.reply({ content: msg.noMembersWithActivities() });
-      return;
+      interaction.reply({ content: msg.noMembersWithActivities() });
     }
     const heatMap: { [key: string]: number } = {};
     for (const user of userData) {
@@ -48,6 +45,6 @@ export default {
       if (appendString.length > 2048) break;
       embed.setDescription(appendString);
     }
-    command.interaction.reply({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
   }
-} as ICommand;
+} as Command;

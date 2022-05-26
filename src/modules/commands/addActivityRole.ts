@@ -1,20 +1,17 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  name: 'addActivityRole',
+  name: 'addactivityrole',
   category: 'Configuration',
   description: 'Adds an activity role to your guild.',
   requiredPermissions: ['MANAGE_ROLES'],
 
-  slash: true,
   testOnly: config.debug,
   guildOnly: true,
 
-  minArgs: 2,
-  expectedArgs: '<num1> <num2>',
   options: [
     {
       name: 'role',
@@ -42,58 +39,55 @@ export default {
       type: 'BOOLEAN'
     }
   ],
-
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
-
-    const [roleID, activityName] = command.args;
+    const roleID = interaction.options.getString('role')!;
+    const activityName = interaction.options.getString('activity_name')!;
     if (activityName.length > 1024) return msg.inputTooLong();
-    console.log(command.args);
-    const exactActivityName = command.args[2] === 'true';
-    const live = command.args[3] === 'true';
-    const role = command?.guild?.roles.cache.get(roleID);
+    const exactActivityName = interaction.options.getBoolean('exact_activity_name')!;
+    const live = interaction.options.getBoolean('live')!;
+    const role = interaction.guild!.roles.cache.get(roleID);
     if (!role) {
-      command.interaction.reply({ content: msg.roleDoesNotExist(), ephemeral: true });
-      return;
+      return { content: msg.roleDoesNotExist(), ephemeral: true };
     }
     if (role.name === '@everyone') {
-      command.interaction.reply({ content: msg.cantUseEveryone(), ephemeral: true });
+      interaction.reply({ content: msg.cantUseEveryone(), ephemeral: true });
       return;
     }
     if (
       await db.GuildData.findOne({
-        guildID: command?.guild?.id,
+        guildID: interaction.guild!.id,
         roleID: roleID,
         activityName: activityName
       })
     ) {
-      command.interaction.reply({
+      interaction.reply({
         content: msg.activityRoleExists(),
         ephemeral: true
       });
       return;
     } else {
       new db.GuildData({
-        guildID: command?.guild?.id,
+        guildID: interaction?.guild!.id,
         roleID: roleID,
         activityName: activityName,
         exactActivityName: exactActivityName,
         live: live
       }).save();
-      if (command.guild) db.checkAllRoles(command.guild);
+      if (interaction.guild) db.checkAllRoles(interaction.guild);
       msg.log.addActivityRole(
-        String(command?.guild?.name),
-        String(command?.guild?.id),
+        String(interaction.guild!.name),
+        String(interaction.guild!.id),
         role.name,
         roleID,
         activityName,
         exactActivityName,
         live
       );
-      command.interaction.reply({
+      interaction.reply({
         embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName, live)],
         ephemeral: true
       });
     }
   }
-} as ICommand;
+} as Command;

@@ -1,19 +1,15 @@
-import { ICommand } from 'wokcommands';
+import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
 import * as db from '../db';
 export default {
-  name: 'toggleAutoRole',
+  name: 'toggleautorole',
   category: 'User Configuration',
   description: 'Enables/Disables automatic role assignment',
 
-  slash: true,
   testOnly: config.debug,
 
-  minArgs: 0,
-  maxArgs: 1,
-  expectedArgs: '[num1]',
   options: [
     {
       name: 'enabled',
@@ -23,28 +19,23 @@ export default {
     }
   ],
 
-  callback: async command => {
+  callback: async interaction => {
     msg.log.command();
 
-    let disableUser: boolean | undefined;
-    if (command.args.length === 0) {
-      // use var to make variable accessible down below
-      disableUser = undefined;
-    } else if (command.args[0]) {
-      disableUser = command.args[0] === 'true';
-    }
-
-    const res: db.UserConfigType | null = await db.UserConfig.findOne({ userID: command.user.id });
+    const autoRole = interaction.options.getBoolean('enabled');
+    const res: db.UserConfigType | null = await db.UserConfig.findOne({
+      userID: interaction.user.id
+    });
     if (!res) {
-      await db.checkUser(command.user);
-      await command.interaction.reply({ embeds: [msg.errorEmbed()] });
+      await db.checkUser(interaction.user);
+      await interaction.reply({ embeds: [msg.errorEmbed()] });
       return;
     }
-    if (disableUser === undefined) {
-      command.interaction.reply({ embeds: [msg.userStatus(res.autoRole)] });
+    if (autoRole === null) {
+      interaction.reply({ embeds: [msg.userStatus(res.autoRole)] });
     } else {
-      await db.UserConfig.findOneAndUpdate({ userID: command.user.id }, { autoRole: disableUser });
-      command.interaction.reply({ embeds: [msg.modifiedAutoRole(disableUser)] });
+      await db.UserConfig.findOneAndUpdate({ userID: interaction.user.id }, { autoRole });
+      interaction.reply({ embeds: [msg.modifiedAutoRole(autoRole)] });
     }
   }
-} as ICommand;
+} as Command;
