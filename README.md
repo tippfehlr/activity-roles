@@ -4,8 +4,9 @@
 [![](https://img.shields.io/github/license/tippf3hlr/activity-roles)](./LICENSE)
 [![](https://img.shields.io/github/issues/tippf3hlr/activity-roles)](https://github.com/tippf3hlr/activity-roles/issues)
 [![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles)](https://github.com/tippf3hlr/activity-roles#changelog)\
-A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing.\
-Intended to show which people play what game and therefore give them access to specific channels etc.\
+A Discord bot that gives and removes roles to/from users depending on their discord presence.\
+It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\
+Ideal for creating specific-game(s)-only channels. The bot is in active development, so if you need anything, feel free to join my [support guild](https://discord.gg/3K9Yx4ufN7) or open an [issue](https://github.com/tippf3hlr/activity-roles/issues/new)\
 Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 ## Vocabulary
@@ -20,11 +21,11 @@ Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 ## Help
 
-I always try to make things self-explanatory, but if something is unclear feel free to open an issue or message me on Discord (tippfehlr#3575)
+I always try to make things self-explanatory, but if something is unclear feel free to join my [support guild](https://discord.gg/3K9Yx4ufN7) or open an [issue](https://github.com/tippf3hlr/activity-roles/issues/new).
 
 ## Privacy
 
-The bot has activity data linked to discord accounts, but **I will never do anything with that data that differs from the intended usage from the bot (except looking at it and being sad because nobody uses it).**
+To function properly, the bot needs to store activities linked to discord account IDs in its database. The data is stored securely and will never be used for any purpose other than the bot's functioning.
 
 Additionally, you can completely opt out of the collection with `/toggleAutoRole` and manage your activities yourself if you wish to still get the roles.
 
@@ -32,22 +33,3 @@ Additionally, you can completely opt out of the collection with `/toggleAutoRole
 
 Any form of contribution is highly appreciated, may it be a bug, a PR or a feature request.\
 Help about the project structure can be found in [architecture.md](./architecture.md).
-
-## License
-
-[![](https://img.shields.io/badge/license-AGPL--3.0-orange?style=for-the-badge)](./LICENSE)
-
-## Changelog
-
-[![](https://img.shields.io/badge/version-v1.2.2-blue?style=for-the-badge)]()
- - Make `/listActivities` sorted
- - Fix `/activityStats` not showing the correct number of users and increase minimum user threshold for bold text to 50%.
-
-[![](https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge)]()\
-Fix `Encountered duplicate activity` warn: Only show if more than one activity is found.
-
-[![](https://img.shields.io/badge/version-v1.2.0-blue?style=for-the-badge)]()\
-Add `/activityStats`: Shows activities in this guild.
-
-[![](https://img.shields.io/badge/version-v1.1.2-blue?style=for-the-badge)]()\
-Make the not exact activity names non-case-sensitive

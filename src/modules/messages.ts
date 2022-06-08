@@ -486,8 +486,10 @@ export default {
           iconURL: config.botAuthorLogoLink
         })
         .setDescription(
-          "A discord bot that gives and removes roles from users dependent on their discord presence, but unlike other bots it doesn't remove them if you stop playing. \n\n\
-          Intended to show which people play what game and to therefore give them access to specific channels etc."
+          'A Discord bot that gives and removes roles to/from users based on their discord presence.\n\
+          It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n\
+          Ideal for creating specific-game(s)-only channels.\n\
+          The bot is in active development, so if you need anything, feel free to join my support guild: https://discord.gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
         )
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
