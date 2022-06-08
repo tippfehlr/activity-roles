@@ -256,13 +256,13 @@ export async function checkAllRoles(guild: Discord.Guild) {
 }
 export async function setGuildCheckInterval(client: Discord.Client) {
   if (!config.guildCheckInterval.enabled) return;
-  let guild: GuildDataType[];
+  let guilds: GuildDataType[];
   if (config.guildCheckInterval.onlyWithLiveRole) {
-    guild = await GuildData.find({ live: true }).lean();
+    guilds = await GuildData.find({ live: true }).lean();
   } else {
-    guild = await GuildData.find().lean();
+    guilds = await GuildData.find().lean();
   }
-  const guildIDs = [...new Set(guild.map(elmt => elmt.guildID))];
+  const guildIDs = [...new Set(guilds.map(elmt => elmt.guildID))];
   client.guilds.cache
     .filter(guild => guildIDs.includes(guild.id))
     .forEach(guild => {
