@@ -1,5 +1,4 @@
 import {
-  ApplicationCommand,
   ApplicationCommandOptionData,
   Client,
   CommandInteraction,
@@ -45,7 +44,6 @@ export default class CommandHandler {
       this.options.commandsDir,
       this.options.commandFileExtension
     );
-    this.updateCommands();
 
     client.on('interactionCreate', async interaction => {
       if (!interaction.isCommand()) return;
@@ -88,113 +86,5 @@ export default class CommandHandler {
       commands.set(command.name, command);
     }
     return commands as Map<string, Command>;
-  }
-
-  updateCommands() {
-    this.client.application?.commands.fetch().then(() => {
-      if (this.client.application?.commands.cache) {
-        for (const [, command] of this.client.application.commands.cache) {
-          this.checkCommand(command);
-        }
-      }
-      this.client.guilds.fetch();
-      for (const [, guild] of this.client.guilds.cache) {
-        guild.commands.fetch().then(() => {
-          for (const [, command] of guild.commands.cache) {
-            this.checkCommand(command);
-          }
-        });
-      }
-    });
-  }
-
-  async checkCommand(applicationCommand: ApplicationCommand) {
-    const command = this.commands.get(applicationCommand.name);
-    if (command) {
-      this.updateCommand(command, applicationCommand);
-    } else {
-      this.deleteCommand(applicationCommand);
-    }
-    return;
-  }
-
-  async updateCommand(command: Command, applicationCommand: ApplicationCommand) {
-    if (applicationCommand.description !== command.description) {
-      applicationCommand.setDescription(command.description);
-      log.info(
-        `Updated the description of /${command.name} in ${
-          applicationCommand.guild
-            ? 'guild ' + applicationCommand.guild.name + ' (' + applicationCommand.guild.id + ')'
-            : 'global'
-        }.`
-      );
-    }
-    if (!this.isCommandOptionsEqual(applicationCommand, command)) {
-      applicationCommand.setOptions(command.options ? command.options : []);
-      log.info(
-        `Updated the options of /${command.name} in ${
-          applicationCommand.guild
-            ? 'guild ' + applicationCommand.guild.name + ' (' + applicationCommand.guild.id + ')'
-            : 'global'
-        }.`
-      );
-    }
-    if (command.testOnly && !applicationCommand.guild) {
-      this.deleteCommand(applicationCommand);
-      this.createCommand(command);
-    }
-  }
-
-  isAllUndefined(obj: { [key: string]: any }) {
-    for (const key of Object.keys(obj)) {
-      if (obj[key] !== undefined) return false;
-    }
-  }
-
-  isCommandOptionsEqual(applicationCommand: ApplicationCommand, command: Command): boolean {
-    for (const x in applicationCommand.options) {
-      const applicationCommandOption: { [key: string]: any } = applicationCommand.options[x];
-      const commandOption: { [key: string]: any } | undefined = command.options?.[x];
-      if (
-        (commandOption === undefined || this.isAllUndefined(commandOption)) &&
-        !this.isAllUndefined(applicationCommandOption)
-      ) {
-        return false;
-      }
-      for (const key of Object.keys(applicationCommand.options[x])) {
-        if (applicationCommandOption[key] !== commandOption?.[key]) return false;
-      }
-    }
-    return true;
-  }
-
-  createCommand(command: Command) {
-    if (command.testOnly) {
-      for (const guildID of command.testOnly) {
-        const guild = this.client.guilds.cache.get(guildID);
-        if (guild) {
-          guild.commands.create({
-            name: command.name,
-            description: command.description,
-            options: command.options,
-            type: 'CHAT_INPUT'
-          });
-          log.info(`Created command /${command.name} in guild ${guild.name} (${guild.id}).`);
-        } else {
-          log.warn(`Guild ${guildID} not found when adding guild command /${command.name}`);
-        }
-      }
-    } else {
-      this.client.application?.commands.create({
-        name: command.name,
-        description: command.description,
-        options: command.options
-      });
-      log.info(`Created command /${command.name} in global.`);
-    }
-  }
-  deleteCommand(applicationCommand: ApplicationCommand) {
-    applicationCommand.delete();
-    log.info(`Deleted command ${applicationCommand.name}.`);
   }
 }

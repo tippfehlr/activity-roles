@@ -35,6 +35,7 @@
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
+    "sync": "ts-node ./src/syncCommands.ts",
     "dev": "nodemon -i export.json -i activityRolesList.txt",
     "tsc-win": "npx tsc --outDir out/ && powershell -Command \"(gc out/src/modules/bot.js) -replace 'typeScript: true', 'typeScript: false' | Out-File -encoding ASCII out/src/modules/bot.js\"",
     "tsc": "npx tsc --outDir out/ && sed -i \"s/typeScript: true/typeScript: false/g\" out/src/modules/bot.js",
