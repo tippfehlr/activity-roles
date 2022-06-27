@@ -7,7 +7,7 @@ import * as db from '../db';
 export default {
   name: 'activitystats',
   category: 'Information',
-  description: 'Shows an aggregation of activities of users in this guild.',
+  description: 'Shows an aggregation of activities from users in this guild.',
   requiredPermissions: [],
   testOnly: config.debug,
   guildOnly: true,
@@ -16,9 +16,8 @@ export default {
     msg.log.command();
     const minPercentBold = 50; // maybe put in config.ts
 
-    await interaction.guild!.members.fetch();
-    const memberIDs = interaction.guild!.members.cache
-      .filter(member => !member.user.bot)
+    const memberIDs = interaction
+      .guild!.members.cache.filter(member => !member.user.bot)
       .map(member => member.id);
     if (!memberIDs) {
       interaction.reply({ embeds: [msg.errorEmbed()] });
