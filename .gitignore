@@ -1,10 +1,11 @@
-.env
+*.env
 config.ts
 *.log
 node_modules/
 out/
 activityRolesList.txt
 export.json
+scripts/
 
 # my script to start with pino-logflare, hidden because of credentials
 dev-logflare.cmd

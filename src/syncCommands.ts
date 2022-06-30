@@ -2,12 +2,16 @@ import Discord, { ApplicationCommand } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { log } from './modules/messages';
+import dotenv from 'dotenv';
 
 import { Command } from './modules/commandHandler';
 import config from '../config';
-const commandsDir = './modules/commands/';
+dotenv.config();
+const client = new Discord.Client({
+  intents: ['GUILDS', 'GUILD_INTEGRATIONS']
+});
 
-const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_INTEGRATIONS'] });
+const commandsDir = './modules/commands/';
 
 client.on('ready', () => {
   client.user?.setPresence({
@@ -23,12 +27,19 @@ client.on('ready', () => {
 let updatedCommands = 0;
 let createdCommands = 0;
 let deletedCommands = 0;
+let production = false;
 
-client.login(config.TOKEN).then(async () => {
+if (process.argv[2] === 'prod') production = true;
+
+client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(async () => {
   await client.application?.commands.fetch();
   await client.guilds.fetch();
   for (const [, guild] of client.guilds.cache) {
-    await guild.commands.fetch();
+    try {
+      await guild.commands.fetch();
+    } catch (error) {
+      log.error(error);
+    }
   }
 
   const commands = new Map() as Map<string, Command>;
@@ -47,6 +58,7 @@ client.login(config.TOKEN).then(async () => {
         throw new Error(`Command option name ${option.name} is invalid`);
       }
     }
+    if (production) command.testOnly = false;
     commands.set(command.name, command);
   }
 
@@ -175,8 +187,8 @@ client.login(config.TOKEN).then(async () => {
         options: command.options
       });
       log.info(`Created command /${command.name} in global.`);
+      createdCommands++;
     }
-    createdCommands++;
   }
 
   function isCommandOptionsEqual(
