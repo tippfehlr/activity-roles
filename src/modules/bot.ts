@@ -80,6 +80,43 @@ client.on('disconnect', () => {
 
 client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
 
+client.on('roleDelete', async role => {
+  const guildRole = (await db.GuildData.findOne({
+    roleID: role.id,
+    guildID: role.guild.id
+  })) as db.GuildDataType;
+  const res = await db.GuildData.deleteMany({ roleID: role.id, guildID: role.guild.id });
+  if (res.deletedCount > 0) {
+    msg.log.addRemoveActivityRole(
+      role.guild.name,
+      role.guild.id,
+      role.name,
+      role.id,
+      guildRole.activityName,
+      guildRole.exactActivityName,
+      guildRole.live,
+      false,
+      true
+    );
+    const guildConfig = (await db.GuildConfig.findOne({
+      _id: role.guild.id
+    }).lean()) as db.GuildConfigType;
+    const logChannel = role.guild.channels.cache.find(
+      channel => channel.id === guildConfig.logChannelID
+    );
+    if (logChannel && logChannel.isText()) {
+      logChannel.send(
+        msg.logChannel.forceDeletedActivityRole(
+          guildRole.activityName,
+          role.id,
+          guildRole.exactActivityName,
+          guildRole.live
+        )
+      );
+    }
+  }
+});
+
 export function connect() {
   return client.login(config.TOKEN);
 }

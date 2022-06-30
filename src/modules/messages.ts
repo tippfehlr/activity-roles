@@ -318,6 +318,22 @@ export default {
       .setDescription('**Activities in this guild**')
       .setColor(config.embedColor);
   },
+  logChannel: {
+    forceDeletedActivityRole: (
+      activityName: string,
+      roleID: Discord.Role['id'],
+      exactActivityName: boolean,
+      live: boolean
+    ) => {
+      return new Discord.MessageEmbed()
+        .setColor('GREY')
+        .setDescription('Deleted Activity Role because Role was deleted')
+        .addField('activityName', activityName)
+        .addField('roleID', roleID)
+        .addField('exactActivityName', String(exactActivityName))
+        .addField('live', String(live));
+    }
+  },
 
   log: {
     /**
