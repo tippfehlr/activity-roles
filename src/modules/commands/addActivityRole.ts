@@ -75,14 +75,15 @@ export default {
         live: live
       }).save();
       if (interaction.guild) db.checkAllRoles(interaction.guild);
-      msg.log.addActivityRole(
+      msg.log.addRemoveActivityRole(
         String(interaction.guild!.name),
         String(interaction.guild!.id),
         role.name,
         roleID,
         activityName,
         exactActivityName,
-        live
+        live,
+        true
       );
       interaction.reply({
         embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName, live)],

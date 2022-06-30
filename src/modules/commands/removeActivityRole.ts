@@ -65,20 +65,35 @@ export default {
       time: 1000 * 60
     });
 
-    collector?.on('collect', (int: Discord.ButtonInteraction) => {
+    collector?.on('collect', async (int: Discord.ButtonInteraction) => {
       switch (int.customId) {
-        case 'remove':
-          db.GuildData.deleteOne({
+        case 'remove': {
+          const guildRole = (await db.GuildData.findOne({
+            guildID: interaction?.guild!.id,
+            roleID: role.id
+          })) as db.GuildDataType;
+          db.GuildData.remove({
             guildID: interaction?.guild!.id,
             roleID: role.id
           }).then((res: { deletedCount: number }) => {
             if (res.deletedCount > 0) {
               int.update({ embeds: [msg.removed()], components: [] });
+              msg.log.addRemoveActivityRole(
+                interaction.guild!.name,
+                interaction.guild!.id,
+                role.name,
+                role.id,
+                activityName,
+                guildRole.exactActivityName,
+                guildRole.live,
+                false
+              );
             } else {
               int.update({ embeds: [msg.errorEmbed()], components: [] });
             }
           });
           break;
+        }
         case 'cancel':
           int.update({ embeds: [msg.cancelled()], components: [] });
           break;

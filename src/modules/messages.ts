@@ -378,17 +378,23 @@ export default {
      * @param {boolean} exactActivityName - Whether the activity name has to be exact.
      * @returns None
      */
-    addActivityRole: async (
+    addRemoveActivityRole: async (
       guildName: Discord.BaseGuild['name'],
       guildID: Discord.BaseGuild['id'],
       roleName: Discord.Role['name'],
       roleID: Discord.Role['id'],
       activityName: string,
       exactActivityName: boolean,
-      live: boolean
+      live: boolean,
+      added: boolean,
+      forced?: boolean
     ) => {
       log.info(
-        `New activity role added: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}`
+        `${added ? 'New a' : 'A'}ctivity role ${
+          added ? 'added' : 'removed'
+        }: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}${
+          forced ? 'because role was deleted.' : ''
+        }`
       );
     },
     /**
