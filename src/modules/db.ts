@@ -31,7 +31,7 @@ export async function connect(uri: string) {
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   msg.log.activity();
-  if (await GuildConfig.findById(guild.id)) return;
+  if (await GuildConfig.findById(guild.id).lean()) return;
   if (!guild.me?.permissions.has('MANAGE_CHANNELS')) return;
   const channel = await guild.channels.create('activity-roles', {
     type: 'GUILD_TEXT',
@@ -52,7 +52,7 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
  */
 export async function checkUser(user: Discord.User): Promise<boolean> {
   msg.log.activity();
-  if (!(await UserConfig.findById(user.id).exec())) {
+  if (!(await UserConfig.findById(user.id).lean())) {
     await new UserConfig({
       _id: user.id,
       autoRole: true

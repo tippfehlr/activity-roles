@@ -41,13 +41,13 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
 
   for (const activity of newMember.activities) {
     if (activity.name !== 'Custom Status') {
-      const docs = await db.UserData.findOne({
-        userID: newMember.user.id,
-        activityName: activity.name
-      }).lean();
-
-      if (!docs) {
-        new db.UserData({
+      if (
+        !(await db.UserData.findOne({
+          userID: newMember.user.id,
+          activityName: activity.name
+        }).lean())
+      ) {
+        await new db.UserData({
           userID: newMember.user?.id,
           activityName: activity.name,
           autoRole: true,
