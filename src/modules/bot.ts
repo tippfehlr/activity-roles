@@ -31,23 +31,26 @@ client.on('ready', () => {
 
 const processingUser = new Map<string, boolean>();
 client.on('presenceUpdate', async (oldMember, newMember) => {
-  await newMember.member?.fetch();
+  await newMember.member?.fetch(); // is it necessary to fetch the whole member?
   if (!newMember?.user || !newMember.guild || !newMember.member) return;
-  if (newMember.member.user.bot) return;
   if (processingUser.has(newMember.user?.id)) return;
+  if (newMember.member.user.bot) return;
   processingUser.set(newMember.user?.id, true);
+
   await db.checkGuild(newMember.guild);
   await db.checkUser(newMember.user);
 
   for (const activity of newMember.activities) {
     if (activity.name !== 'Custom Status') {
+      db.checkMemberLiveRoles(newMember.member, newMember.activities);
+
       if (
-        !(await db.UserData.findOne({
+        await db.UserData.findOne({
           userID: newMember.user.id,
           activityName: activity.name
-        }).lean())
+        }).lean()
       ) {
-        await new db.UserData({
+        new db.UserData({
           userID: newMember.user?.id,
           activityName: activity.name,
           autoRole: true,

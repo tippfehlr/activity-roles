@@ -170,8 +170,8 @@ async function checkMemberRoles(
 
   for (const guildActivityRole of guildActivityRoles) {
     await member.fetch();
-    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
     const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
+    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
     if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
 
     let userShouldHaveRole;
@@ -188,6 +188,63 @@ async function checkMemberRoles(
         guildActivityRole.exactActivityName
       );
     }
+
+    if (userShouldHaveRole && !userHasRole) {
+      manageUserRole(
+        true,
+        role,
+        highestBotRole,
+        member,
+        guildActivityRole,
+        guildConfig,
+        guildActivityRole.live
+      );
+      return;
+    } else if (!userShouldHaveRole && userHasRole) {
+      manageUserRole(
+        false,
+        role,
+        highestBotRole,
+        member,
+        guildActivityRole,
+        guildConfig,
+        guildActivityRole.live
+      );
+      return;
+    }
+  }
+}
+
+export async function checkMemberLiveRoles(
+  member: Discord.GuildMember,
+  activities: Discord.Activity[]
+) {
+  const guildConfig = (await GuildConfig.findById(member.guild.id).lean()) as GuildConfigType;
+
+  const guildActivityLiveRoles = (
+    (await GuildData.find({
+      guildID: member.guild.id
+    }).lean()) as GuildDataType[]
+  ).filter(elmt => elmt.live);
+  const userConfig = (await UserConfig.findById(member.user.id)) as UserConfigType;
+  if (!userConfig?.autoRole) return;
+
+  const highestBotRole = member?.guild?.me?.roles.highest;
+  if (!highestBotRole) return;
+
+  for (const guildActivityRole of guildActivityLiveRoles) {
+    const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
+    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
+    if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
+
+    const userShouldHaveRole =
+      activities.filter(activity => {
+        if (guildActivityRole.exactActivityName) {
+          return guildActivityRole.activityName === activity.name;
+        } else {
+          return guildActivityRole.activityName.toLowerCase().includes(activity.name);
+        }
+      }).length !== 0;
 
     if (userShouldHaveRole && !userHasRole) {
       manageUserRole(
