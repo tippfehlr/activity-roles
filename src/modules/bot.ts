@@ -42,7 +42,7 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
 
   for (const activity of newMember.activities) {
     if (activity.name !== 'Custom Status') {
-      db.checkMemberLiveRoles(newMember.member, newMember.activities);
+      // db.checkMemberLiveRoles(newMember.member, newMember.activities);
 
       if (
         await db.UserData.findOne({
@@ -66,8 +66,8 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
       }
     }
   }
+  await db.checkRoles(newMember.member);
   processingUser.delete(newMember.user?.id);
-  db.checkRoles(newMember.member);
 });
 
 client.on('guildCreate', guild => {
