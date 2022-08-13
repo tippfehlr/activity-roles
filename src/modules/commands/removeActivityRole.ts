@@ -72,7 +72,7 @@ export default {
             guildID: interaction?.guild!.id,
             roleID: role.id
           })) as db.GuildDataType;
-          db.GuildData.remove({
+          db.GuildData.deleteMany({
             guildID: interaction?.guild!.id,
             roleID: role.id
           }).then((res: { deletedCount: number }) => {

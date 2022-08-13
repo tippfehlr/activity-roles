@@ -41,12 +41,14 @@ export default {
   ],
   callback: async interaction => {
     msg.log.command();
-    const roleID = interaction.options.getString('role')!;
-    const activityName = interaction.options.getString('activity_name')!;
+    const activityName = interaction.options.getString('activity_name');
+    if (!activityName) return;
     if (activityName.length > 1024) return msg.inputTooLong();
-    const exactActivityName = interaction.options.getBoolean('exact_activity_name')!;
-    const live = interaction.options.getBoolean('live')!;
-    const role = interaction.guild!.roles.cache.get(roleID);
+    const exactActivityName = interaction.options.getBoolean('exact_activity_name');
+    if (exactActivityName === null) return;
+    const live = interaction.options.getBoolean('live');
+    if (live === null) return;
+    const role = interaction.options.getRole('role');
     if (!role) {
       return { content: msg.roleDoesNotExist(), ephemeral: true };
     }
@@ -57,7 +59,7 @@ export default {
     if (
       await db.GuildData.findOne({
         guildID: interaction.guild!.id,
-        roleID: roleID,
+        roleID: role.id,
         activityName: activityName
       })
     ) {
@@ -69,7 +71,7 @@ export default {
     } else {
       new db.GuildData({
         guildID: interaction?.guild!.id,
-        roleID: roleID,
+        roleID: role.id,
         activityName: activityName,
         exactActivityName: exactActivityName,
         live: live
@@ -79,7 +81,7 @@ export default {
         String(interaction.guild!.name),
         String(interaction.guild!.id),
         role.name,
-        roleID,
+        role.id,
         activityName,
         exactActivityName,
         live,
