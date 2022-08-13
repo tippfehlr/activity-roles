@@ -105,14 +105,16 @@ client.on('roleDelete', async role => {
       channel => channel.id === guildConfig.logChannelID
     );
     if (logChannel && logChannel.isText()) {
-      logChannel.send(
-        msg.logChannel.forceDeletedActivityRole(
-          guildRole.activityName,
-          role.id,
-          guildRole.exactActivityName,
-          guildRole.live
-        )
-      );
+      logChannel.send({
+        embeds: [
+          msg.logChannel.forceDeletedActivityRole(
+            guildRole.activityName,
+            role.id,
+            guildRole.exactActivityName,
+            guildRole.live
+          )
+        ]
+      });
     }
   }
 });

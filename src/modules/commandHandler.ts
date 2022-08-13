@@ -15,7 +15,7 @@ export interface Command {
   description: string;
   category: string;
   requiredPermissions?: PermissionString[];
-  testOnly?: StringArrayNotEmpty | false;
+  testOnly?: string[] | false;
   guildOnly?: boolean;
   options?: ApplicationCommandOptionData[];
   callback(interaction: CommandInteraction): Promise<void>;
