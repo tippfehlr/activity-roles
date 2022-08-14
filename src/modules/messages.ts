@@ -265,8 +265,8 @@ export default {
       .setTitle(`Activity List for @${userName}#${userDiscriminator}`)
       .setColor(config.embedColor)
       .setDescription(
-        'This is a list of all the activities that you have stored for this user.\n\
-        Delete them with `/deleteActivity` or `/deleteAllActivities` and add one with `/addActivity`.\n\n'
+        'This is a list of all the activities that you have stored for this user.\n' +
+          'Delete them with `/deleteActivity` or `/deleteAllActivities` and add one with `/addActivity`.\n\n'
       );
   },
   activityMissing: () => {
@@ -284,8 +284,8 @@ export default {
     return new Discord.MessageEmbed()
       .setTitle('User Status')
       .setDescription(
-        `The bot is currently ${autoRole ? '**enabled**' : '**disabled**'} for this user.\n\n\
-        You can change this with the command \`/toggleAutoRole\`.`
+        `The bot is currently ${autoRole ? '**enabled**' : '**disabled**'} for this user.\n\n` +
+          'You can change this with the command `/toggleAutoRole`.'
       )
       .setColor(autoRole ? 'GREEN' : 'RED');
   },
@@ -517,10 +517,10 @@ export default {
           iconURL: config.botAuthorLogoLink
         })
         .setDescription(
-          'A Discord bot that gives and removes roles to/from users based on their discord presence.\n\
-          It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n\
-          Ideal for creating specific-game(s)-only channels.\n\
-          The bot is in active development, so if you need anything, feel free to join my support guild: https://discord.gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
+          'A Discord bot that gives and removes roles to/from users based on their discord presence.\n' +
+            'It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n' +
+            'Ideal for creating specific-game(s)-only channels.\n' +
+            'The bot is in active development, so if you need anything, feel free to join my support guild: https://discord.gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
         )
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
@@ -528,11 +528,11 @@ export default {
         .addField('Commands:\n`/activityStats`', 'Shows activities in this guild.')
         .addField(
           '`/addActivityRole <role> <activity> <exactActivityName> <live>`',
-          "Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.\n\
-          `<role>` is the role that gets added to users when they have the right `<activity>`.\n\
-          If `<exactActivityName>` is set to True, the role will only be added if the user has the exact activity name.\n\
-          If it is false, `<activity>` can also just be a substring of the user's activity name.\n\
-          If `<live>` is set to True, the role will be only added when the user currently has the activity, and gets removed once it doesn't anymore."
+          'Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.\n' +
+            '`<role>` is the role that gets added to users when they have the right `<activity>`.\n' +
+            'If `<exactActivityName>` is set to True, the role will only be added if the user has the exact activity name.\n' +
+            "If it is false, `<activity>` can also just be a substring of the user's activity name.\n" +
+            "If `<live>` is set to True, the role will be only added when the user currently has the activity, and gets removed once it doesn't anymore."
         )
         .addField('`/deleteActivity <Activity>`', 'Removes an activity from your account.')
         .addField('`/deleteAllActivities`', 'Removes all activities from your account.')
