@@ -74,7 +74,7 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
   }
 
   for (const [, command] of commands) {
-    if (command.testOnly && command.testOnly !== []) {
+    if (command.testOnly && command.testOnly.length > 0) {
       for (const guildID of command.testOnly) {
         const guild = client.guilds.cache.find(guild => guild.id === guildID);
         const applicationCommand = guild?.commands.cache.find(
@@ -143,7 +143,7 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
       updated = true;
     }
     if (
-      (command.testOnly && command.testOnly !== [] && !applicationCommand.guild) ||
+      (command.testOnly && command.testOnly.length > 0 && !applicationCommand.guild) ||
       (!command.testOnly && applicationCommand.guild)
     ) {
       deleteCommand(applicationCommand);
@@ -164,7 +164,7 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
   }
 
   function createCommand(command: Command) {
-    if (command.testOnly && command.testOnly !== []) {
+    if (command.testOnly && command.testOnly.length > 0) {
       for (const guildID of command.testOnly) {
         const guild = client.guilds.cache.get(guildID);
         if (guild) {
