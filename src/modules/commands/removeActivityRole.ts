@@ -32,6 +32,7 @@ export default {
   ],
 
   callback: async interaction => {
+    await interaction.deferReply({ ephemeral: true });
     msg.log.command();
 
     const role = interaction.options.getRole('role')!;
@@ -42,17 +43,15 @@ export default {
       roleID: role.id
     });
     if (!data) {
-      interaction.reply({
-        content: msg.activityRoleDoesNotExist(),
-        ephemeral: true
+      interaction.editReply({
+        content: msg.activityRoleDoesNotExist()
       });
       return;
     }
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [msg.removeActivityRoleQ(activityName, role.id, data.exactActivityName, data.live)],
-      components: [msg.removeButtonRow()],
-      ephemeral: true
+      components: [msg.removeButtonRow()]
     });
 
     const filter = (btnInt: Discord.MessageComponentInteraction<'cached'>) => {

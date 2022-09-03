@@ -20,6 +20,7 @@ export default {
   ],
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
 
     const autoRole = interaction.options.getBoolean('enabled');
@@ -28,14 +29,14 @@ export default {
     });
     if (!res) {
       await db.checkUser(interaction.user);
-      await interaction.reply({ embeds: [msg.errorEmbed()] });
+      await interaction.editReply({ embeds: [msg.errorEmbed()] });
       return;
     }
     if (autoRole === null) {
-      interaction.reply({ embeds: [msg.userStatus(res.autoRole)] });
+      interaction.editReply({ embeds: [msg.userStatus(res.autoRole)] });
     } else {
       await db.UserConfig.findOneAndUpdate({ userID: interaction.user.id }, { autoRole });
-      interaction.reply({ embeds: [msg.modifiedAutoRole(autoRole)] });
+      interaction.editReply({ embeds: [msg.modifiedAutoRole(autoRole)] });
     }
   }
 } as Command;

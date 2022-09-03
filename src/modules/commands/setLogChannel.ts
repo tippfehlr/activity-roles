@@ -24,13 +24,14 @@ export default {
   ],
 
   callback: async interaction => {
+    await interaction.deferReply({ ephemeral: true });
     msg.log.command();
     const channel = interaction.options.getChannel('channel');
     if (channel) {
       if (channel?.type === 'GUILD_TEXT') {
         changeLogChannel(interaction, channel);
       } else {
-        interaction.reply({ embeds: [msg.noTextChannel(channel.id)], ephemeral: true });
+        interaction.editReply({ embeds: [msg.noTextChannel(channel.id)] });
       }
     } else {
       if (interaction.channel) changeLogChannel(interaction, interaction.channel);
@@ -46,11 +47,11 @@ async function changeLogChannel(
     interaction.guild!.id
   );
   if (currentLogChannel?.logChannelID === channel.id) {
-    interaction.reply({ embeds: [msg.alreadyIsLogChannel()], ephemeral: true });
+    interaction.editReply({ embeds: [msg.alreadyIsLogChannel()] });
     return;
   }
   await db.GuildConfig.updateOne({ _id: interaction.guild!.id }, { logChannelID: channel.id });
-  interaction.reply({ embeds: [msg.logChannelSet(channel)], ephemeral: true });
+  interaction.editReply({ embeds: [msg.logChannelSet(channel)] });
   channel.send({ embeds: [msg.newLogChannel()] });
   return;
 }

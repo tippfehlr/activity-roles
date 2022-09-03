@@ -13,11 +13,12 @@ export default {
   testOnly: config.debug,
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
 
     const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
     if (res.length === 0) {
-      interaction.reply({ content: msg.noActivities() });
+      interaction.editReply({ content: msg.noActivities() });
       return;
     } else {
       let addToDescription = '';
@@ -31,7 +32,7 @@ export default {
       });
       baseEmbed.setDescription(baseEmbed.description + addToDescription);
 
-      interaction.reply({ embeds: [baseEmbed] });
+      interaction.editReply({ embeds: [baseEmbed] });
     }
   }
 } as Command;

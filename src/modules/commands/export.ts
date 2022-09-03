@@ -15,6 +15,7 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
@@ -32,7 +33,7 @@ export default {
       ]);
     }
     fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
-    await interaction.reply({ files: [config.exportFileName] });
+    await interaction.editReply({ files: [config.exportFileName] });
     fs.unlinkSync(config.exportFileName);
   }
 } as Command;

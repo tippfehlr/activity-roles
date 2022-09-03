@@ -16,13 +16,14 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
 
     const res: db.GuildDataType[] = await db.GuildData.find({
       guildID: interaction.guild!.id
     });
     if (res.length === 0) {
-      interaction.reply({ content: msg.noActivityRoles() });
+      interaction.editReply({ content: msg.noActivityRoles() });
       return;
     }
     const array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
@@ -41,7 +42,7 @@ export default {
       }
     });
     fs.writeFileSync(config.listRolesFileName, response);
-    await interaction.reply({
+    await interaction.editReply({
       /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName]
     });
     fs.unlinkSync(config.listRolesFileName);

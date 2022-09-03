@@ -15,18 +15,18 @@ export default {
   testOnly: config.debug,
 
   callback: async interaction => {
+    await interaction.deferReply({ ephemeral: true });
     msg.log.command();
 
     const res = await db.UserData.find({ userID: interaction.user?.id });
     if (!res.length) {
-      interaction.reply({ content: msg.noActivities() });
+      interaction.editReply({ content: msg.noActivities() });
       return;
     }
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [msg.removeAllActivities()],
-      components: [msg.removeButtonRow()],
-      ephemeral: true
+      components: [msg.removeButtonRow()]
     });
 
     const filter = (btnInt: Discord.MessageComponentInteraction<'cached'>) => {
