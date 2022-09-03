@@ -27,9 +27,10 @@ export default {
         interaction.user?.discriminator
       );
       res.sort((a, b) => b.activityName.localeCompare(a.activityName) * -1);
-      res.forEach(activity => {
-        addToDescription += '`' + activity.activityName + '`\n';
-      });
+      for (const activity of res) {
+        if ((addToDescription + '`' + activity.activityName + '`\n').length > 4096) break;
+        else addToDescription += '`' + activity.activityName + '`\n';
+      }
       baseEmbed.setDescription(baseEmbed.description + addToDescription);
 
       interaction.editReply({ embeds: [baseEmbed] });
