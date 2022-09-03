@@ -13,6 +13,7 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
     const minPercentBold = 50; // maybe put in config.ts
 
@@ -44,6 +45,6 @@ export default {
       if (appendString.length > 2048) break;
       embed.setDescription(appendString);
     }
-    interaction.reply({ embeds: [embed] });
+    interaction.editReply({ embeds: [embed] });
   }
 } as Command;

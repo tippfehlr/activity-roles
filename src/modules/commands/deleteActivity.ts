@@ -20,6 +20,7 @@ export default {
   testOnly: config.debug,
 
   callback: async interaction => {
+    await interaction.deferReply();
     msg.log.command();
 
     const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
@@ -30,9 +31,9 @@ export default {
     const activityName = interaction.options.getString('activity')!;
     if (activityNames.includes(activityName)) {
       await db.UserData.deleteOne({ userID: interaction.user?.id, activityName: activityName });
-      interaction.reply({ content: msg.activityDeleted(activityName) });
+      interaction.editReply({ content: msg.activityDeleted(activityName) });
     } else {
-      interaction.reply({ content: msg.activityMissing() });
+      interaction.editReply({ content: msg.activityMissing() });
       return;
     }
   }

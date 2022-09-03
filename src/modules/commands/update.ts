@@ -12,8 +12,9 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
+    await interaction.deferReply({ ephemeral: true });
     msg.log.command();
-    db.checkAllRoles(interaction.guild!);
-    interaction.reply({ content: msg.ok(), ephemeral: true });
+    await db.checkAllRoles(interaction.guild!);
+    interaction.editReply({ content: msg.ok() });
   }
 } as Command;

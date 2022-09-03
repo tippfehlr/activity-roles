@@ -40,6 +40,7 @@ export default {
     }
   ],
   callback: async interaction => {
+    await interaction.deferReply({ ephemeral: true });
     msg.log.command();
     const activityName = interaction.options.getString('activity_name');
     if (!activityName) return;
@@ -53,7 +54,7 @@ export default {
       return { content: msg.roleDoesNotExist(), ephemeral: true };
     }
     if (role.name === '@everyone') {
-      interaction.reply({ content: msg.cantUseEveryone(), ephemeral: true });
+      interaction.editReply({ content: msg.cantUseEveryone() });
       return;
     }
     if (
@@ -63,9 +64,8 @@ export default {
         activityName: activityName
       })
     ) {
-      interaction.reply({
-        content: msg.activityRoleExists(),
-        ephemeral: true
+      interaction.editReply({
+        content: msg.activityRoleExists()
       });
       return;
     } else {
@@ -87,9 +87,8 @@ export default {
         live,
         true
       );
-      interaction.reply({
-        embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName, live)],
-        ephemeral: true
+      interaction.editReply({
+        embeds: [msg.setNewActivityRole(role.id, activityName, exactActivityName, live)]
       });
     }
   }
