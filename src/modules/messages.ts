@@ -7,7 +7,8 @@ export const log = pino({
   transport: {
     target: 'pino-pretty',
     options: {
-      colorize: true
+      colorize: true,
+      translateTime: 'HH:MM:ss.l'
     }
   }
 });
