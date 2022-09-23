@@ -13,15 +13,11 @@
   "dependencies": {
     "@discordjs/rest": "^0.4.1",
     "better-sqlite3": "^7.6.2",
-    "discord-api-types": "^0.32.0",
     "discord.js": "^13.7.0",
     "dotenv": "^16.0.0",
-    "mongoose": "^6.2.3",
     "pino": "^7.9.2",
-    "pino-logflare": "^0.3.12",
     "pino-pretty": "^7.6.1",
-    "table": "^6.8.0",
-    "wokcommands": "^1.5.3"
+    "table": "^6.8.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
@@ -32,17 +28,13 @@
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.6.0",
-    "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
     "dev": "nodemon -i export.json -i activityRolesList.txt",
-    "tsc-win": "npx tsc --outDir out/ && powershell -Command \"(gc out/src/modules/bot.js) -replace 'typeScript: true', 'typeScript: false' | Out-File -encoding ASCII out/src/modules/bot.js\"",
-    "tsc": "npx tsc --outDir out/ && sed -i \"s/typeScript: true/typeScript: false/g\" out/src/modules/bot.js",
-    "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg",
-    "lint": "eslint --ext .js,.ts .",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "tsc": "npx tsc --outDir out/",
+    "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg"
   }
 }
