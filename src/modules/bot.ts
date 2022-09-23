@@ -47,11 +47,10 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
           .prepare('SELECT * FROM userData WHERE userID = ? AND activityName = ?')
           .get(newMember.user.id, activity.name)
       ) {
-        db.prepare('INSERT INTO userData VALUES (?, ?, ?, ?)').run(
+        db.prepare('INSERT INTO userData VALUES (?, ?, ?)').run(
           newMember.user.id,
           activity.name,
-          1,
-          0
+          1
         );
         msg.log.newActivity(
           newMember.user.username,
