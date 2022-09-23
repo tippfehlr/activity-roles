@@ -9,7 +9,6 @@ import path from 'path';
 export { CommandInteraction } from 'discord.js';
 import msg, { log } from './messages';
 
-type StringArrayNotEmpty = [string, ...string[]];
 export interface Command {
   name: string;
   description: string;

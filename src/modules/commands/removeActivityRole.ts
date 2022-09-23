@@ -1,3 +1,4 @@
+import { db, GuildData } from './../db';
 //mention that no roles are removed and maybe there is an extra command
 
 import { Command } from '../commandHandler';
@@ -5,7 +6,6 @@ import Discord from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'removeactivityrole',
@@ -38,10 +38,10 @@ export default {
     const role = interaction.options.getRole('role')!;
     const activityName = interaction.options.getString('activity_name')!;
 
-    const data: db.GuildDataType | null = await db.GuildData.findOne({
-      guildID: interaction?.guild!.id,
-      roleID: role.id
-    });
+    const data: GuildData | null = db
+      .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ?')
+      .get(interaction.guild!.id);
+
     if (!data) {
       interaction.editReply({
         content: msg.activityRoleDoesNotExist()
@@ -50,7 +50,14 @@ export default {
     }
 
     await interaction.editReply({
-      embeds: [msg.removeActivityRoleQ(activityName, role.id, data.exactActivityName, data.live)],
+      embeds: [
+        msg.removeActivityRoleQ(
+          activityName,
+          role.id,
+          Boolean(data.exactActivityName),
+          Boolean(data.live)
+        )
+      ],
       components: [msg.removeButtonRow()]
     });
 
@@ -66,33 +73,13 @@ export default {
 
     collector?.on('collect', async (int: Discord.ButtonInteraction) => {
       switch (int.customId) {
-        case 'remove': {
-          const guildRole = (await db.GuildData.findOne({
-            guildID: interaction?.guild!.id,
-            roleID: role.id
-          })) as db.GuildDataType;
-          db.GuildData.deleteMany({
-            guildID: interaction?.guild!.id,
-            roleID: role.id
-          }).then((res: { deletedCount: number }) => {
-            if (res.deletedCount > 0) {
-              int.update({ embeds: [msg.removed()], components: [] });
-              msg.log.addRemoveActivityRole(
-                interaction.guild!.name,
-                interaction.guild!.id,
-                role.name,
-                role.id,
-                activityName,
-                guildRole.exactActivityName,
-                guildRole.live,
-                false
-              );
-            } else {
-              int.update({ embeds: [msg.errorEmbed()], components: [] });
-            }
-          });
+        case 'remove':
+          db.prepare('DELETE FROM guildData WHERE guildID = ? AND roleID = ?').run(
+            interaction.guild!.id,
+            role.id
+          );
+          int.update({ embeds: [msg.removed()], components: [] });
           break;
-        }
         case 'cancel':
           int.update({ embeds: [msg.cancelled()], components: [] });
           break;

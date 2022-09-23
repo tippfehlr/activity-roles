@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 
-import * as db from './db';
+import { db, setGuildCheckInterval, checkGuild, checkUser, checkRoles } from './db';
 import config from '../../config';
 import msg, { log } from './messages';
 import CommandHandler from './commandHandler';
@@ -26,7 +26,7 @@ client.on('ready', () => {
     String(client.user?.discriminator),
     String(client.user?.id)
   );
-  db.setGuildCheckInterval(client);
+  setGuildCheckInterval(client);
 });
 
 const processingUser = new Map<string, boolean>();
@@ -37,25 +37,22 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
   if (newMember.member.user.bot) return;
   processingUser.set(newMember.user?.id, true);
 
-  await db.checkGuild(newMember.guild);
-  await db.checkUser(newMember.user);
+  await checkGuild(newMember.guild);
+  await checkUser(newMember.user);
 
   for (const activity of newMember.activities) {
     if (activity.name !== 'Custom Status') {
-      // db.checkMemberLiveRoles(newMember.member, newMember.activities);
-
       if (
-        await db.UserData.findOne({
-          userID: newMember.user.id,
-          activityName: activity.name
-        }).lean()
+        !db
+          .prepare('SELECT * FROM userData WHERE userID = ? AND activityName = ?')
+          .get(newMember.user.id, activity.name)
       ) {
-        new db.UserData({
-          userID: newMember.user?.id,
-          activityName: activity.name,
-          autoRole: true,
-          ignored: false
-        }).save();
+        db.prepare('INSERT INTO userData VALUES (?, ?, ?, ?)').run(
+          newMember.user.id,
+          activity.name,
+          1,
+          0
+        );
         msg.log.newActivity(
           newMember.user.username,
           newMember.user.id,
@@ -66,13 +63,13 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
       }
     }
   }
-  await db.checkRoles(newMember.member);
+  await checkRoles(newMember.member);
   processingUser.delete(newMember.user?.id);
 });
 
 client.on('guildCreate', guild => {
   log.info(`Joined guild ${guild.name} (${guild.id})`);
-  db.checkGuild(guild);
+  checkGuild(guild);
 });
 
 client.on('guildDelete', guild => log.info(`Left guild ${guild.name} (${guild.id})`));
@@ -84,42 +81,7 @@ client.on('disconnect', () => {
 client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
 
 client.on('roleDelete', async role => {
-  const guildRole = (await db.GuildData.findOne({
-    roleID: role.id,
-    guildID: role.guild.id
-  })) as db.GuildDataType;
-  const res = await db.GuildData.deleteMany({ roleID: role.id, guildID: role.guild.id });
-  if (res.deletedCount > 0) {
-    msg.log.addRemoveActivityRole(
-      role.guild.name,
-      role.guild.id,
-      role.name,
-      role.id,
-      guildRole.activityName,
-      guildRole.exactActivityName,
-      guildRole.live,
-      false,
-      true
-    );
-    const guildConfig = (await db.GuildConfig.findOne({
-      _id: role.guild.id
-    }).lean()) as db.GuildConfigType;
-    const logChannel = role.guild.channels.cache.find(
-      channel => channel.id === guildConfig.logChannelID
-    );
-    if (logChannel && logChannel.isText()) {
-      logChannel.send({
-        embeds: [
-          msg.logChannel.forceDeletedActivityRole(
-            guildRole.activityName,
-            role.id,
-            guildRole.exactActivityName,
-            guildRole.live
-          )
-        ]
-      });
-    }
-  }
+  db.prepare('DELETE FROM roleData WHERE roleID = ? AND guildID = ?').run(role.id, role.guild.id);
 });
 
 export function connect() {

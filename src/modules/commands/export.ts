@@ -1,9 +1,9 @@
+import { db, GuildData } from './../db';
 import { Command } from '../commandHandler';
 import fs from 'fs';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'export',
@@ -18,9 +18,9 @@ export default {
     await interaction.deferReply();
     msg.log.command();
 
-    const res: db.GuildDataType[] = await db.GuildData.find({
-      guildID: interaction.guild!.id
-    });
+    const res: GuildData[] = db
+      .prepare('SELECT * FROM guildData WHERE guildID = ?')
+      .all(interaction.guild!.id);
     const array = [];
     for (const i in res) {
       array.push([

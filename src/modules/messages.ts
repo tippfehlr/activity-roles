@@ -1,7 +1,7 @@
+import { UserData } from './db';
 import Discord from 'discord.js';
 import config from '../../config';
 import pino from 'pino';
-import { UserDataType } from './db';
 
 export const log = pino({
   transport: {
@@ -275,10 +275,8 @@ export default {
   activityDeleted: (activityName: string) => {
     return `Removed activity \`${activityName}\` from your account.`;
   },
-  removedActivitiesCount(removedActivitiesCount: number) {
-    return new Discord.MessageEmbed()
-      .setTitle(`Removed ${removedActivitiesCount} activities.`)
-      .setColor('RED');
+  removedAllActivities() {
+    return new Discord.MessageEmbed().setTitle(`Removed all activities.`).setColor('RED');
   },
   userStatus(autoRole: boolean) {
     return new Discord.MessageEmbed()
@@ -491,7 +489,7 @@ export default {
         `Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
       );
     },
-    duplicateActivity: async (userActivityListFiltered: UserDataType[]) => {
+    duplicateActivity: async (userActivityListFiltered: UserData[]) => {
       log.warn(userActivityListFiltered, 'Encountered duplicate activity');
     },
     checkGuildIntervalEnabled: async (guildCount: number) => {

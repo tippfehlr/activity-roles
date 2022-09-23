@@ -1,7 +1,7 @@
 import { Command } from '../commandHandler';
 import msg from '../messages';
-import * as db from '../db';
 import config from '../../../config';
+import { checkAllRoles } from '../db';
 
 export default {
   name: 'update',
@@ -14,7 +14,7 @@ export default {
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
     msg.log.command();
-    await db.checkAllRoles(interaction.guild!);
+    await checkAllRoles(interaction.guild!);
     interaction.editReply({ content: msg.ok() });
   }
 } as Command;

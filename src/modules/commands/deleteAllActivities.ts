@@ -1,3 +1,4 @@
+import { db, UserData } from './../db';
 //mention that no roles are removed and maybe there is an extra command
 
 import { Command } from '../commandHandler';
@@ -5,7 +6,6 @@ import Discord from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'deleteallactivities',
@@ -18,7 +18,9 @@ export default {
     await interaction.deferReply({ ephemeral: true });
     msg.log.command();
 
-    const res = await db.UserData.find({ userID: interaction.user?.id });
+    const res = db
+      .prepare('SELECT * FROM userData WHERE userID = ?')
+      .all(interaction.user.id) as UserData[];
     if (!res.length) {
       interaction.editReply({ content: msg.noActivities() });
       return;
@@ -42,15 +44,11 @@ export default {
     collector?.on('collect', (buttonInteraction: Discord.ButtonInteraction) => {
       switch (buttonInteraction.customId) {
         case 'remove':
-          db.UserData.deleteMany({ userID: interaction.user?.id }).then(
-            (res: { deletedCount: number }) => {
-              buttonInteraction.update({
-                embeds: [msg.removedActivitiesCount(res.deletedCount)],
-                components: []
-              });
-            }
-          );
-
+          db.prepare('DELETE FROM userData WHERE userID = ?').run(interaction.user.id);
+          buttonInteraction.update({
+            embeds: [msg.removedAllActivities()],
+            components: []
+          });
           break;
         case 'cancel':
           buttonInteraction.update({ embeds: [msg.cancelled()], components: [] });

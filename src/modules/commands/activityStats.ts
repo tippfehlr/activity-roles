@@ -1,8 +1,8 @@
+import { db, UserData } from './../db';
 import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'activitystats',
@@ -24,9 +24,10 @@ export default {
       interaction.reply({ embeds: [msg.errorEmbed()] });
       return;
     }
-    const userData = ((await db.UserData.find({}).lean()) as db.UserDataType[]).filter(
-      (user: db.UserDataType) => memberIDs.includes(user.userID)
-    );
+    const userData = db
+      .prepare('SELECT * FROM userData')
+      .all()
+      .filter((user: UserData) => memberIDs.includes(user.userID));
     if (!userData) {
       interaction.reply({ content: msg.noMembersWithActivities() });
     }
