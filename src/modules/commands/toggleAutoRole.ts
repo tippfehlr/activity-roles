@@ -1,8 +1,8 @@
+import { checkUser, db, UserConfig } from './../db';
 import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 export default {
   name: 'toggleautorole',
   category: 'User Configuration',
@@ -24,18 +24,21 @@ export default {
     msg.log.command();
 
     const autoRole = interaction.options.getBoolean('enabled');
-    const res: db.UserConfigType | null = await db.UserConfig.findOne({
-      userID: interaction.user.id
-    });
+    const res: UserConfig | null = db
+      .prepare('SELECT * FROM userConfig WHERE userId = ?')
+      .get(interaction.user.id);
     if (!res) {
-      await db.checkUser(interaction.user);
+      await checkUser(interaction.user);
       await interaction.editReply({ embeds: [msg.errorEmbed()] });
       return;
     }
     if (autoRole === null) {
-      interaction.editReply({ embeds: [msg.userStatus(res.autoRole)] });
+      interaction.editReply({ embeds: [msg.userStatus(Boolean(res.autoRole))] });
     } else {
-      await db.UserConfig.findOneAndUpdate({ userID: interaction.user.id }, { autoRole });
+      db.prepare('UPDATE userConfig SET autoRole = ? WHERE userId = ?').run(
+        autoRole,
+        interaction.user.id
+      );
       interaction.editReply({ embeds: [msg.modifiedAutoRole(autoRole)] });
     }
   }

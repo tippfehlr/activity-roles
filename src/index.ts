@@ -1,8 +1,5 @@
-import config from '../config';
-import * as db from './modules/db';
-import { connect as discordJSConnect } from './modules/bot';
+import { prepareDB } from './modules/db';
+import { connect } from './modules/bot';
 
-db.connect(config.MONGODB_URI);
-discordJSConnect();
-
-export {};
+prepareDB();
+connect();

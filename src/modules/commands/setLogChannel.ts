@@ -1,9 +1,9 @@
+import { db, GuildConfig } from './../db';
 import { Command, CommandInteraction } from '../commandHandler';
 import Discord from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'setlogchannel',
@@ -43,14 +43,17 @@ async function changeLogChannel(
   interaction: CommandInteraction,
   channel: Discord.TextBasedChannel
 ): Promise<void> {
-  const currentLogChannel: db.GuildConfigType | null = await db.GuildConfig.findById(
-    interaction.guild!.id
-  );
+  const currentLogChannel: GuildConfig | null = db
+    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
+    .get(interaction.guild!.id);
   if (currentLogChannel?.logChannelID === channel.id) {
     interaction.editReply({ embeds: [msg.alreadyIsLogChannel()] });
     return;
   }
-  await db.GuildConfig.updateOne({ _id: interaction.guild!.id }, { logChannelID: channel.id });
+  db.prepare('UPDATE guildConfig SET logChannelID = ? WHERE guildID = ?').run(
+    channel.id,
+    interaction.guild!.id
+  );
   interaction.editReply({ embeds: [msg.logChannelSet(channel)] });
   channel.send({ embeds: [msg.newLogChannel()] });
   return;

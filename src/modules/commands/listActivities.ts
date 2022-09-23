@@ -1,10 +1,10 @@
+import { db, UserData } from './../db';
 // TODO: also show which roles are assigned to which activity.
 
 import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 export default {
   name: 'listactivities',
   category: 'User Configuration',
@@ -16,7 +16,9 @@ export default {
     await interaction.deferReply();
     msg.log.command();
 
-    const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
+    const res: UserData[] = db
+      .prepare('SELECT * FROM userData WHERE userID = ?')
+      .all(interaction.user.id);
     if (res.length === 0) {
       interaction.editReply({ content: msg.noActivities() });
       return;

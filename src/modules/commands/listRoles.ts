@@ -1,10 +1,10 @@
+import { db, GuildData } from './../db';
 import { Command } from '../commandHandler';
 import { table } from 'table';
 import fs from 'fs';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 
 export default {
   name: 'listroles',
@@ -19,9 +19,9 @@ export default {
     await interaction.deferReply();
     msg.log.command();
 
-    const res: db.GuildDataType[] = await db.GuildData.find({
-      guildID: interaction.guild!.id
-    });
+    const res: GuildData[] = db
+      .prepare('SELECT * FROM guildData WHERE guildID = ?')
+      .all(interaction.guild!.id);
     if (res.length === 0) {
       interaction.editReply({ content: msg.noActivityRoles() });
       return;

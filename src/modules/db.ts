@@ -1,27 +1,49 @@
 import Discord from 'discord.js';
-import mongoose from 'mongoose';
+import sqlite3 from 'better-sqlite3';
 
 import msg from './messages';
 import config from '../../config';
 
-import { UserConfig, UserConfigType } from './models/userConfig';
-import { GuildConfig, GuildConfigType } from './models/guildConfig';
-import { UserData, UserDataType } from './models/userData';
-import { GuildData, GuildDataType } from './models/guildData';
+export interface UserData {
+  userID: string;
+  activityName: string;
+  autoRole: 1 | 0;
+  exactActivityName: 1 | 0;
+}
 
-export { UserConfig, UserConfigType } from './models/userConfig';
-export { GuildConfig, GuildConfigType } from './models/guildConfig';
-export { UserData, UserDataType } from './models/userData';
-export { GuildData, GuildDataType } from './models/guildData';
+export interface GuildData {
+  guildID: string;
+  activityName: string;
+  roleID: string;
+  exactActivityName: 1 | 0;
+  live: 1 | 0;
+}
 
-/**
- * Connect to the MongoDB database.
- * @param {string} uri - the URI of the database to connect to.
- * @returns None
- */
-export async function connect(uri: string) {
-  await mongoose.connect(uri);
-  msg.log.mongodbConnect();
+export interface GuildConfig {
+  guildID: string;
+  logChannelID: string;
+}
+
+export interface UserConfig {
+  userID: string;
+  autoRole: 1 | 0;
+}
+
+export const db = sqlite3('activity-roles.db');
+
+export function prepareDB() {
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS userConfig (userID TEXT PRIMARY KEY, autoRole INTEGER)'
+  ).run();
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS guildConfig (guildID TEXT PRIMARY KEY, logChannelID TEXT)'
+  ).run();
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS userData (userID TEXT, activityName TEXT, autoRole INTEGER, PRIMARY KEY (userID, activityName))'
+  ).run();
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS guildData (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName))'
+  ).run();
 }
 
 /**
@@ -30,18 +52,14 @@ export async function connect(uri: string) {
  * @returns None
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
-  msg.log.activity();
-  if (await GuildConfig.findById(guild.id).lean()) return;
+  if (db.prepare('SELECT * FROM guildConfig WHERE guildID = ?').get(guild.id)) return;
   if (!guild.me?.permissions.has('MANAGE_CHANNELS')) return;
   const channel = await guild.channels.create('activity-roles', {
     type: 'GUILD_TEXT',
     topic: 'This channel is used by Activity Roles'
   });
   channel.send({ embeds: [msg.newLogChannel()] });
-  new GuildConfig({
-    _id: guild.id,
-    logChannelID: channel.id
-  }).save();
+  db.prepare('INSERT INTO guildConfig VALUES (?, ?)').run(guild.id, channel.id);
   msg.log.addGuild(guild.name, guild.id);
 }
 
@@ -50,31 +68,18 @@ export async function checkGuild(guild: Discord.Guild): Promise<void> {
  * @param {Discord.User} user - the user to check for a UserConfig object
  * @returns {Promise<boolean>} - whether or not the user has a UserConfig object in the database.
  */
-export async function checkUser(user: Discord.User): Promise<boolean> {
-  msg.log.activity();
-  if (!(await UserConfig.findById(user.id).lean())) {
-    await new UserConfig({
-      _id: user.id,
-      autoRole: true
-    }).save();
-    msg.log.addUser(user.username, user.id);
-    return false;
-  }
-  return true;
+export async function checkUser(user: Discord.User): Promise<void> {
+  if (db.prepare('SELECT * FROM userConfig WHERE userID = ?').get(user.id)) return;
+  db.prepare('INSERT INTO userConfig VALUES (?, ?)').run(user.id, 1);
+  msg.log.addUser(user.username, user.id);
 }
 
-function userHasActivity(
-  userActivityList: UserDataType[],
-  activity: string,
-  exact: boolean
-): boolean {
+function userHasActivity(userActivityList: UserData[], activity: string, exact: boolean): boolean {
   let filter;
-  if (exact) filter = (elmt: UserDataType) => elmt.activityName === activity;
+  if (exact) filter = (elmt: UserData) => elmt.activityName === activity;
   else
-    filter = (elmt: UserDataType) =>
-      elmt.activityName.toLowerCase().includes(activity.toLowerCase());
+    filter = (elmt: UserData) => elmt.activityName.toLowerCase().includes(activity.toLowerCase());
   const userActivityListFiltered = userActivityList.filter(filter);
-  if (userActivityListFiltered.length > 1) msg.log.duplicateActivity(userActivityListFiltered);
   if (userActivityListFiltered.length > 0 && userActivityListFiltered[0].autoRole) return true;
   return false;
 }
@@ -99,8 +104,8 @@ async function manageUserRole(
   role: Discord.Role,
   highestBotRole: Discord.Role,
   member: Discord.GuildMember,
-  guildActivityRole: GuildDataType,
-  guildConfig: GuildConfigType,
+  guildActivityRole: GuildData,
+  guildConfig: GuildConfig,
   live: boolean
 ) {
   if (
@@ -152,18 +157,20 @@ async function manageUserRole(
 
 async function checkMemberRoles(
   member: Discord.GuildMember,
-  guildConfig: GuildConfigType,
-  guildActivityRoles: GuildDataType[],
+  guildConfig: GuildConfig,
+  guildActivityRoles: GuildData[],
   onlyLive: boolean
 ) {
   if (member.user.bot) return;
   await checkUser(member.user);
-  const userConfig: UserConfigType | null = await UserConfig.findById(member.user.id);
+  const userConfig: UserConfig | null = db
+    .prepare('SELECT * FROM userConfig WHERE userID = ?')
+    .get(member.user.id);
   if (!userConfig?.autoRole) return;
 
-  let userActivityList: UserDataType[] | null = null;
+  let userActivityList: UserData[] | null = null;
   if (!onlyLive) {
-    userActivityList = await UserData.find({ userID: member.user.id }).lean();
+    userActivityList = db.prepare('SELECT * FROM userData WHERE userID = ?').all(member.user.id);
   }
   const highestBotRole = member?.guild?.me?.roles.highest;
   if (!highestBotRole) return;
@@ -172,20 +179,23 @@ async function checkMemberRoles(
     await member.fetch();
     const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
     const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
-    if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
+    if (role === undefined) {
+      db.prepare('DELETE FROM guildData WHERE roleID = ?').run(guildActivityRole.roleID);
+      break;
+    }
 
     let userShouldHaveRole;
     if (guildActivityRole.live) {
       userShouldHaveRole = userHasLiveActivity(
         member,
         guildActivityRole.activityName,
-        guildActivityRole.exactActivityName
+        Boolean(guildActivityRole.exactActivityName)
       );
     } else {
       userShouldHaveRole = userHasActivity(
         userActivityList!, // won't be called if onlyLive is true
         guildActivityRole.activityName,
-        guildActivityRole.exactActivityName
+        Boolean(guildActivityRole.exactActivityName)
       );
     }
 
@@ -197,7 +207,7 @@ async function checkMemberRoles(
         member,
         guildActivityRole,
         guildConfig,
-        guildActivityRole.live
+        Boolean(guildActivityRole.live)
       );
       return;
     } else if (!userShouldHaveRole && userHasRole) {
@@ -208,7 +218,7 @@ async function checkMemberRoles(
         member,
         guildActivityRole,
         guildConfig,
-        guildActivityRole.live
+        Boolean(guildActivityRole.live)
       );
       return;
     }
@@ -219,14 +229,16 @@ export async function checkMemberLiveRoles(
   member: Discord.GuildMember,
   activities: Discord.Activity[]
 ) {
-  const guildConfig = (await GuildConfig.findById(member.guild.id).lean()) as GuildConfigType;
+  const guildConfig = db
+    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
+    .get(member.guild.id) as GuildConfig;
 
   const guildActivityLiveRoles = (
-    (await GuildData.find({
-      guildID: member.guild.id
-    }).lean()) as GuildDataType[]
+    db.prepare('SELECT * FROM guildData WHERE guildID = ?').all(member.guild.id) as GuildData[]
   ).filter(elmt => elmt.live);
-  const userConfig = (await UserConfig.findById(member.user.id)) as UserConfigType;
+  const userConfig = db.prepare('SELECT * FROM userConfig WHERE userID = ?').get(member.user.id) as
+    | UserConfig
+    | undefined;
   if (!userConfig?.autoRole) return;
 
   const highestBotRole = member?.guild?.me?.roles.highest;
@@ -254,7 +266,7 @@ export async function checkMemberLiveRoles(
         member,
         guildActivityRole,
         guildConfig,
-        guildActivityRole.live
+        Boolean(guildActivityRole.live)
       );
       return;
     } else if (!userShouldHaveRole && userHasRole) {
@@ -265,7 +277,7 @@ export async function checkMemberLiveRoles(
         member,
         guildActivityRole,
         guildConfig,
-        guildActivityRole.live
+        Boolean(guildActivityRole.live)
       );
       return;
     }
@@ -278,13 +290,14 @@ export async function checkMemberLiveRoles(
  * @returns None
  */
 export async function checkRoles(member: Discord.GuildMember) {
-  msg.log.activity();
   await checkGuild(member.guild);
-  const guildConfig: GuildConfigType | null = await GuildConfig.findById(member.guild.id);
+  const guildConfig: GuildConfig | null = db
+    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
+    .get(member.guild.id);
   if (!guildConfig) return;
-  const guildActivityRoles: GuildDataType[] = await GuildData.find({
-    guildID: member.guild.id
-  }).lean();
+  const guildActivityRoles: GuildData[] = db
+    .prepare('SELECT * FROM guildData WHERE guildID = ?')
+    .all(member.guild.id);
   if (guildActivityRoles.length === 0) return;
   const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
   checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
@@ -296,14 +309,14 @@ export async function checkRoles(member: Discord.GuildMember) {
  * @returns None
  */
 export async function checkAllRoles(guild: Discord.Guild) {
-  msg.log.activity();
-
   await checkGuild(guild);
-  const guildConfig: GuildConfigType | null = await GuildConfig.findById(guild.id);
+  const guildConfig: GuildConfig | null = db
+    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
+    .get(guild.id);
   if (!guildConfig) return;
-  const guildActivityRoles: GuildDataType[] = await GuildData.find({
-    guildID: guild.id
-  }).lean();
+  const guildActivityRoles: GuildData[] = db
+    .prepare('SELECT * FROM guildData WHERE guildID = ?')
+    .all(guild.id);
   if (guildActivityRoles.length === 0) return;
   const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
 
@@ -313,11 +326,11 @@ export async function checkAllRoles(guild: Discord.Guild) {
 }
 export async function setGuildCheckInterval(client: Discord.Client) {
   if (!config.guildCheckInterval.enabled) return;
-  let guilds: GuildDataType[];
+  let guilds: GuildData[];
   if (config.guildCheckInterval.onlyWithLiveRole) {
-    guilds = await GuildData.find({ live: true }).lean();
+    guilds = db.prepare('SELECT * FROM guildData WHERE live = 1').all();
   } else {
-    guilds = await GuildData.find().lean();
+    guilds = db.prepare('SELECT * FROM guildData').all();
   }
   const guildIDs = [...new Set(guilds.map(elmt => elmt.guildID))];
   client.guilds.cache

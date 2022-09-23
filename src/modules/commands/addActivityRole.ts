@@ -2,7 +2,7 @@ import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
+import { checkAllRoles, db } from '../db';
 export default {
   name: 'addactivityrole',
   category: 'Configuration',
@@ -58,25 +58,23 @@ export default {
       return;
     }
     if (
-      await db.GuildData.findOne({
-        guildID: interaction.guild!.id,
-        roleID: role.id,
-        activityName: activityName
-      })
+      db
+        .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ? AND activityName = ?')
+        .get(interaction.guild!.id, role.id, activityName)
     ) {
       interaction.editReply({
         content: msg.activityRoleExists()
       });
       return;
     } else {
-      new db.GuildData({
-        guildID: interaction?.guild!.id,
-        roleID: role.id,
-        activityName: activityName,
-        exactActivityName: exactActivityName,
-        live: live
-      }).save();
-      if (interaction.guild) db.checkAllRoles(interaction.guild);
+      db.prepare('INSERT INTO guildData VALUES (?, ?, ?, ?, ?)').run(
+        interaction.guild!.id,
+        activityName,
+        role.id,
+        exactActivityName,
+        live
+      );
+      if (interaction.guild) checkAllRoles(interaction.guild);
       msg.log.addRemoveActivityRole(
         String(interaction.guild!.name),
         String(interaction.guild!.id),

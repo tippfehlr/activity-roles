@@ -1,8 +1,8 @@
+import { db, UserData } from './../db';
 import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import * as db from '../db';
 export default {
   name: 'deleteactivity',
   category: 'User Configuration',
@@ -23,14 +23,19 @@ export default {
     await interaction.deferReply();
     msg.log.command();
 
-    const res: db.UserDataType[] = await db.UserData.find({ userID: interaction.user?.id });
+    const res: UserData[] = db
+      .prepare('SELECT * FROM userData WHERE userID = ?')
+      .all(interaction.user.id);
     const activityNames: string[] = [];
     for (const activity of res) {
       activityNames.push(activity.activityName);
     }
     const activityName = interaction.options.getString('activity')!;
     if (activityNames.includes(activityName)) {
-      await db.UserData.deleteOne({ userID: interaction.user?.id, activityName: activityName });
+      db.prepare('DELETE FROM userData WHERE userID = ? AND activityName = ?').run(
+        interaction.user.id,
+        activityName
+      );
       interaction.editReply({ content: msg.activityDeleted(activityName) });
     } else {
       interaction.editReply({ content: msg.activityMissing() });
