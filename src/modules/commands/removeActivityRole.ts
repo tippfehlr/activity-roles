@@ -40,7 +40,7 @@ export default {
 
     const data: GuildData | null = db
       .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ?')
-      .get(interaction.guild!.id);
+      .get(interaction.guild!.id, role.id);
 
     if (!data) {
       interaction.editReply({
