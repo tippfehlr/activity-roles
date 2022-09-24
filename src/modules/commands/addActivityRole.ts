@@ -71,8 +71,8 @@ export default {
         interaction.guild!.id,
         activityName,
         role.id,
-        exactActivityName,
-        live
+        Boolean(exactActivityName),
+        Boolean(live)
       );
       if (interaction.guild) checkAllRoles(interaction.guild);
       msg.log.addRemoveActivityRole(
