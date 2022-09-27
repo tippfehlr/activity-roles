@@ -33,9 +33,8 @@ export default {
     },
     {
       name: 'live',
-      description:
-        "If the role should be removed when the activity isn't in the users presence anymore.",
-      required: true,
+      description: 'Should the user keep the role when the activity stops?',
+      required: false,
       type: 'BOOLEAN'
     }
   ],
