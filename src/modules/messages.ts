@@ -336,20 +336,6 @@ export default {
 
   log: {
     /**
-     * A function that prints a dot to the console.  This is used to show database activity.
-     * @returns None
-     */
-    activity: async (): Promise<void> => {
-      // process.stdout.write('.');
-    },
-    /**
-     * A function that prints a colon to the console.  This is used to show user activity.
-     * @returns None
-     */
-    command: async (): Promise<void> => {
-      // process.stdout.write(':');
-    },
-    /**
      * Logs that the bot is logged in to Discord.
      * @param {string} userName - the bot's name
      * @param {string} discriminator - the bot's discriminator

@@ -11,7 +11,6 @@ export default {
   testOnly: config.debug,
 
   callback: async interaction => {
-    msg.log.command();
     interaction.reply({ embeds: [msg.help.helpEmbed()] });
   }
 } as Command;

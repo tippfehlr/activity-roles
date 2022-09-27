@@ -21,7 +21,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply();
-    msg.log.command();
 
     const res: UserData[] = db
       .prepare('SELECT * FROM userData WHERE userID = ?')

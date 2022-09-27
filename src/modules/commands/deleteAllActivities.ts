@@ -16,7 +16,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    msg.log.command();
 
     const res = db
       .prepare('SELECT * FROM userData WHERE userID = ?')

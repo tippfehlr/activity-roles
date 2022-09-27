@@ -33,7 +33,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    msg.log.command();
 
     const role = interaction.options.getRole('role')!;
     const activityName = interaction.options.getString('activity_name')!;
