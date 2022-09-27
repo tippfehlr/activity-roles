@@ -33,3 +33,10 @@ Additionally, you can completely opt out of the collection with `/toggleAutoRole
 
 Any form of contribution is highly appreciated, may it be a bug, a PR or a feature request.\
 Help about the project structure can be found in [architecture.md](./architecture.md).
+
+### Thanks to these people for suggestions:
+ - EianLee#7234 on Discord
+ - @Krampus#2007 on Discord
+ - @RstY_CZ#2033 on Discord
+
+If I forgot you, please let me know!
