@@ -17,7 +17,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply();
-    msg.log.command();
 
     const res: GuildData[] = db
       .prepare('SELECT * FROM guildData WHERE guildID = ?')

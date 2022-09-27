@@ -40,7 +40,6 @@ export default {
   ],
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    msg.log.command();
     const activityName = interaction.options.getString('activity_name');
     if (!activityName) return;
     if (activityName.length > 1024) return msg.inputTooLong();

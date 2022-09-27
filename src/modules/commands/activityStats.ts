@@ -14,7 +14,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply();
-    msg.log.command();
     const minPercentBold = 50; // maybe put in config.ts
 
     const memberIDs = interaction

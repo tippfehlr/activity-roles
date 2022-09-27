@@ -25,7 +25,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    msg.log.command();
     const channel = interaction.options.getChannel('channel');
     if (channel) {
       if (channel?.type === 'GUILD_TEXT') {

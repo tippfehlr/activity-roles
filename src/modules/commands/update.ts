@@ -13,7 +13,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    msg.log.command();
     await checkAllRoles(interaction.guild!);
     interaction.editReply({ content: msg.ok() });
   }

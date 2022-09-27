@@ -21,7 +21,6 @@ export default {
 
   callback: async interaction => {
     await interaction.deferReply();
-    msg.log.command();
 
     const autoRole = interaction.options.getBoolean('enabled');
     const res: UserConfig | null = db
