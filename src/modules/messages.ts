@@ -524,6 +524,10 @@ export default {
         .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
         .addField('Invite', config.inviteLink)
         .addField('Support Guild', config.supportGuildLink)
+        .addField(
+          'Thanks to these people for suggestions',
+          '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
+        )
         .addField('Commands:\n`/activityStats`', 'Shows activities in this guild.')
         .addField(
           '`/addActivityRole <role> <activity> <exactActivityName> <live>`',
