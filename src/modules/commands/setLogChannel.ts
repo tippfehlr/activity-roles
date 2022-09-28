@@ -1,6 +1,6 @@
 import { db, GuildConfig } from './../db';
-import { Command, CommandInteraction } from '../commandHandler';
-import Discord from 'discord.js';
+import { Command } from '../commandHandler';
+import { CommandInteraction, TextBasedChannel } from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -40,7 +40,7 @@ export default {
 
 async function changeLogChannel(
   interaction: CommandInteraction,
-  channel: Discord.TextBasedChannel
+  channel: TextBasedChannel
 ): Promise<void> {
   const currentLogChannel: GuildConfig | null = db
     .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
