@@ -42,7 +42,7 @@ export function prepareDB() {
     'CREATE TABLE IF NOT EXISTS userData (userID TEXT, activityName TEXT, autoRole INTEGER, PRIMARY KEY (userID, activityName))'
   ).run();
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS guildData (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName))'
+    'CREATE TABLE IF NOT EXISTS guildData (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
 }
 
