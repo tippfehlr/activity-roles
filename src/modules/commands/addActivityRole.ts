@@ -123,7 +123,7 @@ export default {
 async function createRole(interaction: CommandInteraction, activityName: string) {
   return await interaction.guild!.roles.create({
     name: activityName,
-    color: '#3695d3',
+    color: config.botColor,
     mentionable: true
   });
 }

@@ -53,7 +53,7 @@ export default {
    */
   newLogChannel: (): Discord.MessageEmbed => {
     return new Discord.MessageEmbed()
-      .setColor(config.embedColor)
+      .setColor(config.botColor)
       .setTitle('Logs')
       .setDescription(
         "I will send important messages to this channel. You can change it's name or move it, or define a different channel with `/setLogChannel`."
@@ -69,7 +69,7 @@ export default {
    * @returns {Discord.MessageEmbed} a Set! Embed
    */
   set: (): Discord.MessageEmbed => {
-    return new Discord.MessageEmbed().setColor(config.embedColor).setTitle('Set!');
+    return new Discord.MessageEmbed().setColor(config.botColor).setTitle('Set!');
   },
   /**
    * Creates an error embed that tells the user that they can't assign the role they want to the user.
@@ -119,7 +119,7 @@ export default {
     live: boolean
   ) => {
     return new Discord.MessageEmbed()
-      .setColor(config.embedColor)
+      .setColor(config.botColor)
       .setTitle('Success!')
       .addField('Activity', activityName)
       .addField('Role', '<@&' + roleID + '>')
@@ -175,7 +175,7 @@ export default {
   ) => {
     return new Discord.MessageEmbed()
       .setTitle('Do you really want to delete this game role?')
-      .setColor(config.embedColor)
+      .setColor(config.botColor)
       .addField('Activity Name', activityName.toString())
       .addField('Role', '<@&' + roleID + '>')
       .addField('Has to be exact', exactActivityName.toString())
@@ -264,7 +264,7 @@ export default {
   ) => {
     return new Discord.MessageEmbed()
       .setTitle(`Activity List for @${userName}#${userDiscriminator}`)
-      .setColor(config.embedColor)
+      .setColor(config.botColor)
       .setDescription(
         'This is a list of all the activities that you have stored for this user.\n' +
           'Delete them with `/deleteActivity` or `/deleteAllActivities` and add one with `/addActivity`.\n\n'
@@ -315,7 +315,7 @@ export default {
   baseActivityStats: () => {
     return new Discord.MessageEmbed()
       .setDescription('**Activities in this guild**')
-      .setColor(config.embedColor);
+      .setColor(config.botColor);
   },
   logChannel: {
     forceDeletedActivityRole: (
