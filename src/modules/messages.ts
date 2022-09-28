@@ -120,11 +120,11 @@ export default {
   ) => {
     return new Discord.MessageEmbed()
       .setColor(config.embedColor)
-      .setTitle('Set!')
-      .addField('Role:', '<@&' + roleID + '>')
-      .addField('Activity:', activityName)
-      .addField('exact activity name:', exactActivityName.toString())
-      .addField('live:', live.toString());
+      .setTitle('Success!')
+      .addField('Activity', activityName)
+      .addField('Role', '<@&' + roleID + '>')
+      .addField('exact activity name', exactActivityName.toString())
+      .addField('live', live.toString());
   },
   /**
    * Returns a string that says that the role does not exist.
