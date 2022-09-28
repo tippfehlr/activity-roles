@@ -490,8 +490,8 @@ export default {
   help: {
     helpEmbed: () => {
       return new Discord.MessageEmbed()
-        .setTitle('Activity Roles Help')
-        .setColor(config.embedColor)
+        .setTitle('Activity Roles')
+        .setColor(config.botColor)
         .setFooter({
           // = Made and hosted by <author>.
           // or
@@ -513,38 +513,7 @@ export default {
         .addField(
           'Thanks to these people for suggestions',
           '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
-        )
-        .addField('Commands:\n`/activityStats`', 'Shows activities in this guild.')
-        .addField(
-          '`/addActivityRole <role> <activity> <exactActivityName> <live>`',
-          'Adds a new activity role to your guild. Requires the `MANAGE_ROLES` permission.\n' +
-            '`<role>` is the role that gets added to users when they have the right `<activity>`.\n' +
-            'If `<exactActivityName>` is set to True, the role will only be added if the user has the exact activity name.\n' +
-            "If it is false, `<activity>` can also just be a substring of the user's activity name.\n" +
-            "If `<live>` is set to True, the role will be only added when the user currently has the activity, and gets removed once it doesn't anymore."
-        )
-        .addField('`/deleteActivity <Activity>`', 'Removes an activity from your account.')
-        .addField('`/deleteAllActivities`', 'Removes all activities from your account.')
-        .addField(
-          '`/export`',
-          'Exports all game roles in your guild as a JSON file. Requires the `MANAGE_ROLES` permission.'
-        )
-        .addField('`/help`', 'Shows this help page.')
-        .addField('`/listActivities`', 'Lists all activities in your account.')
-        .addField(
-          '`/listRoles`',
-          'Lists all game roles in your guild. Requires the `MANAGE_ROLES` permission.'
-        )
-        .addField(
-          '`/removeActivityRole <role> <activityName>`',
-          'Deletes an activity role from your guild. Requires the `MANAGE_ROLES` permission.'
-        )
-        .addField(
-          '`/setLogChannel [channel]`',
-          'Sets the log channel. Requires the `MANAGE_ROLES` permission.'
-        )
-        .addField('`/toggleAutoRole [true/false]`', 'Enables/Disables automatic role assignment')
-        .addField('`/update`', 'Updates all activity roles.');
+        );
     }
   }
 };

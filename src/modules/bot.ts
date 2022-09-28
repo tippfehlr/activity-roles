@@ -14,8 +14,10 @@ export const client = new Discord.Client({
   ]
 });
 
+export let commandHandler: CommandHandler;
+
 client.on('ready', () => {
-  new CommandHandler(client);
+  commandHandler = new CommandHandler(client);
   client.user?.setPresence({
     status: 'online',
     afk: false,
