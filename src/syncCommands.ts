@@ -49,7 +49,8 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
     return false;
   });
   for (const file of commandFiles) {
-    const command: Command = require(commandsDir + file).default as Command;
+    const command: Command | undefined = require(commandsDir + file).default;
+    if (!command) continue;
     if (command.name.search(/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/gu)) {
       throw new Error(`Command name ${command.name} is invalid`);
     }
@@ -199,7 +200,7 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
       const applicationCommandOption: { [key: string]: any } = applicationCommand.options[x];
       const commandOption: { [key: string]: any } | undefined = command.options?.[x];
       if (
-        (commandOption === undefined || isAllUndefined(commandOption)) &&
+        (!commandOption || isAllUndefined(commandOption)) &&
         !isAllUndefined(applicationCommandOption)
       ) {
         return false;
