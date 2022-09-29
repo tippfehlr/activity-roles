@@ -1,7 +1,7 @@
 {
   "name": "activity-roles",
   "description": "A Discord bot that gives and removes roles to/from users based on their discord presence. It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not. Ideal for creating specific-game(s)-only channels. The bot is in active development, so if you need anything, feel free to join my support guild: https://discord.gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "main": "src/index.ts",
   "test": "src/tests",
   "license": "AGPL-3.0",
