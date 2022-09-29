@@ -3,7 +3,6 @@ import { Command } from '../commandHandler';
 import fs from 'fs';
 
 import config from '../../../config';
-import msg from '../messages';
 
 export default {
   name: 'export',
