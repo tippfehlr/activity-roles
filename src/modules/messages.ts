@@ -171,6 +171,9 @@ export default {
   commandGuildOnly: () => {
     return 'This command can only be used in a guild.';
   },
+  commandMissingPermissions: (permissions: Array<string>) => {
+    return 'You are missing the following permissions: ' + permissions.join(', ');
+  },
   /**
    * Returns a string that tells the user that the role they are trying to create already exists.
    * @returns {string} A string that tells the user that the role they are trying to create already exists.
