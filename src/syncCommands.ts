@@ -1,4 +1,4 @@
-import Discord, { ApplicationCommand } from 'discord.js';
+import Discord, { ApplicationCommand, ApplicationCommandType } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { log } from './modules/messages';
@@ -8,7 +8,7 @@ import { Command } from './modules/commandHandler';
 import config from '../config';
 dotenv.config();
 const client = new Discord.Client({
-  intents: ['GUILDS', 'GUILD_INTEGRATIONS']
+  intents: [Discord.IntentsBitField.Flags.Guilds, Discord.IntentsBitField.Flags.GuildIntegrations]
 });
 
 const commandsDir = './modules/commands/';
@@ -17,7 +17,7 @@ client.on('ready', () => {
   client.user?.setPresence({
     status: 'dnd',
     afk: false,
-    activities: [{ name: 'Updating Commands', type: 'PLAYING' }]
+    activities: [{ name: 'Updating Commands', type: Discord.ActivityType.Playing }]
   });
   log.info(
     `Updating commands on ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
@@ -173,7 +173,7 @@ client.login(production ? process.env.TOKEN_PRODUCTION : config.TOKEN).then(asyn
             name: command.name,
             description: command.description,
             options: command.options,
-            type: 'CHAT_INPUT'
+            type: ApplicationCommandType.ChatInput
           });
           log.info(`Created command /${command.name} in guild ${guild.name} (${guild.id}).`);
           createdCommands++;
