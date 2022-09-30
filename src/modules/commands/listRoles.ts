@@ -1,3 +1,4 @@
+import { PermissionsBitField } from 'discord.js';
 import { db, GuildData } from './../db';
 import { Command } from '../commandHandler';
 import { table } from 'table';
@@ -10,7 +11,7 @@ export default {
   name: 'listroles',
   category: 'Information',
   description: 'Lists all game roles in your guild.',
-  requiredPermissions: ['MANAGE_ROLES'],
+  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
   testOnly: config.debug,
   guildOnly: true,

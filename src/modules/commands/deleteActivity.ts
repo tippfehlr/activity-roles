@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { db, UserData } from './../db';
 import { Command } from '../commandHandler';
 
@@ -13,7 +14,7 @@ export default {
       name: 'activity',
       description: 'The activity to remove.',
       required: true,
-      type: 'STRING'
+      type: ApplicationCommandOptionType.String
     }
   ],
 
@@ -29,7 +30,7 @@ export default {
     for (const activity of res) {
       activityNames.push(activity.activityName);
     }
-    const activityName = interaction.options.getString('activity')!;
+    const activityName = interaction.options.get('activity')?.value as string;
     if (activityNames.includes(activityName)) {
       db.prepare('DELETE FROM userData WHERE userID = ? AND activityName = ?').run(
         interaction.user.id,

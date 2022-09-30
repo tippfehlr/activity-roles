@@ -1,10 +1,13 @@
 import {
-  MessageActionRow,
-  MessageSelectMenu,
   Role,
   CommandInteraction,
-  Interaction,
-  MessageEmbed
+  PermissionsBitField,
+  ApplicationCommandOptionType,
+  SelectMenuInteraction,
+  InteractionType,
+  EmbedBuilder,
+  ActionRowBuilder,
+  SelectMenuBuilder
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -16,7 +19,7 @@ export default {
   name: 'addactivityrole',
   category: 'Configuration',
   description: 'Adds an activity role to your guild.',
-  requiredPermissions: ['MANAGE_ROLES'],
+  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
   testOnly: config.debug,
   guildOnly: true,
@@ -26,35 +29,36 @@ export default {
       name: 'activity',
       description: 'the name of the discord presence',
       required: true,
-      type: 'STRING'
+      type: ApplicationCommandOptionType.String
     },
     {
       name: 'role',
       description: 'the role to assign',
       required: false,
-      type: 'ROLE'
+      type: ApplicationCommandOptionType.Role
     },
     {
       name: 'exact_activity_name',
       description: 'If the activity name has to be exactly the name of the activity.',
       required: false,
-      type: 'BOOLEAN'
+      type: ApplicationCommandOptionType.Boolean
     },
     {
       name: 'live',
       description: 'Should the user keep the role when the activity stops?',
       required: false,
-      type: 'BOOLEAN'
+      type: ApplicationCommandOptionType.Boolean
     }
   ],
   callback: async interaction => {
-    const activityName = interaction.options.getString('activity');
+    const activityName = interaction.options.get('activity')?.value as string;
     if (!activityName) return;
     if (activityName.length > 1024) return msg.inputTooLong();
-    const exactActivityName = interaction.options.getBoolean('exact_activity_name') || false;
-    const live = interaction.options.getBoolean('live') || false;
-    let role = interaction.options.getRole('role');
-    if (role === null) {
+    const exactActivityName =
+      (interaction.options.get('exact_activity_name')?.value as boolean | undefined) || false;
+    const live = (interaction.options.get('live')?.value as boolean) || false;
+    let role = interaction.options.get('role')?.role;
+    if (!role) {
       // role not provided
       const possibleRoles = interaction.guild?.roles.cache.filter(role => {
         return role.name.toLowerCase().includes(activityName.toLowerCase());
@@ -69,8 +73,8 @@ export default {
         process(interaction, role, activityName, exactActivityName, live);
       } else {
         // select role
-        const row = new MessageActionRow().addComponents(
-          new MessageSelectMenu()
+        const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+          new SelectMenuBuilder()
             .setCustomId('addactivityrole:roleSelector')
             .setPlaceholder(`Please select a role for '${activityName}'`)
             .addOptions([
@@ -128,8 +132,12 @@ async function createRole(interaction: CommandInteraction, activityName: string)
   });
 }
 
-function reply(interaction: Interaction, content?: string, embeds?: MessageEmbed[]) {
-  if (interaction.isApplicationCommand()) {
+function reply(
+  interaction: CommandInteraction | SelectMenuInteraction,
+  content?: string,
+  embeds?: EmbedBuilder[]
+) {
+  if (interaction.type === InteractionType.ApplicationCommand) {
     interaction.reply({ content, embeds, ephemeral: true });
   } else if (interaction.isSelectMenu()) {
     interaction.update({ content, embeds, components: [] });
@@ -137,13 +145,12 @@ function reply(interaction: Interaction, content?: string, embeds?: MessageEmbed
 }
 
 function process(
-  interaction: Interaction,
+  interaction: CommandInteraction | SelectMenuInteraction,
   role: Role,
   activityName: string,
   exactActivityName: boolean,
   live: boolean
 ) {
-  if (!interaction.isApplicationCommand() && !interaction.isSelectMenu()) return;
   if (!role) reply(interaction, msg.roleDoesNotExist());
   if (role.name === '@everyone') {
     reply(interaction, msg.cantUseEveryone());

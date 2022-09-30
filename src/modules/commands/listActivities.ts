@@ -32,7 +32,7 @@ export default {
         if ((addToDescription + '`' + activity.activityName + '`\n').length > 4096) break;
         else addToDescription += '`' + activity.activityName + '`\n';
       }
-      baseEmbed.setDescription(baseEmbed.description + addToDescription);
+      baseEmbed.setDescription(baseEmbed.data.description + addToDescription);
 
       interaction.editReply({ embeds: [baseEmbed] });
     }

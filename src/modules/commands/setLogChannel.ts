@@ -1,6 +1,12 @@
 import { db, GuildConfig } from './../db';
 import { Command } from '../commandHandler';
-import { CommandInteraction, TextBasedChannel } from 'discord.js';
+import {
+  CommandInteraction,
+  TextBasedChannel,
+  PermissionsBitField,
+  ApplicationCommandOptionType,
+  TextChannel
+} from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -10,7 +16,7 @@ export default {
   category: 'Configuration',
   description:
     'Sets a different log channel for the bot. If nothing provided, sets the current channel.',
-  requiredPermissions: ['MANAGE_ROLES'],
+  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
   testOnly: config.debug,
   guildOnly: true,
@@ -19,15 +25,15 @@ export default {
       name: 'channel',
       description: 'The channel to set as the log channel.',
       required: false,
-      type: 'CHANNEL'
+      type: ApplicationCommandOptionType.Channel
     }
   ],
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
-    const channel = interaction.options.getChannel('channel');
+    const channel = interaction.options.get('channel')?.channel;
     if (channel) {
-      if (channel?.type === 'GUILD_TEXT') {
+      if (channel instanceof TextChannel) {
         changeLogChannel(interaction, channel);
       } else {
         interaction.editReply({ embeds: [msg.noTextChannel(channel.id)] });
@@ -40,7 +46,7 @@ export default {
 
 async function changeLogChannel(
   interaction: CommandInteraction,
-  channel: TextBasedChannel
+  channel: TextChannel | TextBasedChannel
 ): Promise<void> {
   const currentLogChannel: GuildConfig | null = db
     .prepare('SELECT * FROM guildConfig WHERE guildID = ?')

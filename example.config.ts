@@ -1,4 +1,4 @@
-import { ColorResolvable, ActivityOptions } from 'discord.js';
+import { ColorResolvable, ActivityOptions, ActivityType } from 'discord.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -15,8 +15,8 @@ export default {
   /* ----------------------- change these to your liking ---------------------- */
   botColor: '#3695d3' as ColorResolvable, // the color of most embeds and roles created by the bot
   activities: [
-    { name: '/help', type: 'LISTENING' } as ActivityOptions,
-    { name: 'you', type: 'WATCHING' } as ActivityOptions
+    { name: '/help', type: ActivityType.Listening } as ActivityOptions,
+    { name: 'you', type: ActivityType.Watching } as ActivityOptions
   ],
   listRolesFileName: 'activityRolesList.txt', // the name of the file that gets send on /listroles
   exportFileName: 'export.json', // the name of the file that gets send on /export

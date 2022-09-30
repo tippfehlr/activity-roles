@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { GatewayIntentBits } from 'discord.js';
 
 import { db, setGuildCheckInterval, checkGuild, checkUser, checkRoles } from './db';
 import config from '../../config';
@@ -7,10 +7,10 @@ import CommandHandler from './commandHandler';
 
 export const client = new Discord.Client({
   intents: [
-    Discord.Intents.FLAGS.GUILDS,
-    Discord.Intents.FLAGS.GUILD_PRESENCES,
-    Discord.Intents.FLAGS.GUILD_MESSAGES,
-    Discord.Intents.FLAGS.DIRECT_MESSAGES
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.DirectMessages
   ]
 });
 

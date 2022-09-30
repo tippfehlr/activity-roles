@@ -3,6 +3,7 @@ import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
+import { ApplicationCommandOptionType } from 'discord.js';
 export default {
   name: 'toggleautorole',
   category: 'User Configuration',
@@ -15,14 +16,14 @@ export default {
       name: 'enabled',
       description: 'whether or not to enable the bot for this user',
       required: false,
-      type: 'BOOLEAN'
+      type: ApplicationCommandOptionType.Boolean
     }
   ],
 
   callback: async interaction => {
     await interaction.deferReply();
 
-    const autoRole = interaction.options.getBoolean('enabled');
+    const autoRole = interaction.options.get('enabled')?.value as boolean | undefined;
     const res: UserConfig | null = db
       .prepare('SELECT * FROM userConfig WHERE userId = ?')
       .get(interaction.user.id);
@@ -38,7 +39,7 @@ export default {
         autoRole,
         interaction.user.id
       );
-      interaction.editReply({ embeds: [msg.modifiedAutoRole(autoRole)] });
+      interaction.editReply({ embeds: [msg.modifiedAutoRole(Boolean(autoRole))] });
     }
   }
 } as Command;

@@ -2,7 +2,7 @@ import { db, GuildData } from './../db';
 //mention that no roles are removed and maybe there is an extra command
 
 import { Command } from '../commandHandler';
-import Discord from 'discord.js';
+import Discord, { ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 
 import config from '../../../config';
 import msg from '../messages';
@@ -11,7 +11,7 @@ export default {
   name: 'removeactivityrole',
   category: 'Configuration',
   description: 'Deletes an activity role from your guild.',
-  requiredPermissions: ['MANAGE_ROLES'],
+  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
   testOnly: config.debug,
   guildOnly: true,
@@ -21,21 +21,22 @@ export default {
       name: 'role',
       description: 'the role I used to assign',
       required: true,
-      type: 'ROLE'
+      type: ApplicationCommandOptionType.Role
     },
     {
       name: 'activity_name',
       description: 'The name of the discord presence I was looking for',
       required: true,
-      type: 'STRING'
+      type: ApplicationCommandOptionType.String
     }
   ],
 
   callback: async interaction => {
     await interaction.deferReply({ ephemeral: true });
 
-    const role = interaction.options.getRole('role')!;
-    const activityName = interaction.options.getString('activity_name')!;
+    const role = interaction.options.get('role')?.role;
+    if (!role) return;
+    const activityName = interaction.options.get('activity_name')?.value as string;
 
     const data: GuildData | null = db
       .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ?')
@@ -64,25 +65,25 @@ export default {
       return interaction.user.id === btnInt.user.id;
     };
 
-    const collector = interaction.channel?.createMessageComponentCollector({
-      filter,
-      max: 1,
-      time: 1000 * 60
-    });
-
-    collector?.on('collect', async (int: Discord.ButtonInteraction) => {
-      switch (int.customId) {
-        case 'remove':
-          db.prepare('DELETE FROM guildData WHERE guildID = ? AND roleID = ?').run(
-            interaction.guild!.id,
-            role.id
-          );
-          int.update({ embeds: [msg.removed()], components: [] });
-          break;
-        case 'cancel':
-          int.update({ embeds: [msg.cancelled()], components: [] });
-          break;
-      }
-    });
+    interaction.channel
+      ?.createMessageComponentCollector({
+        filter,
+        max: 1,
+        time: 1000 * 60
+      })
+      .on('collect', async (int: Discord.ButtonInteraction) => {
+        switch (int.customId) {
+          case 'remove':
+            db.prepare('DELETE FROM guildData WHERE guildID = ? AND roleID = ?').run(
+              interaction.guild!.id,
+              role.id
+            );
+            int.update({ embeds: [msg.removed()], components: [] });
+            break;
+          case 'cancel':
+            int.update({ embeds: [msg.cancelled()], components: [] });
+            break;
+        }
+      });
   }
 } as Command;

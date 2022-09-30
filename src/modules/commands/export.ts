@@ -3,12 +3,13 @@ import { Command } from '../commandHandler';
 import fs from 'fs';
 
 import config from '../../../config';
+import { PermissionsBitField } from 'discord.js';
 
 export default {
   name: 'export',
   category: 'Information',
   description: 'Exports all game roles in your guild as a JSON file.',
-  requiredPermissions: ['MANAGE_ROLES'],
+  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
   testOnly: config.debug,
   guildOnly: true,

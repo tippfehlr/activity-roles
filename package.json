@@ -11,9 +11,8 @@
     "url": "https://github.com/tippf3hlr/activity-roles.git"
   },
   "dependencies": {
-    "@discordjs/rest": "^0.4.1",
     "better-sqlite3": "^7.6.2",
-    "discord.js": "^13.7.0",
+    "discord.js": "^14.5.0",
     "dotenv": "^16.0.0",
     "pino": "^7.9.2",
     "pino-pretty": "^7.6.1",
@@ -34,7 +33,7 @@
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
     "dev": "nodemon -i export.json -i activityRolesList.txt",
-    "tsc": "npx tsc --outDir out/",
+    "build": "npx tsc --outDir out/",
     "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg"
   }
 }

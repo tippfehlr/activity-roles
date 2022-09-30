@@ -3,7 +3,7 @@ import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default {
   name: 'help',
@@ -13,7 +13,7 @@ export default {
   testOnly: config.debug,
 
   callback: async interaction => {
-    const commandEmbed = new MessageEmbed().setTitle('Commands').setColor(config.botColor);
+    const commandEmbed = new EmbedBuilder().setTitle('Commands').setColor(config.botColor);
     commandHandler.commands.forEach(command => {
       let commandName = `**\`/${command.name}`;
       command.options?.forEach(option => {
@@ -38,7 +38,7 @@ export default {
       command.options?.forEach(option => {
         commandDescription += `\`\n${option.name}\`: ${option.description}`;
       });
-      commandEmbed.addField(commandName, commandDescription);
+      commandEmbed.addFields({ name: commandName, value: commandDescription });
     });
     interaction.reply({ embeds: [msg.help.helpEmbed(), commandEmbed] });
   }

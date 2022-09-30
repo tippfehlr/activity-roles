@@ -2,7 +2,7 @@ import {
   ApplicationCommandOptionData,
   Client,
   CommandInteraction,
-  PermissionString
+  PermissionResolvable
 } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
@@ -13,7 +13,7 @@ export interface Command {
   name: string;
   description: string;
   category: string;
-  requiredPermissions?: PermissionString[];
+  requiredPermissions?: PermissionResolvable[];
   testOnly?: string[] | false;
   guildOnly?: boolean;
   options?: ApplicationCommandOptionData[];
