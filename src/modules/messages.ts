@@ -1,5 +1,17 @@
 import { UserData } from './db';
-import Discord from 'discord.js';
+import {
+  ActionRowBuilder,
+  BaseGuild,
+  ButtonBuilder,
+  ButtonStyle,
+  Colors,
+  EmbedBuilder,
+  Guild,
+  Role,
+  TextBasedChannel,
+  TextChannel,
+  User
+} from 'discord.js';
 import config from '../../config';
 import pino from 'pino';
 
@@ -19,10 +31,10 @@ export const log = pino({
 Maybe use something like this to switch between strings and embeds 'on the fly' without changing other files.
 It should still be possible to use ephemeral messages.
 
-type BaseObject = { guild?: Discord.Guild; ephemeral?: boolean };
+type BaseObject = { guild?: Guild; ephemeral?: boolean };
 class BaseMessage {
   content: string | undefined = undefined;
-  embeds: Discord.MessageEmbed[] | undefined = undefined;
+  embeds: EmbedBuilder[] | undefined = undefined;
   ephemeral = false;
   constructor(ephemeral = false) {
     if (ephemeral) this.ephemeral = ephemeral;
@@ -30,7 +42,7 @@ class BaseMessage {
 }
 
 class highestBotRoleUndefined extends BaseMessage {
-  constructor(object?: BaseObject & { channel?: Discord.Channel }) {
+  constructor(object?: BaseObject & { channel?: Channel }) {
     super(object?.ephemeral);
     this.content = 'The highest bot role is undefined.';
   }
@@ -47,12 +59,12 @@ export default {
   },
   /**
    * Logs an error to the console if the highest role on the guild is undefined.
-   * @param {Discord.BaseGuild['id']} guildID - the ID of the guild that the error occurred in.
-   * @param {Discord.BaseGuild['name']} guildName - the name of the guild that the error occurred in.
+   * @param {BaseGuild['id']} guildID - the ID of the guild that the error occurred in.
+   * @param {BaseGuild['name']} guildName - the name of the guild that the error occurred in.
    * @returns None
    */
-  newLogChannel: (): Discord.MessageEmbed => {
-    return new Discord.MessageEmbed()
+  newLogChannel: () => {
+    return new EmbedBuilder()
       .setColor(config.botColor)
       .setTitle('Logs')
       .setDescription(
@@ -60,43 +72,50 @@ export default {
       );
   },
   noTextChannel(channelID: string) {
-    return new Discord.MessageEmbed()
-      .setColor('RED')
+    return new EmbedBuilder()
+      .setColor(Colors.Red)
       .setTitle('Error')
       .setDescription(`<#${channelID}> isn't a text channel.`);
   },
   /**
-   * @returns {Discord.MessageEmbed} a Set! Embed
+   * @returns {EmbedBuilder} a Set! Embed
    */
-  set: (): Discord.MessageEmbed => {
-    return new Discord.MessageEmbed().setColor(config.botColor).setTitle('Set!');
+  set: () => {
+    return new EmbedBuilder().setColor(config.botColor).setTitle('Set!');
   },
   /**
    * Creates an error embed that tells the user that they can't assign the role they want to the user.
-   * @param {Discord.Role} assign - true if assigning, false if removing.
-   * @param {Discord.Role['id']} roleID - The ID of the role they tried to assign.
-   * @param {Discord.Role['position']} rolePosition - The position of the role they tried to assign.
-   * @param {Discord.User['id']} userID - The ID of the user they tried to assign the role to.
+   * @param {Role} assign - true if assigning, false if removing.
+   * @param {Role['id']} roleID - The ID of the role they tried to assign.
+   * @param {Role['position']} rolePosition - The position of the role they tried to assign.
+   * @param {User['id']} userID - The ID of the user they tried to assign the role to.
    * @param {string} activityName - The name of the activity.
    * @param {number} highestBotRole - The position of the highest role the bot has.
    */
   errorCantAssignRemoveRole: (
     assign: boolean,
-    roleID: Discord.Role['id'],
-    rolePosition: Discord.Role['position'],
-    userID: Discord.User['id'],
+    roleID: Role['id'],
+    rolePosition: Role['position'],
+    userID: User['id'],
     activityName: string,
     highestBotRole: number
-  ): Discord.MessageEmbed => {
-    return new Discord.MessageEmbed()
-      .setColor('#ff0000')
+  ): EmbedBuilder => {
+    return new EmbedBuilder()
+      .setColor(Colors.Red)
       .setTitle('Error')
       .setDescription(`Can't assign <@&${roleID}> to <@${userID}>`)
-      .addField('Error:', 'Missing permissions')
-      .addField('Activity Name:', activityName)
-      .addField('My highest role:', `#${highestBotRole}`, true)
-      .addField('ActivityRole:', `#${rolePosition}`, true)
-      .addField('Solution:', 'Move any of my roles higher than the role I should give.')
+      .addFields(
+        { name: 'Error:', value: 'Missing permissions' },
+        { name: 'Activity Name:', value: activityName }
+      )
+      .addFields(
+        { name: 'My highest role:', value: `#${highestBotRole}`, inline: true },
+        { name: 'ActivityRole:', value: `#${rolePosition}`, inline: true }
+      )
+      .addFields({
+        name: 'Solution:',
+        value: 'Move any of my roles higher than the role I should give.'
+      })
       .setTimestamp();
   },
   /**
@@ -107,24 +126,26 @@ export default {
   },
   /**
    * Creates an embed that shows the user that their activity role has been set.
-   * @param {Discord.Role['id']} roleID - the ID of the role that was set.
+   * @param {Role['id']} roleID - the ID of the role that was set.
    * @param {string} activityName - the name of the activity that the role is set to.
    * @param {boolean} exactActivityName - whether or not the activity name has to be exact.
-   * @returns {Discord.MessageEmbed} - the embed that shows the user that their role has been set.
+   * @returns {EmbedBuilder} - the embed that shows the user that their role has been set.
    */
   setNewActivityRole: (
-    roleID: Discord.Role['id'],
+    roleID: Role['id'],
     activityName: string,
     exactActivityName: boolean,
     live: boolean
   ) => {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setColor(config.botColor)
       .setTitle('Success!')
-      .addField('Activity', activityName)
-      .addField('Role', '<@&' + roleID + '>')
-      .addField('exact activity name', exactActivityName.toString())
-      .addField('live', live.toString());
+      .addFields(
+        { name: 'activity', value: activityName },
+        { name: 'role', value: `<@&${roleID}>` },
+        { name: 'exact activity name', value: exactActivityName ? 'Yes' : 'No' },
+        { name: 'live', value: live ? 'Yes' : 'No' }
+      );
   },
   /**
    * Returns a string that says that the role does not exist.
@@ -161,11 +182,11 @@ export default {
     return ":x: That game role does not exists in this guild! Create it with '/addRole'. :x:";
   },
   /**
-   * Creates a Discord.MessageEmbed object that asks the user if they really want to delete a game role.
+   * Creates a EmbedBuilder object that asks the user if they really want to delete a game role.
    * @param {string} activityName - the name of the activity that the role is for.
    * @param {string} roleID - the ID of the role to delete.
    * @param {boolean} exactActivityName - whether or not the activity name has to be exact.
-   * @returns {Discord.MessageEmbed} - the Discord.MessageEmbed object.
+   * @returns {EmbedBuilder} - the EmbedBuilder object.
    */
   removeActivityRoleQ: (
     activityName: string,
@@ -173,34 +194,36 @@ export default {
     exactActivityName: boolean,
     live: boolean
   ) => {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setTitle('Do you really want to delete this game role?')
       .setColor(config.botColor)
-      .addField('Activity Name', activityName.toString())
-      .addField('Role', '<@&' + roleID + '>')
-      .addField('Has to be exact', exactActivityName.toString())
-      .addField('Live', live.toString());
+      .addFields(
+        { name: 'activity', value: activityName.toString() },
+        { name: 'role', value: `<@&${roleID}>` },
+        { name: 'exact activity name', value: exactActivityName ? 'Yes' : 'No' },
+        { name: 'live', value: live ? 'Yes' : 'No' }
+      );
   },
   /**
-   * Creates a Discord.MessageEmbed that asks the user if they really want to remove all activities from their account.
-   * @returns {Discord.MessageEmbed} - A Discord.MessageEmbed that asks the user if they really want to remove all activities from their account.
+   * Creates a EmbedBuilder that asks the user if they really want to remove all activities from their account.
+   * @returns {EmbedBuilder} - A EmbedBuilder that asks the user if they really want to remove all activities from their account.
    */
   removeAllActivities: () => {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setTitle('Do you really want to remove **ALL** activities from your account?')
-      .setColor('RED');
+      .setColor(Colors.Red);
   },
   /**
    * Creates a MessageActionRow object that contains a remove button and a cancel button.
-   * @returns {Discord.MessageActionRow} - the Discord.MessageActionRow() object.
+   * @returns {MessageActionRow} - the MessageActionRow() object.
    */
   removeButtonRow: () => {
-    return new Discord.MessageActionRow()
+    return new ActionRowBuilder<ButtonBuilder>()
       .addComponents(
-        new Discord.MessageButton().setCustomId('remove').setLabel('Remove').setStyle('DANGER')
+        new ButtonBuilder().setCustomId('remove').setLabel('Remove').setStyle(ButtonStyle.Danger)
       )
       .addComponents(
-        new Discord.MessageButton().setCustomId('cancel').setLabel('Cancel').setStyle('SECONDARY')
+        new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary)
       );
   },
   /**
@@ -219,24 +242,24 @@ export default {
   },
   /**
    * Returns aEmbed object with the title "Removed" and a red color.
-   * @returns {Discord.MessageEmbed} - A Discord.MessageEmbed object with the title "Removed" and a red color.
+   * @returns {EmbedBuilder} - A EmbedBuilder object with the title "Removed" and a red color.
    */
   removed: () => {
-    return new Discord.MessageEmbed().setTitle('Removed').setColor('RED');
+    return new EmbedBuilder().setTitle('Removed').setColor(Colors.Red);
   },
   /**
-   * Returns a Discord.MessageEmbed object with the title 'Cancelled' and the color 'GREY'.
-   * @returns {Discord.MessageEmbed} - A Discord.MessageEmbed object with the title 'Cancelled' and the color 'GREY'.
+   * Returns a EmbedBuilder object with the title 'Cancelled' and the color 'GREY'.
+   * @returns {EmbedBuilder} - A EmbedBuilder object with the title 'Cancelled' and the color 'GREY'.
    */
   cancelled: () => {
-    return new Discord.MessageEmbed().setTitle('Cancelled').setColor('GREY');
+    return new EmbedBuilder().setTitle('Cancelled').setColor(Colors.Grey);
   },
   /**
    * Creates an error embed.
-   * @returns A Discord.MessageEmbed object.
+   * @returns A EmbedBuilder object.
    */
   errorEmbed: () => {
-    return new Discord.MessageEmbed().setTitle('Error').setColor('RED');
+    return new EmbedBuilder().setTitle('Error').setColor(Colors.Red);
   },
   /**
    * Returns a string that tells the user that their input is too long.
@@ -254,15 +277,12 @@ export default {
   },
   /**
    * Creates a base embed for the list activities command.
-   * @param {Discord.User['id']} userName - the user's name.
-   * @param {Discord.User['discriminator']} userDiscriminator - the user's discriminator.
-   * @returns {Discord.MessageEmbed} - the embed to send.
+   * @param {User['id']} userName - the user's name.
+   * @param {User['discriminator']} userDiscriminator - the user's discriminator.
+   * @returns {EmbedBuilder} - the embed to send.
    */
-  listActivitiesBaseEmbed: (
-    userName: Discord.User['id'],
-    userDiscriminator: Discord.User['discriminator']
-  ) => {
-    return new Discord.MessageEmbed()
+  listActivitiesBaseEmbed: (userName: User['id'], userDiscriminator: User['discriminator']) => {
+    return new EmbedBuilder()
       .setTitle(`Activity List for @${userName}#${userDiscriminator}`)
       .setColor(config.botColor)
       .setDescription(
@@ -277,66 +297,68 @@ export default {
     return `Removed activity \`${activityName}\` from your account.`;
   },
   removedAllActivities() {
-    return new Discord.MessageEmbed().setTitle(`Removed all activities.`).setColor('RED');
+    return new EmbedBuilder().setTitle(`Removed all activities.`).setColor(Colors.Red);
   },
   userStatus(autoRole: boolean) {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setTitle('User Status')
       .setDescription(
         `The bot is currently ${autoRole ? '**enabled**' : '**disabled**'} for this user.\n\n` +
           'You can change this with the command `/toggleAutoRole`.'
       )
-      .setColor(autoRole ? 'GREEN' : 'RED');
+      .setColor(autoRole ? Colors.Green : Colors.Red);
   },
   modifiedAutoRole(autoRole: boolean) {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setTitle(
         `Automatic role assignment for your account is now ${
           autoRole ? '**enabled**' : '**disabled**'
         }.`
       )
       .setDescription('You can change this with the command `/toggleAutoRole`.')
-      .setColor(autoRole ? 'GREEN' : 'RED');
+      .setColor(autoRole ? Colors.Green : Colors.Red);
   },
   alreadyIsLogChannel: () => {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setDescription('This channel already is your log channel.')
-      .setColor('RED');
+      .setColor(Colors.Red);
   },
-  logChannelSet: (channel: Discord.TextBasedChannel) => {
-    return new Discord.MessageEmbed()
+  logChannelSet: (channel: TextBasedChannel | TextChannel) => {
+    return new EmbedBuilder()
       .setTitle('Set Log Channel')
       .setDescription(`Your log channel is now set to <#${channel.id}>.`)
-      .setColor('GREEN');
+      .setColor(Colors.Green);
   },
   noMembersWithActivities: () => {
     return 'There are no members with activities in this guild.';
   },
   baseActivityStats: () => {
-    return new Discord.MessageEmbed()
+    return new EmbedBuilder()
       .setDescription('**Activities in this guild**')
       .setColor(config.botColor);
   },
   logChannel: {
     forceDeletedActivityRole: (
       activityName: string,
-      roleID: Discord.Role['id'],
+      roleID: Role['id'],
       exactActivityName: boolean,
       live: boolean
     ) => {
-      return new Discord.MessageEmbed()
-        .setColor('GREY')
+      return new EmbedBuilder()
+        .setColor(Colors.Grey)
         .setDescription('Deleted Activity Role because Role was deleted')
-        .addField('activityName', activityName)
-        .addField('roleID', roleID)
-        .addField('exactActivityName', String(exactActivityName))
-        .addField('live', String(live));
+        .addFields(
+          { name: 'activityName', value: activityName },
+          { name: 'roleID', value: roleID },
+          { name: 'exactActivityName', value: String(exactActivityName) },
+          { name: 'live', value: String(live) }
+        );
     }
   },
 
   log: {
     /**
-     * Logs that the bot is logged in to Discord.
+     * Logs that the bot is logged in to
      * @param {string} userName - the bot's name
      * @param {string} discriminator - the bot's discriminator
      * @param {string} id - the bot's ID
@@ -351,10 +373,7 @@ export default {
      * @param {string} guildID - The ID of the guild.
      * @returns None
      */
-    addGuild: async (
-      guildName: Discord.BaseGuild['name'],
-      guildID: Discord.BaseGuild['id']
-    ): Promise<void> => {
+    addGuild: async (guildName: BaseGuild['name'], guildID: BaseGuild['id']): Promise<void> => {
       log.info(`Added guild ${guildName} (${guildID}) to the database.`);
     },
     /**
@@ -363,10 +382,7 @@ export default {
      * @param {string} userID - the ID of the user.
      * @returns None
      */
-    addUser: async (
-      userName: Discord.User['username'],
-      userID: Discord.User['id']
-    ): Promise<void> => {
+    addUser: async (userName: User['username'], userID: User['id']): Promise<void> => {
       log.info(`Added user ${userName} (${userID}) to the database.`);
     },
     /**
@@ -380,10 +396,10 @@ export default {
      * @returns None
      */
     addRemoveActivityRole: async (
-      guildName: Discord.BaseGuild['name'],
-      guildID: Discord.BaseGuild['id'],
-      roleName: Discord.Role['name'],
-      roleID: Discord.Role['id'],
+      guildName: BaseGuild['name'],
+      guildID: BaseGuild['id'],
+      roleName: Role['name'],
+      roleID: Role['id'],
       activityName: string,
       exactActivityName: boolean,
       live: boolean,
@@ -414,10 +430,10 @@ export default {
      * @param activityName the name of the activity
      */
     newActivity: async (
-      username: Discord.User['username'],
-      userID: Discord.User['id'],
-      guildName: Discord.Guild['name'],
-      guildID: Discord.Guild['id'],
+      username: User['username'],
+      userID: User['id'],
+      guildName: Guild['name'],
+      guildID: Guild['id'],
       activityName: string
     ) => {
       log.info(
@@ -438,12 +454,12 @@ export default {
      */
     addedRemovedRoleToFromMember: async (
       added: boolean,
-      roleName: Discord.Role['name'],
-      roleID: Discord.Role['id'],
-      userName: Discord.User['username'],
-      userID: Discord.User['id'],
-      guildName: Discord.BaseGuild['name'],
-      guildID: Discord.BaseGuild['id'],
+      roleName: Role['name'],
+      roleID: Role['id'],
+      userName: User['username'],
+      userID: User['id'],
+      guildName: BaseGuild['name'],
+      guildID: BaseGuild['id'],
       live: boolean
     ): Promise<void> => {
       log.info(
@@ -464,11 +480,11 @@ export default {
      */
     errorCantAssignRemoveRole: async (
       assign: boolean,
-      roleName: Discord.Role['name'],
-      roleID: Discord.Role['id'],
-      rolePosition: Discord.Role['position'],
-      userName: Discord.User['username'],
-      userID: Discord.User['id'],
+      roleName: Role['name'],
+      roleID: Role['id'],
+      rolePosition: Role['position'],
+      userName: User['username'],
+      userID: User['id'],
       activityName: string,
       highestBotRole: number
     ): Promise<void> => {
@@ -489,7 +505,7 @@ export default {
   },
   help: {
     helpEmbed: () => {
-      return new Discord.MessageEmbed()
+      return new EmbedBuilder()
         .setTitle('Activity Roles')
         .setColor(config.botColor)
         .setFooter({
@@ -505,14 +521,17 @@ export default {
           'A Discord bot that gives and removes roles to/from users based on their discord presence.\n' +
             'It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n' +
             'Ideal for creating specific-game(s)-only channels.\n' +
-            'The bot is in active development, so if you need anything, feel free to join my support guild: https://discord.gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
+            'The bot is in active development, so if you need anything, feel free to join my support guild: https://gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
         )
-        .addField('Github', 'https://github.com/tippf3hlr/activity-roles/')
-        .addField('Invite', config.inviteLink)
-        .addField('Support Guild', config.supportGuildLink)
-        .addField(
-          'Thanks to these people for suggestions',
-          '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
+        .addFields(
+          { name: 'Github', value: 'https://github.com/tippf3hlr/activity-roles/' },
+          { name: 'Invite', value: config.inviteLink },
+          { name: 'Support Guild', value: config.supportGuildLink },
+          {
+            name: 'Thanks to these people for suggestions',
+            value:
+              '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
+          }
         );
     }
   }

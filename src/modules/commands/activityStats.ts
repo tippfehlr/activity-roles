@@ -37,7 +37,7 @@ export default {
     const activities = Object.keys(heatMap).sort((a, b) => heatMap[b] - heatMap[a]);
     const embed = msg.baseActivityStats();
     for (const activity of activities) {
-      const appendString = `${embed.description}\n${
+      const appendString = `${embed.data.description}\n${
         (heatMap[activity] / memberIDs.length) * 100 > minPercentBold ? '**' : ''
       }\`${activity}\`: ${heatMap[activity]} / ${memberIDs.length} member${
         (heatMap[activity] / memberIDs.length) * 100 > minPercentBold ? '**' : ''

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { ChannelType, PermissionsBitField } from 'discord.js';
 import sqlite3 from 'better-sqlite3';
 
 import msg from './messages';
@@ -53,9 +53,10 @@ export function prepareDB() {
  */
 export async function checkGuild(guild: Discord.Guild): Promise<void> {
   if (db.prepare('SELECT * FROM guildConfig WHERE guildID = ?').get(guild.id)) return;
-  if (!guild.me?.permissions.has('MANAGE_CHANNELS')) return;
-  const channel = await guild.channels.create('activity-roles', {
-    type: 'GUILD_TEXT',
+  if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) return;
+  const channel = await guild.channels.create({
+    name: 'activity-roles',
+    type: ChannelType.GuildText,
     topic: 'This channel is used by Activity Roles'
   });
   channel.send({ embeds: [msg.newLogChannel()] });
@@ -110,7 +111,7 @@ async function manageUserRole(
 ) {
   if (
     highestBotRole.comparePositionTo(role) > 0 &&
-    member.guild.me?.permissions.has('MANAGE_ROLES')
+    member.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)
   ) {
     if (addRole) member.roles.add(role);
     else member.roles.remove(role);
@@ -139,8 +140,13 @@ async function manageUserRole(
   const logChannel = member.guild.channels.cache.find(
     channel => channel.id === guildConfig.logChannelID
   );
-  if (!logChannel?.isText()) return;
-  if (!logChannel.guild.me?.permissionsIn(logChannel).has(['SEND_MESSAGES', 'EMBED_LINKS'])) return;
+  if (logChannel?.type !== ChannelType.GuildText) return;
+  if (
+    !logChannel.guild.members.me
+      ?.permissionsIn(logChannel)
+      .has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])
+  )
+    return;
   logChannel.send({
     embeds: [
       msg.errorCantAssignRemoveRole(
@@ -172,7 +178,7 @@ async function checkMemberRoles(
   if (!onlyLive) {
     userActivityList = db.prepare('SELECT * FROM userData WHERE userID = ?').all(member.user.id);
   }
-  const highestBotRole = member?.guild?.me?.roles.highest;
+  const highestBotRole = member.guild.members.me?.roles.highest;
   if (!highestBotRole) return;
 
   for (const guildActivityRole of guildActivityRoles) {
@@ -241,7 +247,7 @@ export async function checkMemberLiveRoles(
     | undefined;
   if (!userConfig?.autoRole) return;
 
-  const highestBotRole = member?.guild?.me?.roles.highest;
+  const highestBotRole = member.guild.members.me?.roles.highest;
   if (!highestBotRole) return;
 
   for (const guildActivityRole of guildActivityLiveRoles) {
