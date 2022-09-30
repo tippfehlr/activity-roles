@@ -2,7 +2,9 @@ import {
   ApplicationCommandOptionData,
   Client,
   CommandInteraction,
-  PermissionResolvable
+  InteractionType,
+  PermissionResolvable,
+  PermissionsBitField
 } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
@@ -45,11 +47,22 @@ export default class CommandHandler {
     );
 
     client.on('interactionCreate', async interaction => {
-      if (!interaction.isCommand()) return;
+      if (interaction.type !== InteractionType.ApplicationCommand) return;
       const command = this.commands.get(interaction.commandName);
       if (!command) return;
       if (command.guildOnly && !interaction.guild) {
         interaction.reply(msg.commandGuildOnly());
+        return;
+      }
+      if (
+        command.requiredPermissions &&
+        !interaction.memberPermissions?.has(command.requiredPermissions)
+      ) {
+        interaction.reply(
+          msg.commandMissingPermissions(
+            new PermissionsBitField(command.requiredPermissions).toArray()
+          )
+        );
         return;
       }
       try {
