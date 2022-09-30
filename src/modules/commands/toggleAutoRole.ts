@@ -36,7 +36,7 @@ export default {
       interaction.editReply({ embeds: [msg.userStatus(Boolean(res.autoRole))] });
     } else {
       db.prepare('UPDATE userConfig SET autoRole = ? WHERE userId = ?').run(
-        autoRole,
+        Number(autoRole),
         interaction.user.id
       );
       interaction.editReply({ embeds: [msg.modifiedAutoRole(Boolean(autoRole))] });

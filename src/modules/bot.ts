@@ -82,7 +82,7 @@ client.on('disconnect', () => {
 client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
 
 client.on('roleDelete', async role => {
-  db.prepare('DELETE FROM roleData WHERE roleID = ? AND guildID = ?').run(role.id, role.guild.id);
+  db.prepare('DELETE FROM guildData WHERE roleID = ? AND guildID = ?').run(role.id, role.guild.id);
 });
 
 export function connect() {
