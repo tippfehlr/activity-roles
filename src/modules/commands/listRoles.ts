@@ -17,23 +17,22 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
-    await interaction.deferReply();
-
     const res: GuildData[] = db
       .prepare('SELECT * FROM guildData WHERE guildID = ?')
       .all(interaction.guild!.id);
     if (res.length === 0) {
-      interaction.editReply({ content: msg.noActivityRoles() });
+      interaction.reply({ content: msg.noActivityRoles() });
       return;
     }
-    const array = [['#', 'Role', 'ActivityName', 'exactActivityName']];
+    const array = [['#', 'Role', 'Activity', 'exact activity name', 'live']];
     for (const i in res) {
       array.push([
         String(Number(i) + 1),
         interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
           ` <@&${res[i].roleID}>`,
         res[i].activityName,
-        res[i].exactActivityName.toString()
+        String(Boolean(res[i].exactActivityName)),
+        String(Boolean(res[i].live))
       ]);
     }
     const response = table(array, {
@@ -42,7 +41,7 @@ export default {
       }
     });
     fs.writeFileSync(config.listRolesFileName, response);
-    await interaction.editReply({
+    await interaction.reply({
       /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName]
     });
     fs.unlinkSync(config.listRolesFileName);
