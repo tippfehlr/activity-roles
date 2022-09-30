@@ -7,7 +7,8 @@ import {
   InteractionType,
   EmbedBuilder,
   ActionRowBuilder,
-  SelectMenuBuilder
+  SelectMenuBuilder,
+  APIRole
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -51,13 +52,14 @@ export default {
     }
   ],
   callback: async interaction => {
-    const activityName = interaction.options.get('activity')?.value as string;
-    if (!activityName) return;
+    const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 1024) return msg.inputTooLong();
-    const exactActivityName =
-      (interaction.options.get('exact_activity_name')?.value as boolean | undefined) || false;
-    const live = (interaction.options.get('live')?.value as boolean) || false;
-    let role = interaction.options.get('role')?.role;
+    const exactActivityName: boolean =
+      (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
+      false;
+    const live: boolean =
+      (interaction.options.get('live', false)?.value as boolean | undefined) ?? false;
+    let role = interaction.options.get('role', false)?.role;
     if (!role) {
       // role not provided
       const possibleRoles = interaction.guild?.roles.cache.filter(role => {
@@ -120,6 +122,8 @@ export default {
           ephemeral: true
         });
       }
+    } else {
+      process(interaction, role, activityName, exactActivityName, live);
     }
   }
 } as Command;
@@ -146,7 +150,7 @@ function reply(
 
 function process(
   interaction: CommandInteraction | SelectMenuInteraction,
-  role: Role,
+  role: Role | APIRole,
   activityName: string,
   exactActivityName: boolean,
   live: boolean
