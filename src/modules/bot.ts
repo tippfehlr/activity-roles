@@ -1,6 +1,6 @@
 import Discord, { GatewayIntentBits } from 'discord.js';
 
-import { db, setGuildCheckInterval, checkGuild, checkUser, checkRoles } from './db';
+import { db, setGuildCheckInterval, checkUser, checkRoles } from './db';
 import config from '../../config';
 import msg, { log } from './messages';
 import CommandHandler from './commandHandler';
@@ -39,7 +39,6 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
   if (newMember.member.user.bot) return;
   processingUser.set(newMember.user?.id, true);
 
-  await checkGuild(newMember.guild);
   await checkUser(newMember.user);
 
   for (const activity of newMember.activities) {
@@ -70,7 +69,6 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
 
 client.on('guildCreate', guild => {
   log.info(`Joined guild ${guild.name} (${guild.id})`);
-  checkGuild(guild);
 });
 
 client.on('guildDelete', guild => log.info(`Left guild ${guild.name} (${guild.id})`));
