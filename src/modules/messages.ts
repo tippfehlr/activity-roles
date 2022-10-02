@@ -8,8 +8,6 @@ import {
   EmbedBuilder,
   Guild,
   Role,
-  TextBasedChannel,
-  TextChannel,
   User
 } from 'discord.js';
 import config from '../../config';
@@ -56,20 +54,6 @@ export default {
    */
   ok: () => {
     return 'ok';
-  },
-  /**
-   * Logs an error to the console if the highest role on the guild is undefined.
-   * @param {BaseGuild['id']} guildID - the ID of the guild that the error occurred in.
-   * @param {BaseGuild['name']} guildName - the name of the guild that the error occurred in.
-   * @returns None
-   */
-  newLogChannel: () => {
-    return new EmbedBuilder()
-      .setColor(config.botColor)
-      .setTitle('Logs')
-      .setDescription(
-        "I will send important messages to this channel. You can change it's name or move it, or define a different channel with `/setLogChannel`."
-      );
   },
   noTextChannel(channelID: string) {
     return new EmbedBuilder()
@@ -166,12 +150,31 @@ export default {
    * @returns {string} A string that tells the user that they can't use @everyone as a game role.
    */
   cantUseEveryone: () => {
-    return "*I am powerful, but not **that** powerful!*\nYou can't use @everyone as a game role.";
+    return "You can't use \\@everyone as an activity role.";
+  },
+  roleTooLow: (
+    highestBotRoleID: string,
+    highestBotRole: number,
+    roleID: string,
+    rolePosition: number
+  ) => {
+    return new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setDescription(
+        'To assign roles, my highest role needs to be higher than the role I am assigning.\nMove any of my roles higher than the role I should manage.'
+      )
+      .addFields(
+        {
+          name: 'My highest role:',
+          value: `<@&${highestBotRoleID}> (position #${highestBotRole})`
+        },
+        { name: 'the activity role:', value: `<@&${roleID}> (position #${rolePosition})` }
+      );
   },
   commandGuildOnly: () => {
     return 'This command can only be used in a guild.';
   },
-  commandMissingPermissions: (permissions: Array<string>) => {
+  commandMissingPermissions: (permissions: string[]) => {
     return 'You are missing the following permissions: ' + permissions.join(', ');
   },
   /**
@@ -321,17 +324,6 @@ export default {
       .setDescription('You can change this with the command `/toggleAutoRole`.')
       .setColor(autoRole ? Colors.Green : Colors.Red);
   },
-  alreadyIsLogChannel: () => {
-    return new EmbedBuilder()
-      .setDescription('This channel already is your log channel.')
-      .setColor(Colors.Red);
-  },
-  logChannelSet: (channel: TextBasedChannel | TextChannel) => {
-    return new EmbedBuilder()
-      .setTitle('Set Log Channel')
-      .setDescription(`Your log channel is now set to <#${channel.id}>.`)
-      .setColor(Colors.Green);
-  },
   noMembersWithActivities: () => {
     return 'There are no members with activities in this guild.';
   },
@@ -339,24 +331,6 @@ export default {
     return new EmbedBuilder()
       .setDescription('**Activities in this guild**')
       .setColor(config.botColor);
-  },
-  logChannel: {
-    forceDeletedActivityRole: (
-      activityName: string,
-      roleID: Role['id'],
-      exactActivityName: boolean,
-      live: boolean
-    ) => {
-      return new EmbedBuilder()
-        .setColor(Colors.Grey)
-        .setDescription('Deleted Activity Role because Role was deleted')
-        .addFields(
-          { name: 'activityName', value: activityName },
-          { name: 'roleID', value: roleID },
-          { name: 'exactActivityName', value: String(exactActivityName) },
-          { name: 'live', value: String(live) }
-        );
-    }
   },
 
   log: {

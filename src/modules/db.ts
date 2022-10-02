@@ -1,4 +1,4 @@
-import Discord, { ChannelType, PermissionsBitField } from 'discord.js';
+import Discord, { PermissionsBitField } from 'discord.js';
 import sqlite3 from 'better-sqlite3';
 
 import msg from './messages';
@@ -21,7 +21,6 @@ export interface GuildData {
 
 export interface GuildConfig {
   guildID: string;
-  logChannelID: string;
 }
 
 export interface UserConfig {
@@ -35,33 +34,13 @@ export function prepareDB() {
   db.prepare(
     'CREATE TABLE IF NOT EXISTS userConfig (userID TEXT PRIMARY KEY, autoRole INTEGER)'
   ).run();
-  db.prepare(
-    'CREATE TABLE IF NOT EXISTS guildConfig (guildID TEXT PRIMARY KEY, logChannelID TEXT)'
-  ).run();
+  db.prepare('CREATE TABLE IF NOT EXISTS guildConfig (guildID TEXT PRIMARY KEY)').run();
   db.prepare(
     'CREATE TABLE IF NOT EXISTS userData (userID TEXT, activityName TEXT, autoRole INTEGER, PRIMARY KEY (userID, activityName))'
   ).run();
   db.prepare(
     'CREATE TABLE IF NOT EXISTS guildData (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
-}
-
-/**
- * Checks if the guild is in the database.
- * @param {Discord.Guild} guild - The guild to check.
- * @returns None
- */
-export async function checkGuild(guild: Discord.Guild): Promise<void> {
-  if (db.prepare('SELECT * FROM guildConfig WHERE guildID = ?').get(guild.id)) return;
-  if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) return;
-  const channel = await guild.channels.create({
-    name: 'activity-roles',
-    type: ChannelType.GuildText,
-    topic: 'This channel is used by Activity Roles'
-  });
-  channel.send({ embeds: [msg.newLogChannel()] });
-  db.prepare('INSERT INTO guildConfig VALUES (?, ?)').run(guild.id, channel.id);
-  msg.log.addGuild(guild.name, guild.id);
 }
 
 /**
@@ -125,40 +104,7 @@ async function manageUserRole(
       member.guild.id,
       live
     );
-    return;
   }
-  msg.log.errorCantAssignRemoveRole(
-    addRole,
-    role.name,
-    role.id,
-    role.position,
-    member.user.username,
-    member.user.id,
-    guildActivityRole.activityName,
-    highestBotRole.position
-  );
-  const logChannel = member.guild.channels.cache.find(
-    channel => channel.id === guildConfig.logChannelID
-  );
-  if (logChannel?.type !== ChannelType.GuildText) return;
-  if (
-    !logChannel.guild.members.me
-      ?.permissionsIn(logChannel)
-      .has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])
-  )
-    return;
-  logChannel.send({
-    embeds: [
-      msg.errorCantAssignRemoveRole(
-        addRole,
-        role.id,
-        role.position,
-        member.user.id,
-        guildActivityRole.activityName,
-        highestBotRole.position
-      )
-    ]
-  });
 }
 
 async function checkMemberRoles(
@@ -296,7 +242,6 @@ export async function checkMemberLiveRoles(
  * @returns None
  */
 export async function checkRoles(member: Discord.GuildMember) {
-  await checkGuild(member.guild);
   const guildConfig: GuildConfig | null = db
     .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
     .get(member.guild.id);
@@ -315,7 +260,6 @@ export async function checkRoles(member: Discord.GuildMember) {
  * @returns None
  */
 export async function checkAllRoles(guild: Discord.Guild) {
-  await checkGuild(guild);
   const guildConfig: GuildConfig | null = db
     .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
     .get(guild.id);

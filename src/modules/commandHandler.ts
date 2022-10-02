@@ -58,11 +58,12 @@ export default class CommandHandler {
         command.requiredPermissions &&
         !interaction.memberPermissions?.has(command.requiredPermissions)
       ) {
-        interaction.reply(
-          msg.commandMissingPermissions(
+        interaction.reply({
+          content: msg.commandMissingPermissions(
             new PermissionsBitField(command.requiredPermissions).toArray()
-          )
-        );
+          ),
+          ephemeral: true
+        });
         return;
       }
       try {

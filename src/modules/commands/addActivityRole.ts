@@ -161,6 +161,26 @@ function process(
     return;
   }
   if (
+    !interaction.guild?.members.me?.roles.highest?.position ||
+    !interaction.guild.members.me.roles.highest.id
+  )
+    return;
+  if (
+    role.position &&
+    interaction.guild.members.me?.roles.highest?.position &&
+    role.position >= interaction.guild.members.me.roles.highest.position
+  ) {
+    reply(interaction, undefined, [
+      msg.roleTooLow(
+        interaction.guild.members.me.roles.highest.id,
+        interaction.guild.members.me.roles.highest.position,
+        role.id,
+        role.position
+      )
+    ]);
+    return;
+  }
+  if (
     db
       .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ? AND activityName = ?')
       .get(interaction.guild!.id, role.id, activityName)
