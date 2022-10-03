@@ -1,5 +1,5 @@
 import { PermissionsBitField } from 'discord.js';
-import { db, GuildData } from './../db';
+import { db, ActivityRoles } from '../db';
 import { Command } from '../commandHandler';
 import { table } from 'table';
 import fs from 'fs';
@@ -8,8 +8,7 @@ import config from '../../../config';
 import msg from '../messages';
 
 export default {
-  name: 'listroles',
-  category: 'Information',
+  name: 'listactivityroles',
   description: 'Lists all game roles in your guild.',
   requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
@@ -17,8 +16,8 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
-    const res: GuildData[] = db
-      .prepare('SELECT * FROM guildData WHERE guildID = ?')
+    const res: ActivityRoles[] = db
+      .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id);
     if (res.length === 0) {
       interaction.reply({ content: msg.noActivityRoles() });
@@ -42,7 +41,7 @@ export default {
     });
     fs.writeFileSync(config.listRolesFileName, response);
     await interaction.reply({
-      /*content: msg.activityRolesListInFile(),*/ files: [config.listRolesFileName]
+      files: [config.listRolesFileName]
     });
     fs.unlinkSync(config.listRolesFileName);
   }

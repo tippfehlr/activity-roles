@@ -14,17 +14,11 @@ import msg, { log } from './messages';
 export interface Command {
   name: string;
   description: string;
-  category: string;
   requiredPermissions?: PermissionResolvable[];
   testOnly?: string[] | false;
   guildOnly?: boolean;
   options?: ApplicationCommandOptionData[];
   callback(interaction: CommandInteraction): Promise<void>;
-
-  // delete old wokcommands properties
-  slash?: never;
-  minArgs?: never;
-  expectedArgs?: never;
 }
 
 const defaultOptions = {

@@ -1,17 +1,7 @@
-import Discord, { PermissionsBitField } from 'discord.js';
 import sqlite3 from 'better-sqlite3';
+import { createHash } from 'crypto';
 
-import msg from './messages';
-import config from '../../config';
-
-export interface UserData {
-  userID: string;
-  activityName: string;
-  autoRole: 1 | 0;
-  exactActivityName: 1 | 0;
-}
-
-export interface GuildData {
+export interface ActivityRoles {
   guildID: string;
   activityName: string;
   roleID: string;
@@ -19,274 +9,37 @@ export interface GuildData {
   live: 1 | 0;
 }
 
-export interface GuildConfig {
-  guildID: string;
+export interface Users {
+  userIDHash: string;
+  autoRole: 1 | 0;
 }
 
-export interface UserConfig {
+export interface CurrentlyActiveActivities {
   userID: string;
-  autoRole: 1 | 0;
+  guildID: string;
+  activityName: string;
 }
 
 export const db = sqlite3('activity-roles.db');
 
 export function prepareDB() {
+  db.prepare('CREATE TABLE IF NOT EXISTS users (userID TEXT PRIMARY KEY, autoRole INTEGER)').run();
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS userConfig (userID TEXT PRIMARY KEY, autoRole INTEGER)'
-  ).run();
-  db.prepare('CREATE TABLE IF NOT EXISTS guildConfig (guildID TEXT PRIMARY KEY)').run();
-  db.prepare(
-    'CREATE TABLE IF NOT EXISTS userData (userID TEXT, activityName TEXT, autoRole INTEGER, PRIMARY KEY (userID, activityName))'
+    'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS guildData (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
+    'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userID TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userID, guildID, activityName))'
   ).run();
 }
 
-/**
- * Checks if the user is in the database.
- * @param {Discord.User} user - the user to check for a UserConfig object
- * @returns {Promise<boolean>} - whether or not the user has a UserConfig object in the database.
- */
-export async function checkUser(user: Discord.User): Promise<void> {
-  if (db.prepare('SELECT * FROM userConfig WHERE userID = ?').get(user.id)) return;
-  db.prepare('INSERT INTO userConfig VALUES (?, ?)').run(user.id, 1);
-  msg.log.addUser(user.username, user.id);
+export function getUserAutoRole(userID: string): boolean {
+  const userIDHash = createHash('sha256').update(userID).digest('base64');
+  const user = db.prepare('SELECT * FROM users WHERE userID = ?').get(userIDHash);
+  if (user) return Boolean(user.autoRole);
+  db.prepare('INSERT INTO users VALUES (?, ?)').run(userIDHash, 1);
+  return true;
 }
 
-function userHasActivity(userActivityList: UserData[], activity: string, exact: boolean): boolean {
-  let filter;
-  if (exact) filter = (elmt: UserData) => elmt.activityName === activity;
-  else
-    filter = (elmt: UserData) => elmt.activityName.toLowerCase().includes(activity.toLowerCase());
-  const userActivityListFiltered = userActivityList.filter(filter);
-  if (userActivityListFiltered.length > 0 && userActivityListFiltered[0].autoRole) return true;
-  return false;
-}
-
-function userHasLiveActivity(
-  member: Discord.GuildMember,
-  activity: string,
-  exact: boolean
-): boolean {
-  if (!member.presence) return false;
-  let filter;
-  if (exact) filter = (elmt: Discord.Activity) => elmt.name === activity;
-  else
-    filter = (elmt: Discord.Activity) => elmt.name.toLowerCase().includes(activity.toLowerCase());
-  const userActivityListFiltered = member.presence.activities.filter(filter);
-  if (userActivityListFiltered.length > 0) return true;
-  return false;
-}
-
-async function manageUserRole(
-  addRole: boolean,
-  role: Discord.Role,
-  highestBotRole: Discord.Role,
-  member: Discord.GuildMember,
-  guildActivityRole: GuildData,
-  guildConfig: GuildConfig,
-  live: boolean
-) {
-  if (
-    highestBotRole.comparePositionTo(role) > 0 &&
-    member.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)
-  ) {
-    if (addRole) member.roles.add(role);
-    else member.roles.remove(role);
-    msg.log.addedRemovedRoleToFromMember(
-      addRole,
-      role.name,
-      guildActivityRole.roleID,
-      member.user.username,
-      member.user.id,
-      member.guild.name,
-      member.guild.id,
-      live
-    );
-  }
-}
-
-async function checkMemberRoles(
-  member: Discord.GuildMember,
-  guildConfig: GuildConfig,
-  guildActivityRoles: GuildData[],
-  onlyLive: boolean
-) {
-  if (member.user.bot) return;
-  await checkUser(member.user);
-  const userConfig: UserConfig | null = db
-    .prepare('SELECT * FROM userConfig WHERE userID = ?')
-    .get(member.user.id);
-  if (!userConfig?.autoRole) return;
-
-  let userActivityList: UserData[] | null = null;
-  if (!onlyLive) {
-    userActivityList = db.prepare('SELECT * FROM userData WHERE userID = ?').all(member.user.id);
-  }
-  const highestBotRole = member.guild.members.me?.roles.highest;
-  if (!highestBotRole) return;
-
-  for (const guildActivityRole of guildActivityRoles) {
-    await member.fetch();
-    const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
-    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
-    if (role === undefined) {
-      db.prepare('DELETE FROM guildData WHERE roleID = ?').run(guildActivityRole.roleID);
-      break;
-    }
-
-    let userShouldHaveRole;
-    if (guildActivityRole.live) {
-      userShouldHaveRole = userHasLiveActivity(
-        member,
-        guildActivityRole.activityName,
-        Boolean(guildActivityRole.exactActivityName)
-      );
-    } else {
-      userShouldHaveRole = userHasActivity(
-        userActivityList!, // won't be called if onlyLive is true
-        guildActivityRole.activityName,
-        Boolean(guildActivityRole.exactActivityName)
-      );
-    }
-
-    if (userShouldHaveRole && !userHasRole) {
-      manageUserRole(
-        true,
-        role,
-        highestBotRole,
-        member,
-        guildActivityRole,
-        guildConfig,
-        Boolean(guildActivityRole.live)
-      );
-      return;
-    } else if (!userShouldHaveRole && userHasRole) {
-      manageUserRole(
-        false,
-        role,
-        highestBotRole,
-        member,
-        guildActivityRole,
-        guildConfig,
-        Boolean(guildActivityRole.live)
-      );
-      return;
-    }
-  }
-}
-
-export async function checkMemberLiveRoles(
-  member: Discord.GuildMember,
-  activities: Discord.Activity[]
-) {
-  const guildConfig = db
-    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
-    .get(member.guild.id) as GuildConfig;
-
-  const guildActivityLiveRoles = (
-    db.prepare('SELECT * FROM guildData WHERE guildID = ?').all(member.guild.id) as GuildData[]
-  ).filter(elmt => elmt.live);
-  const userConfig = db.prepare('SELECT * FROM userConfig WHERE userID = ?').get(member.user.id) as
-    | UserConfig
-    | undefined;
-  if (!userConfig?.autoRole) return;
-
-  const highestBotRole = member.guild.members.me?.roles.highest;
-  if (!highestBotRole) return;
-
-  for (const guildActivityRole of guildActivityLiveRoles) {
-    const role = member.guild.roles.cache.find(role => role.id === guildActivityRole.roleID);
-    const userHasRole = member.roles.cache.has(guildActivityRole.roleID);
-    if (role === undefined) break; //FIXME: What if role gets removed? -> add log message role not found
-
-    const userShouldHaveRole =
-      activities.filter(activity => {
-        if (guildActivityRole.exactActivityName) {
-          return guildActivityRole.activityName === activity.name;
-        } else {
-          return guildActivityRole.activityName.toLowerCase().includes(activity.name);
-        }
-      }).length !== 0;
-
-    if (userShouldHaveRole && !userHasRole) {
-      manageUserRole(
-        true,
-        role,
-        highestBotRole,
-        member,
-        guildActivityRole,
-        guildConfig,
-        Boolean(guildActivityRole.live)
-      );
-      return;
-    } else if (!userShouldHaveRole && userHasRole) {
-      manageUserRole(
-        false,
-        role,
-        highestBotRole,
-        member,
-        guildActivityRole,
-        guildConfig,
-        Boolean(guildActivityRole.live)
-      );
-      return;
-    }
-  }
-}
-
-/**
- * Checks the user's roles and automatically assigns them to the appropriate role.
- * @param {Discord.GuildMember} member - The member to check.
- * @returns None
- */
-export async function checkRoles(member: Discord.GuildMember) {
-  const guildConfig: GuildConfig | null = db
-    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
-    .get(member.guild.id);
-  if (!guildConfig) return;
-  const guildActivityRoles: GuildData[] = db
-    .prepare('SELECT * FROM guildData WHERE guildID = ?')
-    .all(member.guild.id);
-  if (guildActivityRoles.length === 0) return;
-  const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
-  checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
-}
-
-/**
- * Checks all roles in the guild and their roles accordingly.
- * @param {Discord.Guild} guild - The guild to check.
- * @returns None
- */
-export async function checkAllRoles(guild: Discord.Guild) {
-  const guildConfig: GuildConfig | null = db
-    .prepare('SELECT * FROM guildConfig WHERE guildID = ?')
-    .get(guild.id);
-  if (!guildConfig) return;
-  const guildActivityRoles: GuildData[] = db
-    .prepare('SELECT * FROM guildData WHERE guildID = ?')
-    .all(guild.id);
-  if (guildActivityRoles.length === 0) return;
-  const onlyLive = guildActivityRoles.filter(elmt => !elmt.live).length === 0;
-
-  for (const member of guild.members.cache.values()) {
-    checkMemberRoles(member, guildConfig, guildActivityRoles, onlyLive);
-  }
-}
-export async function setGuildCheckInterval(client: Discord.Client) {
-  if (!config.guildCheckInterval.enabled) return;
-  let guilds: GuildData[];
-  if (config.guildCheckInterval.onlyWithLiveRole) {
-    guilds = db.prepare('SELECT * FROM guildData WHERE live = 1').all();
-  } else {
-    guilds = db.prepare('SELECT * FROM guildData').all();
-  }
-  const guildIDs = [...new Set(guilds.map(elmt => elmt.guildID))];
-  client.guilds.cache
-    .filter(guild => guildIDs.includes(guild.id))
-    .forEach(guild => {
-      setInterval(() => checkAllRoles(guild), config.guildCheckInterval.interval);
-    });
-  msg.log.checkGuildIntervalEnabled(guildIDs.length);
+export function getActivityRoles(guildID: string): ActivityRoles[] {
+  return db.prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(guildID);
 }

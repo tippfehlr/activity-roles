@@ -14,20 +14,14 @@ export default {
 
   /* ----------------------- change these to your liking ---------------------- */
   botColor: '#3695d3' as ColorResolvable, // the color of most embeds and roles created by the bot
-  activities: [
-    { name: '/help', type: ActivityType.Listening } as ActivityOptions,
-    { name: 'you', type: ActivityType.Watching } as ActivityOptions
-  ],
+  activity: { name: '/help', type: ActivityType.Listening } as ActivityOptions,
   listRolesFileName: 'activityRolesList.txt', // the name of the file that gets send on /listroles
   exportFileName: 'export.json', // the name of the file that gets send on /export
 
   /* ------------ change when live roles are not assigned properly ------------ */
-  // if enabled, will call checkAllRoles() on all guilds that have activity or live roles at the interval specified below. Used to assign roles even when presenceUpdate isn't called.
-  guildCheckInterval: {
-    enabled: true,
-    interval: 1000 * 30,
-    onlyWithLiveRole: true
-  },
+  // if enabled, the bot will ignore all presence updates that don't change the user's activities
+  // but if the bot is restarting while a change happens, the bot might miss it
+  presenceUpdateOnlyChanges: true,
 
   /* -------------------------------- DEBUGGING ------------------------------- */
   debug: false, // if a guild id is in the array, the command will be registered as guild only

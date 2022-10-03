@@ -7,7 +7,6 @@ import { EmbedBuilder } from 'discord.js';
 
 export default {
   name: 'help',
-  category: 'Help',
   description: 'Shows the help menu',
 
   testOnly: config.debug,
