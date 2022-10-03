@@ -13,7 +13,7 @@ import {
 
 import { Command } from '../commandHandler';
 import config from '../../../config';
-import msg from '../messages';
+import msg, { log } from '../messages';
 import { db } from '../db';
 
 export default {
@@ -195,15 +195,8 @@ function process(
       Number(exactActivityName),
       Number(live)
     );
-    msg.log.addRemoveActivityRole(
-      String(interaction.guild!.name),
-      String(interaction.guild!.id),
-      role.name,
-      role.id,
-      activityName,
-      exactActivityName,
-      live,
-      true
+    log.info(
+      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}`
     );
     reply(interaction, undefined, [
       msg.setNewActivityRole(role.id, activityName, exactActivityName, live)

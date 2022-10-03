@@ -1,6 +1,5 @@
 import {
   ActionRowBuilder,
-  BaseGuild,
   ButtonBuilder,
   ButtonStyle,
   Colors,
@@ -187,68 +186,33 @@ export default {
       .setDescription('You can change this with the command `/toggleAutoRole`.')
       .setColor(autoRole ? Colors.Green : Colors.Red);
   },
-
-  log: {
-    /**
-     * Logs that a new activity role has been added to the database.
-     * @param {string} guildName - The name of the guild.
-     * @param {string} guildID - The ID of the guild.
-     * @param {string} roleName - The name of the role.
-     * @param {string} roleID - The ID of the role.
-     * @param {string} activityName - The name of the activity.
-     * @param {boolean} exactActivityName - Whether the activity name has to be exact.
-     * @returns None
-     */
-    addRemoveActivityRole: async (
-      guildName: BaseGuild['name'],
-      guildID: BaseGuild['id'],
-      roleName: Role['name'],
-      roleID: Role['id'],
-      activityName: string,
-      exactActivityName: boolean,
-      live: boolean,
-      added: boolean,
-      forced?: boolean
-    ) => {
-      log.info(
-        `${added ? 'New a' : 'A'}ctivity role ${
-          added ? 'added' : 'removed'
-        }: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}${
-          forced ? 'because role was deleted.' : ''
-        }`
+  helpEmbed: () => {
+    return new EmbedBuilder()
+      .setTitle('Activity Roles')
+      .setColor(config.botColor)
+      .setFooter({
+        // = Made and hosted by <author>.
+        // or
+        // = Made by <author> and hosted by <host>
+        text: `Made ${config.author === config.host ? 'and hosted ' : ''}by ${config.author}${
+          config.author !== config.host ? ` and hosted by ${config.host}` : ''
+        } `,
+        iconURL: config.botAuthorLogoLink
+      })
+      .setDescription(
+        'A Discord bot that gives and removes roles to/from users based on their discord presence.\n' +
+          'It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n' +
+          'Ideal for creating specific-game(s)-only channels.\n' +
+          'The bot is in active development, so if you need anything, feel free to join my support guild: https://gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
+      )
+      .addFields(
+        { name: 'Github', value: 'https://github.com/tippf3hlr/activity-roles/' },
+        { name: 'Invite', value: config.inviteLink },
+        { name: 'Support Guild', value: config.supportGuildLink },
+        {
+          name: 'Thanks to these people for suggestions',
+          value: '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
+        }
       );
-    }
-  },
-  help: {
-    helpEmbed: () => {
-      return new EmbedBuilder()
-        .setTitle('Activity Roles')
-        .setColor(config.botColor)
-        .setFooter({
-          // = Made and hosted by <author>.
-          // or
-          // = Made by <author> and hosted by <host>
-          text: `Made ${config.author === config.host ? 'and hosted ' : ''}by ${config.author}${
-            config.author !== config.host ? ` and hosted by ${config.host}` : ''
-          } `,
-          iconURL: config.botAuthorLogoLink
-        })
-        .setDescription(
-          'A Discord bot that gives and removes roles to/from users based on their discord presence.\n' +
-            'It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n' +
-            'Ideal for creating specific-game(s)-only channels.\n' +
-            'The bot is in active development, so if you need anything, feel free to join my support guild: https://gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
-        )
-        .addFields(
-          { name: 'Github', value: 'https://github.com/tippf3hlr/activity-roles/' },
-          { name: 'Invite', value: config.inviteLink },
-          { name: 'Support Guild', value: config.supportGuildLink },
-          {
-            name: 'Thanks to these people for suggestions',
-            value:
-              '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
-          }
-        );
-    }
   }
 };

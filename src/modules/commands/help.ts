@@ -39,6 +39,6 @@ export default {
       });
       commandEmbed.addFields({ name: commandName, value: commandDescription });
     });
-    interaction.reply({ embeds: [msg.help.helpEmbed(), commandEmbed] });
+    interaction.reply({ embeds: [msg.helpEmbed(), commandEmbed] });
   }
 } as Command;
