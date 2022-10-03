@@ -11,8 +11,7 @@ import {
   ButtonStyle,
   CommandInteraction,
   EmbedBuilder,
-  PermissionsBitField,
-  SelectMenuInteraction
+  PermissionsBitField
 } from 'discord.js';
 
 import config from '../../../config';
