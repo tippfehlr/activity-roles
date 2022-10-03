@@ -1,4 +1,3 @@
-import { UserData } from './db';
 import {
   ActionRowBuilder,
   BaseGuild,
@@ -6,9 +5,7 @@ import {
   ButtonStyle,
   Colors,
   EmbedBuilder,
-  Guild,
-  Role,
-  User
+  Role
 } from 'discord.js';
 import config from '../../config';
 import pino from 'pino';
@@ -49,60 +46,6 @@ class highestBotRoleUndefined extends BaseMessage {
 
 export default {
   /**
-   * A function that returns 'ok'.
-   * @returns {string} 'ok'
-   */
-  ok: () => {
-    return 'ok';
-  },
-  noTextChannel(channelID: string) {
-    return new EmbedBuilder()
-      .setColor(Colors.Red)
-      .setTitle('Error')
-      .setDescription(`<#${channelID}> isn't a text channel.`);
-  },
-  /**
-   * @returns {EmbedBuilder} a Set! Embed
-   */
-  set: () => {
-    return new EmbedBuilder().setColor(config.botColor).setTitle('Set!');
-  },
-  /**
-   * Creates an error embed that tells the user that they can't assign the role they want to the user.
-   * @param {Role} assign - true if assigning, false if removing.
-   * @param {Role['id']} roleID - The ID of the role they tried to assign.
-   * @param {Role['position']} rolePosition - The position of the role they tried to assign.
-   * @param {User['id']} userID - The ID of the user they tried to assign the role to.
-   * @param {string} activityName - The name of the activity.
-   * @param {number} highestBotRole - The position of the highest role the bot has.
-   */
-  errorCantAssignRemoveRole: (
-    assign: boolean,
-    roleID: Role['id'],
-    rolePosition: Role['position'],
-    userID: User['id'],
-    activityName: string,
-    highestBotRole: number
-  ): EmbedBuilder => {
-    return new EmbedBuilder()
-      .setColor(Colors.Red)
-      .setTitle('Error')
-      .setDescription(`Can't assign <@&${roleID}> to <@${userID}>`)
-      .addFields(
-        { name: 'Error:', value: 'Missing permissions' },
-        { name: 'Activity Name:', value: activityName }
-      )
-      .addFields(
-        { name: 'My highest role:', value: `#${highestBotRole}`, inline: true },
-        { name: 'ActivityRole:', value: `#${rolePosition}`, inline: true }
-      )
-      .addFields({
-        name: 'Solution:',
-        value: 'Move any of my roles higher than the role I should give.'
-      })
-      .setTimestamp();
-  },
-  /**
    * @returns {string} 'There was an error while executing this command!'
    **/
   errorWhileExecutingCommand: () => {
@@ -131,24 +74,9 @@ export default {
         { name: 'live', value: live ? 'Yes' : 'No' }
       );
   },
-  /**
-   * Returns a string that says that the role does not exist.
-   * @returns {string} A string that says that the role does not exist.
-   */
   roleDoesNotExist: () => {
     return ':x: That role does not exist! :x:';
   },
-  /**
-   * Returns a string that says that the channel does not exist.
-   * @returns {string} A string that says that the channel does not exist.
-   */
-  channelDoesNotExist: () => {
-    return ':x: That channel does not exist! :x:';
-  },
-  /**
-   * Returns a string that tells the user that they can't use @everyone as a game role.
-   * @returns {string} A string that tells the user that they can't use @everyone as a game role.
-   */
   cantUseEveryone: () => {
     return "You can't use \\@everyone as an activity role.";
   },
@@ -177,23 +105,12 @@ export default {
   commandMissingPermissions: (permissions: string[]) => {
     return 'You are missing the following permissions: ' + permissions.join(', ');
   },
-  /**
-   * Returns a string that tells the user that the role they are trying to create already exists.
-   * @returns {string} A string that tells the user that the role they are trying to create already exists.
-   */
   activityRoleExists: () => {
-    return ":x: That game role already exists in this guild! Edit it with '/editRole'. :x:";
+    return ':x: That activity role already exists in this guild! :x:';
   },
   activityRoleDoesNotExist: () => {
-    return ":x: That game role does not exists in this guild! Create it with '/addRole'. :x:";
+    return ':x: That activity role does not exists in this guild! :x:';
   },
-  /**
-   * Creates a EmbedBuilder object that asks the user if they really want to delete a game role.
-   * @param {string} activityName - the name of the activity that the role is for.
-   * @param {string} roleID - the ID of the role to delete.
-   * @param {boolean} exactActivityName - whether or not the activity name has to be exact.
-   * @returns {EmbedBuilder} - the EmbedBuilder object.
-   */
   removeActivityRoleQ: (
     activityName: string,
     roleID: string,
@@ -201,7 +118,7 @@ export default {
     live: boolean
   ) => {
     return new EmbedBuilder()
-      .setTitle('Do you really want to delete this game role?')
+      .setTitle('Do you really want to delete this activity role?')
       .setColor(config.botColor)
       .addFields(
         { name: 'activity', value: activityName.toString() },
@@ -209,15 +126,6 @@ export default {
         { name: 'exact activity name', value: exactActivityName ? 'Yes' : 'No' },
         { name: 'live', value: live ? 'Yes' : 'No' }
       );
-  },
-  /**
-   * Creates a EmbedBuilder that asks the user if they really want to remove all activities from their account.
-   * @returns {EmbedBuilder} - A EmbedBuilder that asks the user if they really want to remove all activities from their account.
-   */
-  removeAllActivities: () => {
-    return new EmbedBuilder()
-      .setTitle('Do you really want to remove **ALL** activities from your account?')
-      .setColor(Colors.Red);
   },
   /**
    * Creates a MessageActionRow object that contains a remove button and a cancel button.
@@ -240,13 +148,6 @@ export default {
     return 'There are no activity roles in this guild.';
   },
   /**
-   * Returns a string that tells the user that there are no activities for their account.
-   * @returns {string} - A string that tells the user that there are no activities for their account.
-   */
-  noActivities: () => {
-    return 'There are no activities stored for your user.';
-  },
-  /**
    * Returns aEmbed object with the title "Removed" and a red color.
    * @returns {EmbedBuilder} - A EmbedBuilder object with the title "Removed" and a red color.
    */
@@ -261,49 +162,11 @@ export default {
     return new EmbedBuilder().setTitle('Cancelled').setColor(Colors.Grey);
   },
   /**
-   * Creates an error embed.
-   * @returns A EmbedBuilder object.
-   */
-  errorEmbed: () => {
-    return new EmbedBuilder().setTitle('Error').setColor(Colors.Red);
-  },
-  /**
    * Returns a string that tells the user that their input is too long.
    * @returns {string} A string that tells the user that their input is too long.
    */
   inputTooLong: () => {
     return ":x: I'm sorry, but your values are too big for me to handle. :x:";
-  },
-  /**
-   * Returns a string that describes the activity roles list.
-   * @returns {string} - a string that describes the activity roles list.
-   */
-  activityRolesListInFile: () => {
-    return "It's hard to send lists to Discord, so it's in this file. ***hint:** turn off **word wrap** to view the list correctly.*";
-  },
-  /**
-   * Creates a base embed for the list activities command.
-   * @param {User['id']} userName - the user's name.
-   * @param {User['discriminator']} userDiscriminator - the user's discriminator.
-   * @returns {EmbedBuilder} - the embed to send.
-   */
-  listActivitiesBaseEmbed: (userName: User['id'], userDiscriminator: User['discriminator']) => {
-    return new EmbedBuilder()
-      .setTitle(`Activity List for @${userName}#${userDiscriminator}`)
-      .setColor(config.botColor)
-      .setDescription(
-        'This is a list of all the activities that you have stored for this user.\n' +
-          'Delete them with `/deleteActivity` or `/deleteAllActivities` and add one with `/addActivity`.\n\n'
-      );
-  },
-  activityMissing: () => {
-    return 'This activity does not exists on your account.';
-  },
-  activityDeleted: (activityName: string) => {
-    return `Removed activity \`${activityName}\` from your account.`;
-  },
-  removedAllActivities() {
-    return new EmbedBuilder().setTitle(`Removed all activities.`).setColor(Colors.Red);
   },
   userStatus(autoRole: boolean) {
     return new EmbedBuilder()
@@ -324,44 +187,8 @@ export default {
       .setDescription('You can change this with the command `/toggleAutoRole`.')
       .setColor(autoRole ? Colors.Green : Colors.Red);
   },
-  noMembersWithActivities: () => {
-    return 'There are no members with activities in this guild.';
-  },
-  baseActivityStats: () => {
-    return new EmbedBuilder()
-      .setDescription('**Activities in this guild**')
-      .setColor(config.botColor);
-  },
 
   log: {
-    /**
-     * Logs that the bot is logged in to
-     * @param {string} userName - the bot's name
-     * @param {string} discriminator - the bot's discriminator
-     * @param {string} id - the bot's ID
-     * @returns None
-     */
-    login: async (userName: string, discriminator: string, id: string) => {
-      log.info(`Logged in to Discord as ${userName}#${discriminator} (${id})`);
-    },
-    /**
-     * Logs that a guild has been added to the database.
-     * @param {string} guildName - The name of the guild.
-     * @param {string} guildID - The ID of the guild.
-     * @returns None
-     */
-    addGuild: async (guildName: BaseGuild['name'], guildID: BaseGuild['id']): Promise<void> => {
-      log.info(`Added guild ${guildName} (${guildID}) to the database.`);
-    },
-    /**
-     * Logs that a user has been added to the database.
-     * @param {string} userName - the name of the user.
-     * @param {string} userID - the ID of the user.
-     * @returns None
-     */
-    addUser: async (userName: User['username'], userID: User['id']): Promise<void> => {
-      log.info(`Added user ${userName} (${userID}) to the database.`);
-    },
     /**
      * Logs that a new activity role has been added to the database.
      * @param {string} guildName - The name of the guild.
@@ -389,94 +216,6 @@ export default {
         }: on guild ${guildName} (${guildID}) role: ${roleName} (${roleID}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}${
           forced ? 'because role was deleted.' : ''
         }`
-      );
-    },
-    /**
-     * Logs a connection to the MongoDB database.
-     * @returns None
-     */
-    mongodbConnect: async (): Promise<void> => {
-      log.info('Connected to MongoDB database.');
-    },
-    /**
-     *
-     * @param username the username of the user
-     * @param userID the id of the user
-     * @param guildName the name of the guild
-     * @param guildID the id of the guild
-     * @param activityName the name of the activity
-     */
-    newActivity: async (
-      username: User['username'],
-      userID: User['id'],
-      guildName: Guild['name'],
-      guildID: Guild['id'],
-      activityName: string
-    ) => {
-      log.info(
-        `New activity: ${username} (${userID}) from guild ${guildName} (${guildID}) plays ${activityName}.`
-      );
-    },
-    /**
-     * Logs when a role is added to a member.
-     * @param {boolean} added - true if the role was added, false if it was removed.
-     * @param {string} roleName - the name of the role that was added.
-     * @param {string} roleID - the ID of the role that was added.
-     * @param {string} userName - the name of the user that was added.
-     * @param {string} userID - the ID of the user that was added.
-     * @param {string} guildName - the name of the guild that the role was added to.
-     * @param {string} guildID - the ID of the guild that the role was added to.
-     * @param {boolean} live - whether the role is a live role mode.
-     * @returns None
-     */
-    addedRemovedRoleToFromMember: async (
-      added: boolean,
-      roleName: Role['name'],
-      roleID: Role['id'],
-      userName: User['username'],
-      userID: User['id'],
-      guildName: BaseGuild['name'],
-      guildID: BaseGuild['id'],
-      live: boolean
-    ): Promise<void> => {
-      log.info(
-        `${added ? 'Added' : 'Removed'} Role ${roleName} (${roleID}) ${
-          added ? 'to' : 'from'
-        } user: ${userName} (${userID}) on guild: ${guildName} (${guildID}) live: ${live}`
-      );
-    },
-    /**
-     * Logs an error to the console that the bot can't assign a role to a user.
-     * @param {string} assign - true if assigning, false if removing.
-     * @param {string} roleName - The name of the role that couldn't be assigned.
-     * @param {string} roleID - The ID of the role that couldn't be assigned.
-     * @param {number} rolePosition - The position of the role that couldn't be assigned.
-     * @param {string} userName - The name of the user that the role couldn't be added to.
-     * @param {string} userID - The ID of the user that the role couldn't be added to.
-     * @param {string} activityName - The name of the activity that couldn't be assigned.
-     */
-    errorCantAssignRemoveRole: async (
-      assign: boolean,
-      roleName: Role['name'],
-      roleID: Role['id'],
-      rolePosition: Role['position'],
-      userName: User['username'],
-      userID: User['id'],
-      activityName: string,
-      highestBotRole: number
-    ): Promise<void> => {
-      log.info(
-        `Error: Can't assign role ${roleName} (${roleID}, rolePosition: ${rolePosition}) to user: ${userName} (${userID}). activityName: ${activityName}, highestBotRole: ${highestBotRole}`
-      );
-    },
-    duplicateActivity: async (userActivityListFiltered: UserData[]) => {
-      log.warn(userActivityListFiltered, 'Encountered duplicate activity');
-    },
-    checkGuildIntervalEnabled: async (guildCount: number) => {
-      log.info(
-        `guild check interval enabled on ${guildCount} (${
-          config.guildCheckInterval.onlyWithLiveRole ? 'onlyLive' : 'all'
-        }) guilds with interval: ${config.guildCheckInterval.interval / 1000} seconds`
       );
     }
   },

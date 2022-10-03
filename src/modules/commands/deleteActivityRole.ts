@@ -1,4 +1,4 @@
-import { db, GuildData } from './../db';
+import { db, ActivityRoles } from '../db';
 //mention that no roles are removed and maybe there is an extra command
 
 import { Command } from '../commandHandler';
@@ -8,8 +8,7 @@ import config from '../../../config';
 import msg from '../messages';
 
 export default {
-  name: 'removeactivityrole',
-  category: 'Configuration',
+  name: 'deleteactivityrole',
   description: 'Deletes an activity role from your guild.',
   requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
@@ -32,24 +31,22 @@ export default {
   ],
 
   callback: async interaction => {
-    await interaction.deferReply({ ephemeral: true });
-
     const role = interaction.options.get('role')?.role;
     if (!role) return;
     const activityName = interaction.options.get('activity_name')?.value as string;
 
-    const data: GuildData | null = db
-      .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ?')
+    const data: ActivityRoles | null = db
+      .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
       .get(interaction.guild!.id, role.id);
 
     if (!data) {
-      interaction.editReply({
+      interaction.reply({
         content: msg.activityRoleDoesNotExist()
       });
       return;
     }
 
-    await interaction.editReply({
+    await interaction.reply({
       embeds: [
         msg.removeActivityRoleQ(
           activityName,
@@ -74,7 +71,7 @@ export default {
       .on('collect', async (int: Discord.ButtonInteraction) => {
         switch (int.customId) {
           case 'remove':
-            db.prepare('DELETE FROM guildData WHERE guildID = ? AND roleID = ?').run(
+            db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
               interaction.guild!.id,
               role.id
             );

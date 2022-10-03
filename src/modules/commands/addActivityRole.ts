@@ -14,11 +14,10 @@ import {
 import { Command } from '../commandHandler';
 import config from '../../../config';
 import msg from '../messages';
-import { checkAllRoles, db } from '../db';
+import { db } from '../db';
 
 export default {
   name: 'addactivityrole',
-  category: 'Configuration',
   description: 'Adds an activity role to your guild.',
   requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
@@ -28,25 +27,26 @@ export default {
   options: [
     {
       name: 'activity',
-      description: 'the name of the discord presence',
+      description: 'the name of the discord activity',
       required: true,
       type: ApplicationCommandOptionType.String
     },
     {
       name: 'role',
-      description: 'the role to assign',
+      description:
+        'If not provided, the bot will look for roles with the same name or create a new one',
       required: false,
       type: ApplicationCommandOptionType.Role
     },
     {
       name: 'exact_activity_name',
-      description: 'If the activity name has to be exactly the name of the activity.',
+      description: 'If the activity name has to be exactly the name of the activity',
       required: false,
       type: ApplicationCommandOptionType.Boolean
     },
     {
       name: 'live',
-      description: 'Should the user keep the role when the activity stops?',
+      description: 'Should the bot remove the role again when the activity stops?',
       required: false,
       type: ApplicationCommandOptionType.Boolean
     }
@@ -182,20 +182,19 @@ function process(
   }
   if (
     db
-      .prepare('SELECT * FROM guildData WHERE guildID = ? AND roleID = ? AND activityName = ?')
+      .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?')
       .get(interaction.guild!.id, role.id, activityName)
   ) {
     reply(interaction, msg.activityRoleExists());
     return;
   } else {
-    db.prepare('INSERT INTO guildData VALUES (?, ?, ?, ?, ?)').run(
+    db.prepare('INSERT INTO activityRoles VALUES (?, ?, ?, ?, ?)').run(
       interaction.guild!.id,
       activityName,
       role.id,
       Number(exactActivityName),
       Number(live)
     );
-    if (interaction.guild) checkAllRoles(interaction.guild);
     msg.log.addRemoveActivityRole(
       String(interaction.guild!.name),
       String(interaction.guild!.id),

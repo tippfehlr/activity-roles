@@ -1,4 +1,4 @@
-import { db, GuildData } from './../db';
+import { db, ActivityRoles } from './../db';
 import { Command } from '../commandHandler';
 import fs from 'fs';
 
@@ -7,7 +7,6 @@ import { PermissionsBitField } from 'discord.js';
 
 export default {
   name: 'export',
-  category: 'Information',
   description: 'Exports all game roles in your guild as a JSON file.',
   requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
 
@@ -15,24 +14,21 @@ export default {
   guildOnly: true,
 
   callback: async interaction => {
-    await interaction.deferReply();
-
-    const res: GuildData[] = db
-      .prepare('SELECT * FROM guildData WHERE guildID = ?')
+    const activityRoles: ActivityRoles[] = db
+      .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id);
     const array = [];
-    for (const i in res) {
-      array.push([
-        String(Number(i) + 1),
-        `${interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name} <@&${
-          res[i].roleID
-        }>`,
-        res[i].activityName,
-        res[i].exactActivityName.toString()
-      ]);
+    for (const activityRole of activityRoles) {
+      array.push({
+        guildID: activityRole.guildID,
+        roleID: activityRole.roleID,
+        activityName: activityRole.activityName,
+        live: Boolean(activityRole.live),
+        exactActivityName: Boolean(activityRole.exactActivityName)
+      });
     }
     fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
-    await interaction.editReply({ files: [config.exportFileName] });
+    await interaction.reply({ files: [config.exportFileName] });
     fs.unlinkSync(config.exportFileName);
   }
 } as Command;
