@@ -63,16 +63,16 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
   const currentlyActiveActivities: string[] = [];
   activityRoles
     .filter(activityRole => {
-      if (activityRole.live) {
-        if (
-          userActivities.filter(userActivity =>
-            activityRole.activityName.toLowerCase().includes(userActivity.toLowerCase())
-          ).length > 0
-        ) {
+      if (activityRole.exactActivityName) {
+        if (userActivities.includes(activityRole.activityName)) {
           return true;
         }
       } else {
-        if (userActivities.includes(activityRole.activityName)) {
+        if (
+          userActivities.filter(userActivity =>
+            userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
+          ).length > 0
+        ) {
           return true;
         }
       }
