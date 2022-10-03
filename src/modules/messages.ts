@@ -211,7 +211,8 @@ export default {
         { name: 'Support Guild', value: config.supportGuildLink },
         {
           name: 'Thanks to these people for suggestions',
-          value: '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033\nIf I forgot you, please let me know!'
+          value:
+            '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033, @dangerBEclose#1654\nIf I forgot you, please let me know!'
         }
       );
   }
