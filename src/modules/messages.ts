@@ -188,7 +188,6 @@ export default {
   },
   helpEmbed: () => {
     return new EmbedBuilder()
-      .setTitle('Activity Roles')
       .setColor(config.botColor)
       .setFooter({
         // = Made and hosted by <author>.
@@ -200,20 +199,20 @@ export default {
         iconURL: config.botAuthorLogoLink
       })
       .setDescription(
-        'A Discord bot that gives and removes roles to/from users based on their discord presence.\n' +
-          'It can be decided for each role if the role should be removed when the user stops playing the game (live mode) or not.\n' +
-          'Ideal for creating specific-game(s)-only channels.\n' +
-          'The bot is in active development, so if you need anything, feel free to join my support guild: https://gg/3K9Yx4ufN7 or open a Github issue: https://github.com/tippf3hlr/activity-roles/issues/new'
+        'A Discord bot for automatic role assignment based on activities.\n' +
+          'Support/Suggestions: https://discord.gg/3K9Yx4ufN7\n' +
+          'Github: https://github.com/tippf3hlr/activity-roles/\n' +
+          '\n' +
+          'If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n' +
+          'If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n' +
+          'If it is true, the activity must match exactly and case-sensitively.\n' +
+          "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n" +
+          '**The bot will not remove any roles that were added manually.**'
       )
-      .addFields(
-        { name: 'Github', value: 'https://github.com/tippf3hlr/activity-roles/' },
-        { name: 'Invite', value: config.inviteLink },
-        { name: 'Support Guild', value: config.supportGuildLink },
-        {
-          name: 'Thanks to these people for suggestions',
-          value:
-            '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033, @dangerBEclose#1654\nIf I forgot you, please let me know!'
-        }
-      );
+      .addFields({
+        name: 'Thanks to these people for suggestions',
+        value:
+          '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033, @dangerBEclose#1654, @skyykc#0218, @Mann#9999\nIf I forgot you, please let me know!'
+      });
   }
 };

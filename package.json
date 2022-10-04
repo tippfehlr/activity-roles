@@ -20,20 +20,19 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
-    "@types/node": "^18.7.23",
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
+    "@types/node": "^18.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
     "arkit": "^1.6.4",
-    "eslint": "^8.11.0",
+    "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.6.0",
-    "typescript": "^4.7.3"
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
     "dev": "nodemon -i export.json -i activityRolesList.txt",
-    "build": "npx tsc --outDir out/",
-    "arkit": "arkit -f src/index.ts -e test/ -o architecture.svg"
+    "build": "npx tsc --outDir out/"
   }
 }
