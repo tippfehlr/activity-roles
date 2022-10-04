@@ -39,6 +39,9 @@ export default {
       });
       commandEmbed.addFields({ name: commandName, value: commandDescription });
     });
-    interaction.reply({ embeds: [msg.helpEmbed(), commandEmbed] });
+    interaction.reply({
+      files: ['./img/discord-header.png'],
+      embeds: [msg.helpEmbed(), commandEmbed]
+    });
   }
 } as Command;

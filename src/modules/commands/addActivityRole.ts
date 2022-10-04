@@ -40,7 +40,7 @@ export default {
     },
     {
       name: 'exact_activity_name',
-      description: 'If the activity name has to be exactly the name of the activity',
+      description: "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
       required: false,
       type: ApplicationCommandOptionType.Boolean
     },
