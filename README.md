@@ -3,7 +3,7 @@
 [![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=join%20support%20guild&color=7289DA)](https://discord.gg/3K9Yx4ufN7)
 [![](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
 [![](https://img.shields.io/github/issues/tippf3hlr/activity-roles?style=for-the-badge)](https://github.com/tippf3hlr/activity-roles/issues?style=for-the-badge)
-[![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)](https://github.com/tippf3hlr/activity-roles#changelog)  
+![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)  
 ---
 A Discord bot for automatic role assignment based on activities.  
 Support/Suggestions: https://discord.gg/3K9Yx4ufN7.  
@@ -30,7 +30,7 @@ Contribution is highly appreciated. Feel free to join the support/suggestions se
 
 #### Thanks to these people for suggestions:
 
- - @EianLee#7234 on Discordo activity data ist stored.
+ - @EianLee#7234 on Discord
  - @Krampus#2007 on Discord
  - @RstY_CZ#2033 on Discord
  - @dangerBEclose#1654 on Discord
