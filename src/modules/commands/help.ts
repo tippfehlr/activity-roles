@@ -3,29 +3,26 @@ import { Command } from '../commandHandler';
 
 import config from '../../../config';
 import msg from '../messages';
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 export default {
-  name: 'help',
-  description: 'Shows the help menu',
+  data: new SlashCommandBuilder().setName('help').setDescription('Shows the help menu'),
 
-  testOnly: config.debug,
-
-  callback: async interaction => {
+  execute: async interaction => {
     const commandEmbed = new EmbedBuilder().setTitle('Commands').setColor(config.botColor);
     commandHandler.commands.forEach(command => {
-      let commandName = `**\`/${command.name}`;
-      command.options?.forEach(option => {
+      let commandName = `**\`/${command.data.name}`;
+      command.data.options.forEach(option => {
         // @ts-ignore
         if (option.required) {
-          commandName += ` <${option.name}>`;
+          commandName += ` <${option.toJSON().name}>`;
         } else {
-          commandName += ` [${option.name}]`;
+          commandName += ` [${option.toJSON().name}]`;
         }
       });
       commandName += `\`**`;
 
-      let commandDescription = command.description;
+      let commandDescription = command.data.description;
       // if (command.requiredPermissions) {
       //   commandDescription += `\nRequired Permissions: ${command.requiredPermissions
       //     .map(permission => `\`${permission}\``)
@@ -34,8 +31,8 @@ export default {
       // if (command.guildOnly) {
       //   commandDescription += '\nCan only be used in a guild';
       // }
-      command.options?.forEach(option => {
-        commandDescription += `\`\n${option.name}\`: ${option.description}`;
+      command.data.options.forEach(option => {
+        commandDescription += `\`\n${option.toJSON().name}\`: ${option.toJSON().description}`;
       });
       commandEmbed.addFields({ name: commandName, value: commandDescription });
     });

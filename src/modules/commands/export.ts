@@ -1,19 +1,16 @@
+import { SlashCommandBuilder, PermissionsBitField, CommandInteraction } from 'discord.js';
 import { db, ActivityRoles } from './../db';
-import { Command } from '../commandHandler';
 import fs from 'fs';
-
 import config from '../../../config';
-import { PermissionsBitField } from 'discord.js';
+import { Command } from '../commandHandler';
 
 export default {
-  name: 'export',
-  description: 'Exports all game roles in your guild as a JSON file.',
-  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
-
-  testOnly: config.debug,
-  guildOnly: true,
-
-  callback: async interaction => {
+  data: new SlashCommandBuilder()
+    .setName('export')
+    .setDescription('Exports all game roles in your guild as a JSON file.')
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
+    .setDMPermission(false),
+  execute: async (interaction: CommandInteraction) => {
     const activityRoles: ActivityRoles[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id);

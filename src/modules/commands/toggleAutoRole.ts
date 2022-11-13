@@ -1,25 +1,20 @@
 import { getUserAutoRole, db } from './../db';
 import { Command } from '../commandHandler';
 
-import config from '../../../config';
 import msg from '../messages';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 export default {
-  name: 'toggleautorole',
-  description: 'Enables/Disables automatic role assignment',
+  data: new SlashCommandBuilder()
+    .setName('toggleautorole')
+    .setDescription('Enable/Disable automatic role assignment')
+    .addBooleanOption(option =>
+      option
+        .setName('enabled')
+        .setDescription('Enable/Disable automatic role assignment')
+        .setRequired(false)
+    ),
 
-  testOnly: config.debug,
-
-  options: [
-    {
-      name: 'enabled',
-      description: 'whether or not to enable the bot for this user',
-      required: false,
-      type: ApplicationCommandOptionType.Boolean
-    }
-  ],
-
-  callback: async interaction => {
+  execute: async interaction => {
     const autoRole = interaction.options.get('enabled', false)?.value as boolean | undefined;
     const userAutoRole = getUserAutoRole(interaction.user.id);
     if (autoRole === undefined) {

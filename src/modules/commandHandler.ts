@@ -1,35 +1,23 @@
-import {
-  ApplicationCommandOptionData,
-  Client,
-  CommandInteraction,
-  InteractionType,
-  PermissionResolvable,
-  PermissionsBitField
-} from 'discord.js';
+import { Client, CommandInteraction, InteractionType, SlashCommandBuilder } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 export { CommandInteraction } from 'discord.js';
 import msg, { log } from './messages';
 
 export interface Command {
-  name: string;
-  description: string;
-  requiredPermissions?: PermissionResolvable[];
-  testOnly?: string[] | false;
-  guildOnly?: boolean;
-  options?: ApplicationCommandOptionData[];
-  callback(interaction: CommandInteraction): Promise<void>;
+  data: SlashCommandBuilder;
+  execute(interaction: CommandInteraction): Promise<void>;
 }
 
 const defaultOptions = {
   commandsDir: './commands/',
-  commandFileExtension: ['.js', '.ts'] as string | string[]
+  commandFileExtension: ['.js', '.ts'] as string[]
 };
 
 export default class CommandHandler {
   private client: Client;
   private options: typeof defaultOptions;
-  public commands: Map<Command['name'], Command>;
+  public commands: Map<Command['data']['name'], Command>;
 
   constructor(client: Client, options = defaultOptions) {
     this.client = client;
@@ -44,26 +32,10 @@ export default class CommandHandler {
       if (interaction.type !== InteractionType.ApplicationCommand) return;
       const command = this.commands.get(interaction.commandName);
       if (!command) return;
-      if (command.guildOnly && !interaction.guild) {
-        interaction.reply(msg.commandGuildOnly());
-        return;
-      }
-      if (
-        command.requiredPermissions &&
-        !interaction.memberPermissions?.has(command.requiredPermissions)
-      ) {
-        interaction.reply({
-          content: msg.commandMissingPermissions(
-            new PermissionsBitField(command.requiredPermissions).toArray()
-          ),
-          ephemeral: true
-        });
-        return;
-      }
       try {
-        command.callback(interaction);
+        command.execute(interaction);
       } catch (error) {
-        log.error(error, 'Error while executing command' + command.name);
+        log.error(error, 'Error while executing command' + command.data.name);
         await interaction.reply({
           content: msg.errorWhileExecutingCommand(),
           ephemeral: true
@@ -82,16 +54,8 @@ export default class CommandHandler {
     });
     for (const file of commandFiles) {
       const command: Command = require(commandsDir + file).default as Command;
-      if (command.name.search(/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/gu)) {
-        throw new Error(`Command name ${command.name} is invalid`);
-      }
-      for (const option of command.options || []) {
-        if (option.name.search(/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/gu)) {
-          throw new Error(`Command option name ${option.name} is invalid`);
-        }
-      }
-      commands.set(command.name, command);
+      commands.set(command.data.name, command);
     }
-    return commands as Map<string, Command>;
+    return commands as typeof this.commands;
   }
 }

@@ -1,4 +1,4 @@
-import { PermissionsBitField } from 'discord.js';
+import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
 import { db, ActivityRoles } from '../db';
 import { Command } from '../commandHandler';
 import { table } from 'table';
@@ -8,14 +8,13 @@ import config from '../../../config';
 import msg from '../messages';
 
 export default {
-  name: 'listactivityroles',
-  description: 'Lists all game roles in your guild.',
-  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
+  data: new SlashCommandBuilder()
+    .setName('listactivityroles')
+    .setDescription('Lists all activity roles in your guild.')
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
 
-  testOnly: config.debug,
-  guildOnly: true,
-
-  callback: async interaction => {
+  execute: async interaction => {
     const res: ActivityRoles[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id);

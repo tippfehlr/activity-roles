@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import Discord, { GatewayIntentBits } from 'discord.js';
+import Discord, { Events, GatewayIntentBits } from 'discord.js';
 
 import { db, getUserAutoRole, getActivityRoles } from './db';
 import config from '../../config';
@@ -17,7 +17,7 @@ export const client = new Discord.Client({
 
 export let commandHandler: CommandHandler;
 
-client.on('ready', () => {
+client.on(Events.ClientReady, () => {
   commandHandler = new CommandHandler(client);
   client.user?.setPresence({
     status: 'online',
@@ -34,7 +34,7 @@ client.on('ready', () => {
   );
 });
 
-client.on('presenceUpdate', async (oldMember, newMember) => {
+client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const removedActivities = oldMember?.activities.filter(activity => {
     return !newMember?.activities.find(newActivity => newActivity.name === activity.name);
   });
@@ -123,19 +123,17 @@ client.on('presenceUpdate', async (oldMember, newMember) => {
   });
 });
 
-client.on('guildCreate', guild => {
+client.on(Events.GuildCreate, guild => {
   log.info(`Joined guild ${guild.name} (${guild.id})`);
 });
 
-client.on('guildDelete', guild => log.info(`Left guild ${guild.name} (${guild.id})`));
+client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name} (${guild.id})`));
 
-client.on('disconnect', () => {
-  log.warn('The Discord WebSocket has closed and will no longer attempt to reconnect');
-});
+client.on(Events.Error, error =>
+  log.error(error, 'The Discord WebSocket has encountered an error')
+);
 
-client.on('error', error => log.error(error, 'The Discord WebSocket has encountered an error'));
-
-client.on('roleDelete', async role => {
+client.on(Events.GuildRoleDelete, async role => {
   db.prepare('DELETE FROM activityRoles WHERE roleID = ? AND guildID = ?').run(
     role.id,
     role.guild.id

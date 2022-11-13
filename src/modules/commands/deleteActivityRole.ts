@@ -1,52 +1,49 @@
 import { db, ActivityRoles } from '../db';
 import { log } from '../messages';
-//mention that no roles are removed and maybe there is an extra command
 
 import { Command } from '../commandHandler';
 import {
   ActionRowBuilder,
-  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
   CommandInteraction,
+  ComponentType,
   EmbedBuilder,
-  PermissionsBitField
+  PermissionsBitField,
+  SlashCommandBuilder
 } from 'discord.js';
 
 import config from '../../../config';
 
 export default {
-  name: 'deleteactivityrole',
-  description:
-    'Deletes an activity role from your guild. Provide the activity or the role, or both.',
-  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
+  data: new SlashCommandBuilder()
+    .setName('deleteactivityrole')
+    .setDescription(
+      'Deletes an activity role from your guild. Provide the activity or the role, or both.'
+    )
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
+    .setDMPermission(true)
+    .addStringOption(option =>
+      option
+        .setName('activity')
+        .setDescription('the activity roles with this name will be deleted')
+        .setRequired(false)
+    )
+    .addRoleOption(option =>
+      option
+        .setName('role')
+        .setDescription('the activity roles of this role will be deleted')
+        .setRequired(false)
+    )
+    .addBooleanOption(option =>
+      option
+        .setName('all')
+        .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
+        .setRequired(false)
+    ),
 
-  testOnly: config.debug,
-  guildOnly: true,
-
-  options: [
-    {
-      name: 'activity',
-      description: 'the activity roles with this name will be deleted',
-      required: false,
-      type: ApplicationCommandOptionType.String
-    },
-    {
-      name: 'role',
-      description: 'the activity roles of this role will be deleted',
-      required: false,
-      type: ApplicationCommandOptionType.Role
-    },
-    {
-      name: 'all',
-      description: 'ATTENTION: DELETES ALL ACTIVITY ROLES',
-      required: false,
-      type: ApplicationCommandOptionType.Boolean
-    }
-  ],
-
-  callback: async interaction => {
+  execute: async interaction => {
     const role = interaction.options.get('role')?.role;
     const activity = interaction.options.get('activity')?.value as string | undefined;
     const all = interaction.options.get('all')?.value as boolean | undefined;
@@ -70,6 +67,7 @@ export default {
       });
       interaction.channel
         ?.createMessageComponentCollector({
+          componentType: ComponentType.SelectMenu,
           filter: btnInt => interaction.user.id === btnInt.user.id,
           max: 1,
           time: 1000 * 60
