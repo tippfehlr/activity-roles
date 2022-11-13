@@ -2,13 +2,14 @@ import {
   Role,
   CommandInteraction,
   PermissionsBitField,
-  ApplicationCommandOptionType,
   SelectMenuInteraction,
   InteractionType,
   EmbedBuilder,
   ActionRowBuilder,
   SelectMenuBuilder,
-  APIRole
+  APIRole,
+  SlashCommandBuilder,
+  ComponentType
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -17,41 +18,40 @@ import msg, { log } from '../messages';
 import { db } from '../db';
 
 export default {
-  name: 'addactivityrole',
-  description: 'Adds an activity role to your guild.',
-  requiredPermissions: [PermissionsBitField.Flags.ManageRoles],
-
-  testOnly: config.debug,
-  guildOnly: true,
-
-  options: [
-    {
-      name: 'activity',
-      description: 'the name of the discord activity',
-      required: true,
-      type: ApplicationCommandOptionType.String
-    },
-    {
-      name: 'role',
-      description:
-        'If not provided, the bot will look for roles with the same name or create a new one',
-      required: false,
-      type: ApplicationCommandOptionType.Role
-    },
-    {
-      name: 'exact_activity_name',
-      description: "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
-      required: false,
-      type: ApplicationCommandOptionType.Boolean
-    },
-    {
-      name: 'live',
-      description: 'Should the bot remove the role again when the activity stops?',
-      required: false,
-      type: ApplicationCommandOptionType.Boolean
-    }
-  ],
-  callback: async interaction => {
+  data: new SlashCommandBuilder()
+    .setName('addactivityrole')
+    .setDescription('Adds an activity role to your guild.')
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
+    .setDMPermission(false)
+    .addStringOption(option =>
+      option
+        .setName('activity')
+        .setDescription('the name of the discord activity')
+        .setRequired(true)
+    )
+    .addRoleOption(option =>
+      option
+        .setName('role')
+        .setDescription(
+          'If not provided, the bot will look for roles with the same name or create a new one'
+        )
+        .setRequired(false)
+    )
+    .addBooleanOption(option =>
+      option
+        .setName('exact_activity_name')
+        .setDescription(
+          "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"
+        )
+        .setRequired(false)
+    )
+    .addBooleanOption(option =>
+      option
+        .setName('live')
+        .setDescription('Should the bot remove the role again when the activity stops?')
+        .setRequired(false)
+    ),
+  execute: async interaction => {
     const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 1024) return msg.inputTooLong();
     const exactActivityName: boolean =
@@ -96,8 +96,9 @@ export default {
         );
         interaction.channel
           ?.createMessageComponentCollector({
-            filter: interaction =>
-              interaction.isSelectMenu() && interaction.customId === 'addactivityrole:roleSelector',
+            componentType: ComponentType.SelectMenu,
+            filter: componentInteraction =>
+              componentInteraction.customId === 'addactivityrole:roleSelector',
             time: 60000,
             max: 1
           })
