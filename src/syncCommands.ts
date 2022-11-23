@@ -31,7 +31,7 @@ const rest = new REST({ version: '10' }).setToken(
       data = await rest.put(Routes.applicationCommands(config.applicationID), {
         body: commands
       });
-    } else {
+    } else if (config.debug) {
       data = await rest.put(Routes.applicationGuildCommands(config.applicationID, config.debug), {
         body: commands
       });
