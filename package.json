@@ -11,7 +11,7 @@
     "url": "https://github.com/tippf3hlr/activity-roles.git"
   },
   "dependencies": {
-    "better-sqlite3": "^7.6.2",
+    "better-sqlite3": "^8.0.0",
     "discord.js": "14.6.0",
     "dotenv": "^16.0.3",
     "pino": "^8.6.1",
@@ -22,11 +22,11 @@
     "@types/better-sqlite3": "^7.6.0",
     "@types/node": "^18.8.2",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "@typescript-eslint/parser": "^5.39.0",
+    "@typescript-eslint/parser": "^5.44.0",
     "arkit": "^1.6.4",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.0",
     "typescript": "^4.9.3"
   },
   "scripts": {
