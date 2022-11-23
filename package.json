@@ -26,7 +26,7 @@
     "arkit": "^1.6.4",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.0",
     "typescript": "^4.8.4"
   },
   "scripts": {
