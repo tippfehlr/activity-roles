@@ -11,6 +11,7 @@ export default {
   inviteLink:
     'https://discord.com/api/oauth2/authorize?client_id=000000000000000000&permissions=8&scope=bot%20applications.commands', //bot user id here (at ?client_id=)
   host: '', // your discord tag here
+  applicationID: '', // your application id here
 
   /* ----------------------- change these to your liking ---------------------- */
   botColor: '#3695d3' as ColorResolvable, // the color of most embeds and roles created by the bot
@@ -21,10 +22,10 @@ export default {
   /* ------------ change when live roles are not assigned properly ------------ */
   // if enabled, the bot will ignore all presence updates that don't change the user's activities
   // but if the bot is restarting while a change happens, the bot might miss it
-  presenceUpdateOnlyChanges: true,
+  presenceUpdateOnlyChanges: false,
 
   /* -------------------------------- DEBUGGING ------------------------------- */
-  debug: false, // if a guild id is in the array, the command will be registered as guild only
+  debug: false as string | false, // (guild id) when commands are registered as development, they will be registered in this guild
 
   /* ------------------ don't change anything below (please) ------------------ */
   supportGuildLink: 'https://discord.gg/3K9Yx4ufN7', // link to support guild
