@@ -31,7 +31,7 @@ client.on(Events.ClientReady, () => {
         }
       ]
     });
-    setTimeout(setActivityUsers, 15 * 1000);
+    setTimeout(setActivityUsers, 10 * 1000);
   };
   const setActivityUsers = () => {
     const users = db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'];
@@ -43,9 +43,22 @@ client.on(Events.ClientReady, () => {
         }
       ]
     });
-    setTimeout(setActivityGuilds, 15 * 1000);
+    setTimeout(setActivityActivityRoles, 10 * 1000);
+  };
+  const setActivityActivityRoles = () => {
+    const roles = db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)'];
+    client.user?.setPresence({
+      activities: [
+        {
+          name: `${roles} activity role${roles === 1 ? '' : 's'}`,
+          type: ActivityType.Watching
+        }
+      ]
+    });
+    setTimeout(setActivityGuilds, 10 * 1000);
   };
   setActivityGuilds();
+
   log.info(
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
