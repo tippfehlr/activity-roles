@@ -12,6 +12,7 @@ export default {
       embeds: [
         msg.statsEmbed(
           interaction.client.guilds.cache.size,
+          db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)'],
           db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
         )
       ]
