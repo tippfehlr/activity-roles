@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import Discord, { Events, GatewayIntentBits } from 'discord.js';
+import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 
 import { db, getUserAutoRole, getActivityRoles } from './db';
 import config from '../../config';
@@ -19,11 +19,33 @@ export let commandHandler: CommandHandler;
 
 client.on(Events.ClientReady, () => {
   commandHandler = new CommandHandler(client);
-  client.user?.setPresence({
-    status: 'online',
-    afk: false,
-    activities: [config.activity]
-  });
+  const setActivityGuilds = () => {
+    const guilds = client.guilds.cache.size;
+    client.user?.setPresence({
+      status: 'online',
+      afk: false,
+      activities: [
+        {
+          name: `${guilds} guild${guilds === 1 ? '' : 's'}`,
+          type: ActivityType.Watching
+        }
+      ]
+    });
+    setTimeout(setActivityUsers, 15 * 1000);
+  };
+  const setActivityUsers = () => {
+    const users = db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'];
+    client.user?.setPresence({
+      activities: [
+        {
+          name: `${users} user${users === 1 ? '' : 's'}`,
+          type: ActivityType.Watching
+        }
+      ]
+    });
+    setTimeout(setActivityGuilds, 15 * 1000);
+  };
+  setActivityGuilds();
   log.info(
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );

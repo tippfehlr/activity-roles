@@ -186,6 +186,15 @@ export default {
       .setDescription('You can change this with the command `/toggleAutoRole`.')
       .setColor(autoRole ? Colors.Green : Colors.Red);
   },
+  statsEmbed: (guilds: number, users: number) => {
+    return new EmbedBuilder()
+      .setColor(config.botColor)
+      .setDescription(
+        `The bot currently serves **${guilds} guild${
+          guilds === 1 ? '' : 's'
+        }** and manages roles for **${users} user${users === 1 ? '' : 's'}**.`
+      );
+  },
   helpEmbed: () => {
     return new EmbedBuilder()
       .setColor(config.botColor)
