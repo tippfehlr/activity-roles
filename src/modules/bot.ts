@@ -94,7 +94,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         log.warn('the bot would have missed a role');
       if (activityRole.live) {
         db.prepare(
-          'INSERT INTO currentlyActiveActivities (userID, guildID, activityName) VALUES (?, ?, ?)'
+          'INSERT OR IGNORE INTO currentlyActiveActivities (userID, guildID, activityName) VALUES (?, ?, ?)'
         ).run(userIDHash, newMember.guild?.id, activityRole.activityName);
       }
     });
