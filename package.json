@@ -22,7 +22,7 @@
     "@types/better-sqlite3": "^7.6.0",
     "@types/node": "^18.8.2",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "@typescript-eslint/parser": "^5.44.0",
+    "@typescript-eslint/parser": "^5.45.0",
     "arkit": "^1.6.4",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
