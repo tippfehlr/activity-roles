@@ -104,9 +104,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         }
       } else {
         if (
-          userActivities.filter(userActivity =>
+          userActivities.find(userActivity =>
             userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
-          ).length > 0
+          )
         ) {
           return true;
         }
