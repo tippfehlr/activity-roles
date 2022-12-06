@@ -213,6 +213,7 @@ export default {
         'A Discord bot for automatic role assignment based on activities.\n' +
           'Support/Suggestions: https://discord.gg/3K9Yx4ufN7\n' +
           'Github: https://github.com/tippf3hlr/activity-roles/\n' +
+          'Contact: tippfehlr#3575 | tippfehlr@gmail.com\n' +
           '\n' +
           'If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n' +
           'If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n' +
