@@ -40,7 +40,7 @@ export default {
         ]
       });
     } else {
-      db.prepare('UPDATE users SET autoRole = ? WHERE userId = ?').run(
+      db.prepare('UPDATE users SET autoRole = ? WHERE userIDHash = ?').run(
         Number(autoRole),
         interaction.user.id
       );

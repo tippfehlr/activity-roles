@@ -34,7 +34,7 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
-    "dev": "nodemon -i export.json -i activityRolesList.txt -i locales/",
-    "build": "npx tsc --outDir out/"
+    "dev": "./node_modules/.bin/nodemon -i export.json -i activityRolesList.txt -i locales/",
+    "build": "./node_modules/.bin/tsc --outDir out/"
   }
 }

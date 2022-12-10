@@ -4,6 +4,7 @@ import { Command } from '../commandHandler';
 import { db, getGuildConfig, getLang, getUserConfig } from '../db';
 import { __ } from '../messages';
 import config from '../../../config';
+import { createHash } from 'crypto';
 
 export default {
   data: new SlashCommandBuilder()
@@ -127,9 +128,9 @@ export default {
         });
         return;
       }
-      db.prepare('UPDATE users SET language = ? WHERE userID = ?').run(
+      db.prepare('UPDATE users SET language = ? WHERE userIDHash = ?').run(
         language,
-        interaction.user.id
+        createHash('sha256').update(interaction.user.id).digest('base64')
       );
       interaction.reply({
         embeds: [

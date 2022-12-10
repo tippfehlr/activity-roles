@@ -29,7 +29,9 @@ export default {
       });
       commandName += `\`**`;
 
-      let commandDescription = command.data.description;
+      let commandDescription = command.data.description_localizations
+        ? command.data.description_localizations[locale]
+        : command.data.description;
       // if (command.requiredPermissions) {
       //   commandDescription += `\nRequired Permissions: ${command.requiredPermissions
       //     .map(permission => `\`${permission}\``)
@@ -39,8 +41,14 @@ export default {
       //   commandDescription += '\nCan only be used in a guild';
       // }
       command.data.options.forEach(option => {
-        commandDescription += `\`\n${option.toJSON().name}\`: ${option.toJSON().description}`;
+        const option_description_localization = option.toJSON().description_localizations;
+        commandDescription += `\`\n${option.toJSON().name}\`: ${
+          option_description_localization
+            ? option_description_localization[locale]
+            : option.toJSON().description
+        }`;
       });
+      //@ts-ignore
       commandEmbed.addFields({ name: commandName, value: commandDescription });
     });
     interaction.reply({

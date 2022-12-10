@@ -35,7 +35,8 @@ Contribution is highly appreciated. Feel free to join the support/suggestions se
 The default language of the bot is en-US.  
 Available translations:
 
-[![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=de&style=for-the-badge&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)  
+[![Czech translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Czech&style=for-the-badge&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/cs)
+[![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)  
 Help translating the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks to these people for suggestions:
