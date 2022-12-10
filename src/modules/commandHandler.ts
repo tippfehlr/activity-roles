@@ -1,8 +1,9 @@
 import { Client, CommandInteraction, InteractionType, SlashCommandBuilder } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
+import { getLang } from './db';
 export { CommandInteraction } from 'discord.js';
-import msg, { log } from './messages';
+import { log, __ } from './messages';
 
 export interface Command {
   data: SlashCommandBuilder;
@@ -37,7 +38,10 @@ export default class CommandHandler {
       } catch (error) {
         log.error(error, 'Error while executing command' + command.data.name);
         await interaction.reply({
-          content: msg.errorWhileExecutingCommand(),
+          content: __({
+            phrase: 'There was an error while executing this command!',
+            locale: getLang(interaction)
+          }),
           ephemeral: true
         });
       }

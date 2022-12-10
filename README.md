@@ -1,9 +1,9 @@
 ![](./img/header.png)
 [![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=invite%20me&color=7289DA)](https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot%20applications.commands)
-[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=join%20support%20guild&color=7289DA)](https://discord.gg/3K9Yx4ufN7)
+[![](https://img.shields.io/discord/958393035543175258?label=support&logo=DISCORD&style=for-the-badge)](https://discord.gg/3K9Yx4ufN7)
 [![](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
-[![](https://img.shields.io/github/issues/tippf3hlr/activity-roles?style=for-the-badge)](https://github.com/tippf3hlr/activity-roles/issues?style=for-the-badge)
-![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)  
+![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge) 
 ---
 A Discord bot for automatic role assignment based on activities.  
 Support/Suggestions: https://discord.gg/3K9Yx4ufN7.  
@@ -19,14 +19,24 @@ If you set `live` to true, the bot will remove the role from users who got the r
 **The bot will not remove any roles that were added manually.**
 
 Further help is available via the `/help` command and in the support server.
+
 ## Privacy
 
 User IDs are only stored as a sha256 hash to allow users to disable the bot for them.  
 No activity data ist stored.
 
+
+
 ## Contribution
 
 Contribution is highly appreciated. Feel free to join the support/suggestions server and open an issue or pull request.
+### Translation
+
+The default language of the bot is en-US.  
+Available translations:
+
+[![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=de&style=for-the-badge&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)  
+Help translating the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks to these people for suggestions:
 

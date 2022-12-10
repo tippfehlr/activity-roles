@@ -12,14 +12,16 @@
   },
   "dependencies": {
     "better-sqlite3": "^8.0.0",
-    "discord.js": "14.6.0",
+    "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
+    "i18n": "^0.15.1",
     "pino": "^8.6.1",
     "pino-pretty": "^9.1.0",
     "table": "^6.8.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
+    "@types/i18n": "^0.13.6",
     "@types/node": "^18.8.2",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
@@ -32,7 +34,7 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
-    "dev": "nodemon -i export.json -i activityRolesList.txt",
+    "dev": "nodemon -i export.json -i activityRolesList.txt -i locales/",
     "build": "npx tsc --outDir out/"
   }
 }

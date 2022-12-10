@@ -1,5 +1,6 @@
-import { db, ActivityRoles } from '../db';
-import { log } from '../messages';
+import { __h_dc } from './../messages';
+import { db, DBActivityRole, getLang } from '../db';
+import { log, __ } from '../messages';
 
 import { Command } from '../commandHandler';
 import {
@@ -10,6 +11,7 @@ import {
   CommandInteraction,
   ComponentType,
   EmbedBuilder,
+  Locale,
   PermissionsBitField,
   SlashCommandBuilder
 } from 'discord.js';
@@ -22,44 +24,52 @@ export default {
     .setDescription(
       'Deletes an activity role from your guild. Provide the activity or the role, or both.'
     )
+    .setDescriptionLocalizations(
+      __h_dc('Deletes an activity role from your guild. Provide the activity or the role, or both.')
+    )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(true)
     .addStringOption(option =>
       option
         .setName('activity')
         .setDescription('the activity roles with this name will be deleted')
+        .setDescriptionLocalizations(__h_dc('the activity roles with this name will be deleted'))
         .setRequired(false)
     )
     .addRoleOption(option =>
       option
         .setName('role')
         .setDescription('the activity roles of this role will be deleted')
+        .setDescriptionLocalizations(__h_dc('the activity roles of this role will be deleted'))
         .setRequired(false)
     )
     .addBooleanOption(option =>
       option
         .setName('all')
         .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
+        .setDescriptionLocalizations(__h_dc('ATTENTION: DELETES ALL ACTIVITY ROLES'))
         .setRequired(false)
     ),
 
   execute: async interaction => {
+    const locale = getLang(interaction);
+
     const role = interaction.options.get('role')?.role;
     const activity = interaction.options.get('activity')?.value as string | undefined;
     const all = interaction.options.get('all')?.value as boolean | undefined;
 
     if (all) {
       interaction.reply({
-        content: 'Are you sure you want to delete all activity roles?',
+        content: __({ phrase: 'Are you sure you want to delete all activity roles?', locale }),
         components: [
           new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
               .setCustomId('deleteactivityrole:confirm')
-              .setLabel('Yes')
+              .setLabel(__({ phrase: 'Yes', locale }))
               .setStyle(ButtonStyle.Danger),
             new ButtonBuilder()
               .setCustomId('deleteactivityrole:cancel')
-              .setLabel('No')
+              .setLabel(__({ phrase: 'No', locale }))
               .setStyle(ButtonStyle.Secondary)
           )
         ],
@@ -77,19 +87,25 @@ export default {
             case 'deleteactivityrole:confirm':
               process(
                 int,
-                db.prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(interaction.guildId)
+                db
+                  .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
+                  .all(interaction.guildId),
+                locale
               );
               db.prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
               break;
             case 'deleteactivityrole:cancel':
-              int.update({ content: 'Cancelled', components: [] });
+              int.update({ content: __({ phrase: 'Cancelled', locale }), components: [] });
               break;
           }
         });
     } else if (!role && !activity) {
       return interaction.reply({
-        content:
-          'You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.',
+        content: __({
+          phrase:
+            'You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.',
+          locale
+        }),
         ephemeral: true
       });
     } else if (role && !activity) {
@@ -97,7 +113,8 @@ export default {
         interaction,
         db
           .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
-          .all(interaction.guildId, role.id)
+          .all(interaction.guildId, role.id),
+        locale
       );
       db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
         interaction.guildId,
@@ -108,7 +125,8 @@ export default {
         interaction,
         db
           .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?')
-          .all(interaction.guildId, activity)
+          .all(interaction.guildId, activity),
+        locale
       );
       db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
         interaction.guildId,
@@ -121,7 +139,8 @@ export default {
           .prepare(
             'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
           )
-          .all(interaction.guildId, role.id, activity)
+          .all(interaction.guildId, role.id, activity),
+        locale
       );
       db.prepare(
         'DELETE FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
@@ -130,7 +149,11 @@ export default {
   }
 } as Command;
 
-function process(interaction: CommandInteraction | ButtonInteraction, deleted: ActivityRoles[]) {
+function process(
+  interaction: CommandInteraction | ButtonInteraction,
+  deleted: DBActivityRole[],
+  locale: Locale
+) {
   if (deleted.length > 0) {
     const embeds = [
       // new EmbedBuilder().setTitle('Deleted Activity Roles:').setColor(config.botColor)
@@ -139,21 +162,46 @@ function process(interaction: CommandInteraction | ButtonInteraction, deleted: A
       ...deleted.map(activityRole => {
         return new EmbedBuilder()
           .addFields(
-            { name: 'Activity', value: activityRole.activityName, inline: true },
-            { name: 'Role', value: `<@&${activityRole.roleID}>`, inline: true },
             {
-              name: 'Exact Activity Name',
-              value: activityRole.exactActivityName ? 'Yes' : 'No',
+              name: __({ phrase: 'Activity', locale }),
+              value: activityRole.activityName,
               inline: true
             },
-            { name: 'Live', value: activityRole.live ? 'Yes' : 'No', inline: true }
+            {
+              name: __({ phrase: 'Role', locale }),
+              value: `<@&${activityRole.roleID}>`,
+              inline: true
+            },
+            {
+              name: __({ phrase: 'Exact Activity Name', locale }),
+              value: activityRole.exactActivityName
+                ? __({ phrase: 'Yes', locale })
+                : __({ phrase: 'No', locale }),
+              inline: true
+            },
+            {
+              name: __({ phrase: 'Live', locale }),
+              value: activityRole.live
+                ? __({ phrase: 'Yes', locale })
+                : __({ phrase: 'No', locale }),
+              inline: true
+            }
           )
           .setColor(config.botColor);
       })
     );
     if (interaction instanceof CommandInteraction)
-      interaction.reply({ content: 'Deleted Activity Roles:', embeds: embeds, ephemeral: true });
-    else interaction.update({ content: 'Deleted Activity Roles:', embeds: embeds, components: [] });
+      interaction.reply({
+        content: __({ phrase: 'Deleted Activity Roles:', locale }),
+        embeds: embeds,
+        ephemeral: true
+      });
+    else
+      interaction.update({
+        content: __({ phrase: 'Deleted Activity Roles:', locale }),
+        embeds: embeds,
+        components: []
+      });
     deleted.forEach(activityRole => {
       log.info(
         `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, live mode: ${activityRole.live}`
@@ -161,7 +209,14 @@ function process(interaction: CommandInteraction | ButtonInteraction, deleted: A
     });
   } else {
     if (interaction instanceof CommandInteraction)
-      interaction.reply({ content: 'No activity roles were deleted.', ephemeral: true });
-    else interaction.update({ content: 'No activity roles were deleted.', components: [] });
+      interaction.reply({
+        content: __({ phrase: 'No activity roles were deleted.', locale }),
+        ephemeral: true
+      });
+    else
+      interaction.update({
+        content: __({ phrase: 'No activity roles were deleted.', locale }),
+        components: []
+      });
   }
 }

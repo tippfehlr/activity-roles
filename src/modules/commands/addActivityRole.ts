@@ -1,3 +1,4 @@
+import { __h_dc } from './../messages';
 import {
   Role,
   CommandInteraction,
@@ -9,24 +10,28 @@ import {
   SelectMenuBuilder,
   APIRole,
   SlashCommandBuilder,
-  ComponentType
+  ComponentType,
+  Colors,
+  Locale
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
 import config from '../../../config';
-import msg, { log } from '../messages';
-import { db } from '../db';
+import { log, __ } from '../messages';
+import { db, getLang } from '../db';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('addactivityrole')
     .setDescription('Adds an activity role to your guild.')
+    .setDescriptionLocalizations(__h_dc('Adds an activity role to your guild.'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(false)
     .addStringOption(option =>
       option
         .setName('activity')
         .setDescription('the name of the discord activity')
+        .setDescriptionLocalizations(__h_dc('the name of the discord activity'))
         .setRequired(true)
     )
     .addRoleOption(option =>
@@ -34,6 +39,11 @@ export default {
         .setName('role')
         .setDescription(
           'If not provided, the bot will look for roles with the same name or create a new one'
+        )
+        .setDescriptionLocalizations(
+          __h_dc(
+            'If not provided, the bot will look for roles with the same name or create a new one'
+          )
         )
         .setRequired(false)
     )
@@ -43,17 +53,35 @@ export default {
         .setDescription(
           "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"
         )
+        .setDescriptionLocalizations(
+          __h_dc("If false, the activity name 'Chrome' would also trigger for 'Google Chrome'")
+        )
         .setRequired(false)
     )
     .addBooleanOption(option =>
       option
         .setName('live')
+        .setDescriptionLocalizations(__h_dc('live'))
         .setDescription('Should the bot remove the role again when the activity stops?')
+        .setDescriptionLocalizations(
+          __h_dc('Should the bot remove the role again when the activity stops?')
+        )
         .setRequired(false)
     ),
   execute: async interaction => {
+    const locale = getLang(interaction);
+
     const activityName = interaction.options.get('activity', true)?.value as string;
-    if (activityName.length > 1024) return msg.inputTooLong();
+    if (activityName.length > 1024) {
+      await interaction.reply({
+        content: __({
+          phrase: 'The activity name is too long! Maximum is 1024 characters.',
+          locale
+        }),
+        ephemeral: true
+      });
+      return;
+    }
     const exactActivityName: boolean =
       (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
       false;
@@ -68,17 +96,17 @@ export default {
       if (!possibleRoles || possibleRoles.size === 0) {
         // create role
         role = await createRole(interaction, activityName);
-        process(interaction, role, activityName, exactActivityName, live);
+        process(interaction, role, activityName, exactActivityName, live, locale);
       } else if (possibleRoles.size === 1) {
         // use role
         role = possibleRoles.first()!;
-        process(interaction, role, activityName, exactActivityName, live);
+        process(interaction, role, activityName, exactActivityName, live, locale);
       } else {
         // select role
         const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
           new SelectMenuBuilder()
             .setCustomId('addactivityrole:roleSelector')
-            .setPlaceholder(`Please select a role for '${activityName}'`)
+            .setPlaceholder(__({ phrase: "Please select a role for '%s'", locale }, activityName))
             .addOptions([
               ...possibleRoles.map(role => {
                 return {
@@ -88,8 +116,11 @@ export default {
                 };
               }),
               {
-                label: `Create '${activityName}'`,
-                description: `Create a new role with the name '${activityName}'`,
+                label: __({ phrase: 'Create %s', locale }, activityName),
+                description: __(
+                  { phrase: "Create a new role with the name '%s'", locale },
+                  activityName
+                ),
                 value: 'create'
               }
             ])
@@ -113,9 +144,8 @@ export default {
                 selectMenuInteraction.guild!.roles.cache.get(selectMenuInteraction.values[0]) ||
                 null;
             }
-            console.log('~ role', role);
             if (role) {
-              process(selectMenuInteraction, role, activityName, exactActivityName, live);
+              process(selectMenuInteraction, role, activityName, exactActivityName, live, locale);
             }
           });
         interaction.reply({
@@ -124,7 +154,7 @@ export default {
         });
       }
     } else {
-      process(interaction, role, activityName, exactActivityName, live);
+      process(interaction, role, activityName, exactActivityName, live, locale);
     }
   }
 } as Command;
@@ -154,11 +184,12 @@ function process(
   role: Role | APIRole,
   activityName: string,
   exactActivityName: boolean,
-  live: boolean
+  live: boolean,
+  locale: Locale
 ) {
-  if (!role) reply(interaction, msg.roleDoesNotExist());
+  if (!role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
   if (role.name === '@everyone') {
-    reply(interaction, msg.cantUseEveryone());
+    reply(interaction, __({ phrase: "You can't use \\@everyone as an activity role.", locale }));
     return;
   }
   if (
@@ -172,12 +203,31 @@ function process(
     role.position >= interaction.guild.members.me.roles.highest.position
   ) {
     reply(interaction, undefined, [
-      msg.roleTooLow(
-        interaction.guild.members.me.roles.highest.id,
-        interaction.guild.members.me.roles.highest.position,
-        role.id,
-        role.position
-      )
+      new EmbedBuilder()
+        .setColor(Colors.Red)
+        .setDescription(
+          __({
+            phrase:
+              'To assign roles, my highest role needs to be higher than the role I am assigning.\nMove any of my roles higher than the role I should manage.',
+            locale
+          })
+        )
+        .addFields(
+          {
+            name: __({ phrase: 'My highest role:', locale }),
+            value:
+              `<@&${interaction.guild.members.me.roles.highest.id}> ` +
+              __(
+                { phrase: '(position #%s)', locale },
+                interaction.guild.members.me.roles.highest.position.toString()
+              )
+          },
+          {
+            name: __({ phrase: 'the activity role:', locale }),
+            value:
+              `<@&${role.id}> ` + __({ phrase: '(position #%s)', locale }, role.position.toString())
+          }
+        )
     ]);
     return;
   }
@@ -186,7 +236,10 @@ function process(
       .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?')
       .get(interaction.guild!.id, role.id, activityName)
   ) {
-    reply(interaction, msg.activityRoleExists());
+    reply(
+      interaction,
+      __({ phrase: ':x: That activity role already exists in this guild! :x:', locale })
+    );
     return;
   } else {
     db.prepare('INSERT INTO activityRoles VALUES (?, ?, ?, ?, ?)').run(
@@ -200,7 +253,21 @@ function process(
       `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}`
     );
     reply(interaction, undefined, [
-      msg.setNewActivityRole(role.id, activityName, exactActivityName, live)
+      new EmbedBuilder()
+        .setColor(config.botColor)
+        .setTitle(__({ phrase: 'Success!', locale }))
+        .addFields(
+          { name: __({ phrase: 'activity', locale }), value: activityName },
+          { name: __({ phrase: 'role', locale }), value: `<@&${role.id}>` },
+          {
+            name: __({ phrase: 'exact activity name', locale }),
+            value: exactActivityName ? __('Yes') : __('No')
+          },
+          {
+            name: __({ phrase: 'live', locale }),
+            value: live ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale })
+          }
+        )
     ]);
   }
 }

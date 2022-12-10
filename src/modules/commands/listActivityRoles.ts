@@ -1,28 +1,41 @@
 import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
-import { db, ActivityRoles } from '../db';
-import { Command } from '../commandHandler';
 import { table } from 'table';
 import fs from 'fs';
 
+import { db, DBActivityRole, getLang } from '../db';
+import { Command } from '../commandHandler';
 import config from '../../../config';
-import msg from '../messages';
+import { __, __h_dc } from '../messages';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('listactivityroles')
     .setDescription('Lists all activity roles in your guild.')
+    .setDescriptionLocalizations(__h_dc('Lists all activity roles in your guild.'))
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
 
   execute: async interaction => {
-    const res: ActivityRoles[] = db
+    const locale = getLang(interaction);
+
+    const res: DBActivityRole[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id);
     if (res.length === 0) {
-      interaction.reply({ content: msg.noActivityRoles() });
+      interaction.reply({
+        content: __({ phrase: 'There are no activity roles in this guild.', locale })
+      });
       return;
     }
-    const array = [['#', 'Role', 'Activity', 'exact activity name', 'live']];
+    const array = [
+      [
+        '#',
+        __({ phrase: 'Role', locale }),
+        __({ phrase: 'Activity', locale }),
+        __({ phrase: 'Exact Activity Name', locale }),
+        __({ phrase: 'Live', locale })
+      ]
+    ];
     for (const i in res) {
       array.push([
         String(Number(i) + 1),

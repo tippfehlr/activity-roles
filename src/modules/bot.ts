@@ -1,9 +1,9 @@
 import { createHash } from 'crypto';
 import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 
-import { db, getUserAutoRole, getActivityRoles } from './db';
+import { db, getActivityRoles, getUserConfig } from './db';
 import config from '../../config';
-import { log } from './messages';
+import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
 
 export const client = new Discord.Client({
@@ -20,13 +20,17 @@ export let commandHandler: CommandHandler;
 client.on(Events.ClientReady, () => {
   commandHandler = new CommandHandler(client);
   const setActivityGuilds = () => {
-    const guilds = client.guilds.cache.size;
     client.user?.setPresence({
       status: 'online',
       afk: false,
       activities: [
         {
-          name: `${guilds} guild${guilds === 1 ? '' : 's'}`,
+          name: i18n.__n({
+            singular: '%s guild',
+            plural: '%s guilds',
+            locale: 'en-US',
+            count: client.guilds.cache.size
+          }),
           type: ActivityType.Watching
         }
       ]
@@ -34,11 +38,15 @@ client.on(Events.ClientReady, () => {
     setTimeout(setActivityUsers, 10 * 1000);
   };
   const setActivityUsers = () => {
-    const users = db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'];
     client.user?.setPresence({
       activities: [
         {
-          name: `${users} user${users === 1 ? '' : 's'}`,
+          name: i18n.__n({
+            singular: '%s user',
+            plural: '%s users',
+            locale: 'en-US',
+            count: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
+          }),
           type: ActivityType.Watching
         }
       ]
@@ -46,11 +54,15 @@ client.on(Events.ClientReady, () => {
     setTimeout(setActivityActivityRoles, 10 * 1000);
   };
   const setActivityActivityRoles = () => {
-    const roles = db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)'];
     client.user?.setPresence({
       activities: [
         {
-          name: `${roles} activity role${roles === 1 ? '' : 's'}`,
+          name: i18n.__n({
+            singular: '%s role',
+            plural: '%s roles',
+            locale: 'en-US',
+            count: db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)']
+          }),
           type: ActivityType.Watching
         }
       ]
@@ -86,7 +98,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     !newMember.user ||
     !newMember.guild ||
     newMember.member?.user.bot ||
-    !getUserAutoRole(newMember.user?.id)
+    !getUserConfig(newMember.user?.id).autoRole
   ) {
     return;
   }
@@ -160,6 +172,10 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
 client.on(Events.GuildCreate, guild => {
   log.info(`Joined guild ${guild.name} (${guild.id})`);
+  db.prepare('INSERT OR IGNORE INTO guilds (guildID, language) VALUES (?, ?)').run(
+    guild.id,
+    'en-US'
+  );
 });
 
 client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name} (${guild.id})`));
