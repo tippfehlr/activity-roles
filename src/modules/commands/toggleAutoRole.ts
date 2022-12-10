@@ -1,30 +1,64 @@
-import { getUserAutoRole, db } from './../db';
+import { db, getLang, getUserConfig } from './../db';
 import { Command } from '../commandHandler';
 
-import msg from '../messages';
-import { SlashCommandBuilder } from 'discord.js';
+import { __, __h_dc } from '../messages';
+import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('toggleautorole')
     .setDescription('Enable/Disable automatic role assignment')
+    .setDescriptionLocalizations(__h_dc('Enable/Disable automatic role assignment'))
     .addBooleanOption(option =>
       option
         .setName('enabled')
         .setDescription('Enable/Disable automatic role assignment')
+        .setDescriptionLocalizations(__h_dc('Enable/Disable automatic role assignment'))
         .setRequired(false)
     ),
 
   execute: async interaction => {
+    const locale = getLang(interaction);
+
     const autoRole = interaction.options.get('enabled', false)?.value as boolean | undefined;
-    const userAutoRole = getUserAutoRole(interaction.user.id);
+    const userAutoRole = getUserConfig(interaction.user.id).autoRole;
     if (autoRole === undefined) {
-      interaction.reply({ embeds: [msg.userStatus(userAutoRole)] });
+      interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(__({ phrase: 'User Status', locale }))
+            .setDescription(
+              __(
+                {
+                  phrase:
+                    'The bot is currently **%s** for this user.\n\nYou can change this with the command `/toggleAutoRole`.',
+                  locale
+                },
+                autoRole ? __({ phrase: 'enabled', locale }) : __({ phrase: 'disabled', locale })
+              )
+            )
+            .setColor(autoRole ? Colors.Green : Colors.Red)
+        ]
+      });
     } else {
       db.prepare('UPDATE users SET autoRole = ? WHERE userId = ?').run(
         Number(autoRole),
         interaction.user.id
       );
-      interaction.reply({ embeds: [msg.modifiedAutoRole(autoRole)] });
+      interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(
+              __(
+                { phrase: 'Automatic role assignment for your user is now **%s**.', locale },
+                autoRole ? __({ phrase: 'enabled', locale }) : __({ phrase: 'disabled', locale })
+              )
+            )
+            .setDescription(
+              __({ phrase: 'You can change this with the command `/toggleAutoRole`.', locale })
+            )
+            .setColor(autoRole ? Colors.Green : Colors.Red)
+        ]
+      });
     }
   }
 } as Command;
