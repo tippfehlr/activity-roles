@@ -19,7 +19,7 @@ export interface DBActivityRole {
   live: 1 | 0;
 }
 export interface DBCurrentlyActiveActivitiy {
-  userID: string;
+  userID: string; //TODO: change to userIDHash
   guildID: string;
   activityName: string;
 }

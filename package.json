@@ -28,13 +28,14 @@
     "arkit": "^1.6.4",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
+    "nodemon": "^2.0.20",
     "prettier": "^2.8.0",
     "typescript": "^4.9.3"
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
-    "dev": "nodemon -i export.json -i activityRolesList.txt -i locales/",
-    "build": "npx tsc --outDir out/"
+    "dev": "./node_modules/.bin/nodemon -i export.json -i activityRolesList.txt -i locales/",
+    "build": "./node_modules/.bin/tsc --outDir out/"
   }
 }
