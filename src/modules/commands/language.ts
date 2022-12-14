@@ -9,6 +9,7 @@ import { createHash } from 'crypto';
 export default {
   data: new SlashCommandBuilder()
     .setName('language')
+    .setNameLocalizations(__h_dc('language'))
     .setDescription('Sets the language of the bot')
     .setDescriptionLocalizations(__h_dc('Sets the language of the bot'))
     .addSubcommand(subcommand =>
@@ -41,7 +42,7 @@ export default {
             .setDescription('The language to set the bot to')
             .setRequired(false)
             .addChoices(
-              { name: 'Default', value: 'none' },
+              { name: 'Undefined', value: 'none' },
               ...i18n.getLocales().map(locale => {
                 return { name: getEnumKey(Locale, locale), value: locale };
               })
@@ -49,31 +50,10 @@ export default {
         )
     ),
   execute: async interaction => {
-    const locale = getLang(interaction);
-
-    const language = interaction.options.get('language')?.value as string | undefined;
-    if (!language) {
-      interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle(__({ phrase: 'Languages', locale }))
-            .setDescription(
-              __(
-                {
-                  phrase: 'If you want to help translating the bot, you can do so at %s. Thanks!',
-                  locale
-                },
-                'https://crowdin.com/project/activity-roles'
-              )
-            )
-            .setColor(config.botColor)
-        ]
-      }); //TODO reply with language list with percentages and link to crowdin and credits.
-      return;
-    }
-
+    let locale = getLang(interaction);
     //@ts-ignore: getSubcommand() is not defined in the typings
     const subcommand = interaction.options.getSubcommand() as 'guild' | 'user';
+    const newLanguage = interaction.options.get('language')?.value as Locale | 'none' | undefined;
 
     if (subcommand === 'guild') {
       if (!interaction.guild) {
@@ -83,6 +63,34 @@ export default {
         });
         return;
       }
+
+      const guildLanguage = getGuildConfig(interaction.guild.id).language;
+      if (!newLanguage) {
+        interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle(__({ phrase: 'Languages', locale }))
+              .setDescription(
+                __(
+                  { phrase: 'The current guild language is **`%s`**.', locale },
+                  getEnumKey(Locale, guildLanguage)
+                ) +
+                  '\n\n' +
+                  __(
+                    {
+                      phrase:
+                        'If you want to help translating the bot, you can do so at %s. Thanks!',
+                      locale
+                    },
+                    'https://crowdin.com/project/activity-roles'
+                  )
+              )
+              .setColor(config.botColor)
+          ]
+        }); //TODO reply with language list with percentages and link to crowdin and credits.
+        return;
+      }
+
       if (!interaction.memberPermissions?.has('ManageRoles')) {
         interaction.reply({
           content: __({
@@ -93,53 +101,120 @@ export default {
         });
         return;
       }
-      if (getGuildConfig(interaction.guild.id).language === language) {
+      if (guildLanguage === newLanguage) {
         interaction.reply({
-          content: __(
-            { phrase: 'The language is already set to **`%s`**.', locale },
-            getEnumKey(Locale, language)
-          ),
+          content:
+            __(
+              { phrase: 'The language is already set to **`%s`**.', locale },
+              getEnumKey(Locale, newLanguage)
+            ) +
+            '\n\n' +
+            __({
+              phrase:
+                'The language of the command names and description is managed by your Discord language.',
+              locale
+            }),
           ephemeral: true
         });
         return;
       }
       db.prepare('UPDATE guilds SET language = ? WHERE guildID = ?').run(
-        language,
+        newLanguage,
         interaction.guild.id
       );
+      locale = getLang(interaction);
       interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(
-              __({ phrase: 'Guild language set to **`%s`**', locale }, getEnumKey(Locale, language))
+              __(
+                { phrase: 'Guild language set to **`%s`**', locale },
+                getEnumKey(Locale, newLanguage)
+              )
             )
             .setColor(config.botColor)
         ],
         ephemeral: true
       });
     } else if (subcommand === 'user') {
-      if (getUserConfig(interaction.user.id).language === language) {
+      const userLanguage = getUserConfig(interaction.user.id).language;
+      if (!newLanguage) {
         interaction.reply({
-          content: __(
-            { phrase: 'The language is already set to **`%s`**.', locale },
-            getEnumKey(Locale, language) || 'default'
-          ),
+          embeds: [
+            new EmbedBuilder()
+              .setTitle(__({ phrase: 'Languages', locale }))
+              .setDescription(
+                __(
+                  { phrase: 'The current user language is **`%s`**.%s', locale },
+                  getEnumKey(Locale, userLanguage) || __({ phrase: 'undefined', locale }),
+                  userLanguage === 'none'
+                    ? __({ phrase: ' The guild language will be used.', locale })
+                    : ''
+                ) +
+                  '\n\n' +
+                  __({
+                    phrase:
+                      'The language of the command names and description is managed by your Discord language.',
+                    locale
+                  }) +
+                  '\n\n' +
+                  __(
+                    {
+                      phrase:
+                        'If you want to help translating the bot, you can do so at %s. Thanks!',
+                      locale
+                    },
+                    'https://crowdin.com/project/activity-roles'
+                  )
+              )
+              .setColor(config.botColor)
+          ]
+        }); //TODO reply with language list with percentages and link to crowdin and credits.
+        return;
+      }
+
+      if (getUserConfig(interaction.user.id).language === newLanguage) {
+        interaction.reply({
+          content:
+            __(
+              { phrase: 'The language is already set to **`%s`**.%s', locale },
+              getEnumKey(Locale, newLanguage) || 'undefined',
+              newLanguage === 'none'
+                ? __({ phrase: ' The guild language will be used.', locale })
+                : ''
+            ) +
+            '\n\n' +
+            __({
+              phrase:
+                'The language of the command names and description is managed by your Discord language.',
+              locale
+            }),
           ephemeral: true
         });
         return;
       }
       db.prepare('UPDATE users SET language = ? WHERE userIDHash = ?').run(
-        language,
+        newLanguage,
         createHash('sha256').update(interaction.user.id).digest('base64')
       );
+      locale = getLang(interaction);
       interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(
               __(
-                { phrase: 'User language set to **`%s`**', locale },
-                getEnumKey(Locale, language) || 'default'
-              )
+                { phrase: 'User language set to **`%s`**.%s', locale },
+                getEnumKey(Locale, newLanguage) || 'undefined',
+                newLanguage === 'none'
+                  ? __({ phrase: ' The guild language will be used.', locale })
+                  : ''
+              ) +
+                '\n\n' +
+                __({
+                  phrase:
+                    'The language of the command names and description is managed by your Discord language.',
+                  locale
+                })
             )
             .setColor(config.botColor)
         ],

@@ -23,6 +23,7 @@ import { db, getLang } from '../db';
 export default {
   data: new SlashCommandBuilder()
     .setName('addactivityrole')
+    .setNameLocalizations(__h_dc('addactivityrole'))
     .setDescription('Adds an activity role to your guild.')
     .setDescriptionLocalizations(__h_dc('Adds an activity role to your guild.'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
@@ -30,6 +31,7 @@ export default {
     .addStringOption(option =>
       option
         .setName('activity')
+        .setNameLocalizations(__h_dc('activity'))
         .setDescription('the name of the discord activity')
         .setDescriptionLocalizations(__h_dc('the name of the discord activity'))
         .setRequired(true)
@@ -37,6 +39,7 @@ export default {
     .addRoleOption(option =>
       option
         .setName('role')
+        .setNameLocalizations(__h_dc('role'))
         .setDescription(
           'If not provided, the bot will look for roles with the same name or create a new one'
         )
@@ -50,6 +53,7 @@ export default {
     .addBooleanOption(option =>
       option
         .setName('exact_activity_name')
+        .setNameLocalizations(__h_dc('exact_activity_name'))
         .setDescription(
           "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"
         )
@@ -61,6 +65,7 @@ export default {
     .addBooleanOption(option =>
       option
         .setName('live')
+        .setNameLocalizations(__h_dc('live'))
         .setDescriptionLocalizations(__h_dc('live'))
         .setDescription('Should the bot remove the role again when the activity stops?')
         .setDescriptionLocalizations(

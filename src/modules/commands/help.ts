@@ -9,6 +9,7 @@ import { getLang } from '../db';
 export default {
   data: new SlashCommandBuilder()
     .setName('help')
+    .setNameLocalizations(__h_dc('help'))
     .setDescription('Shows the help menu')
     .setDescriptionLocalizations(__h_dc('Shows the help menu')),
 
@@ -42,7 +43,10 @@ export default {
       // }
       command.data.options.forEach(option => {
         const option_description_localization = option.toJSON().description_localizations;
-        commandDescription += `\`\n${option.toJSON().name}\`: ${
+        const option_name_localization = option.toJSON().name_localizations;
+        commandDescription += `\`\n${
+          option_name_localization ? option_name_localization[locale] : option.toJSON().name
+        }\`: ${
           option_description_localization
             ? option_description_localization[locale]
             : option.toJSON().description
@@ -102,10 +106,10 @@ export default {
               })
           )
           .addFields({
-            name: __({ phrase: 'Thanks to these people for suggestions', locale }),
+            name: __({ phrase: 'Thanks', locale }),
             value: __(
               { phrase: '%s\nIf I forgot you, please let me know!', locale },
-              '@EianLee#7234, @Krampus#2007, @RstY_CZ#2033, @dangerBEclose#1654, @skyykc#0218, @Mann#9999'
+              '@EianLee#7234, @Krampus#2007 **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerBEclose#1654 **[Dutch]**, @skyykc#0218, @Mann#9999'
             )
           }),
         commandEmbed
