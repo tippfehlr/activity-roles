@@ -10,6 +10,7 @@ import { __, __h_dc } from '../messages';
 export default {
   data: new SlashCommandBuilder()
     .setName('listactivityroles')
+    .setNameLocalizations(__h_dc('listactivityroles'))
     .setDescription('Lists all activity roles in your guild.')
     .setDescriptionLocalizations(__h_dc('Lists all activity roles in your guild.'))
     .setDMPermission(false)

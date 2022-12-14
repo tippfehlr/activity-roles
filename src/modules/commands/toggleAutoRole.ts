@@ -6,6 +6,7 @@ import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('toggleautorole')
+    .setNameLocalizations(__h_dc('toggleautorole'))
     .setDescription('Enable/Disable automatic role assignment')
     .setDescriptionLocalizations(__h_dc('Enable/Disable automatic role assignment'))
     .addBooleanOption(option =>
@@ -33,10 +34,12 @@ export default {
                     'The bot is currently **%s** for this user.\n\nYou can change this with the command `/toggleAutoRole`.',
                   locale
                 },
-                autoRole ? __({ phrase: 'enabled', locale }) : __({ phrase: 'disabled', locale })
+                userAutoRole
+                  ? __({ phrase: 'enabled', locale })
+                  : __({ phrase: 'disabled', locale })
               )
             )
-            .setColor(autoRole ? Colors.Green : Colors.Red)
+            .setColor(userAutoRole ? Colors.Green : Colors.Red)
         ]
       });
     } else {

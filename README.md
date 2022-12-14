@@ -25,8 +25,6 @@ Further help is available via the `/help` command and in the support server.
 User IDs are only stored as a sha256 hash to allow users to disable the bot for them.  
 No activity data ist stored.
 
-
-
 ## Contribution
 <!--[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=Activity%20Roles%20Nightly&color=bc0058)](https://discord.com/api/oauth2/authorize?client_id=1052651430462357625&permissions=8&scope=bot%20applications.commands)
 
@@ -38,21 +36,23 @@ It updates from the [dev brach](https://github.com/tippf3hlr/activity-roles/tree
 Contribution is highly appreciated. Feel free to join the support/suggestions server and open an issue or pull request.
 ### Translation
 
-The default language of the bot is en-US.  
+The default language of the bot is English.  
 Available translations:
 
 [![Czech translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Czech&style=for-the-badge&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/cs)
+[![Dutch translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Dutch&style=for-the-badge&logo=crowdin&query=%24.progress.2.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/nl)
+[![Brazilian Portuguese translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Brazilian%20Portuguese&style=for-the-badge&logo=crowdin&query=%24.progress.3.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/pt-BR)
 [![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)  
-Help translating the bot on [Crowdin](https://crowdin.com/project/activity-roles).
+Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
-#### Thanks to these people for suggestions:
+#### Thanks:
 
- - @EianLee#7234 on Discord
- - @Krampus#2007 on Discord
- - @RstY_CZ#2033 on Discord
- - @dangerBEclose#1654 on Discord
- - @skyykc#0218 on Discord
- - @Mann#9999 on Discord
+ - @EianLee#7234
+ - @Krampus#2007 **[Brazilian Portuguese]**
+ - @RstY_CZ#2033 **[Czech]**
+ - @dangerBEclose#1654 **[Dutch]**
+ - @skyykc#0218
+ - @Mann#9999
 
 If I forgot you, please let me know!
 
