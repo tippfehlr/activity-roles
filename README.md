@@ -28,12 +28,12 @@ No activity data ist stored.
 
 
 ## Contribution
-[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=Activity%20Roles%20Nightly&color=bc0058)](https://discord.com/api/oauth2/authorize?client_id=1052651430462357625&permissions=8&scope=bot%20applications.commands)
+<!--[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=Activity%20Roles%20Nightly&color=bc0058)](https://discord.com/api/oauth2/authorize?client_id=1052651430462357625&permissions=8&scope=bot%20applications.commands)
 
 *This is the nightly (beta) channel of Activity Roles.
 This bot is only for testing future features and isn’t guaranteed to be online or working.
 The database is separate from stable.  
-It updates from the [dev brach](https://github.com/tippf3hlr/activity-roles/tree/dev).*
+It updates from the [dev brach](https://github.com/tippf3hlr/activity-roles/tree/dev).* -->
 
 Contribution is highly appreciated. Feel free to join the support/suggestions server and open an issue or pull request.
 ### Translation
