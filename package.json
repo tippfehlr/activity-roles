@@ -36,6 +36,6 @@
     "start": "ts-node ./src/index.ts",
     "sync": "ts-node ./src/syncCommands.ts",
     "dev": "./node_modules/.bin/nodemon -i export.json -i activityRolesList.txt -i locales/",
-    "build": "./node_modules/.bin/tsc --outDir out/"
+    "build": "rm -r out && ./node_modules/.bin/tsc --outDir out/ && cp -r locales out/locales"
   }
 }
