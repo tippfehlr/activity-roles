@@ -66,7 +66,6 @@ export default {
       option
         .setName('live')
         .setNameLocalizations(__h_dc('live'))
-        .setDescriptionLocalizations(__h_dc('live'))
         .setDescription('Should the bot remove the role again when the activity stops?')
         .setDescriptionLocalizations(
           __h_dc('Should the bot remove the role again when the activity stops?')
@@ -262,14 +261,14 @@ function process(
         .setColor(config.botColor)
         .setTitle(__({ phrase: 'Success!', locale }))
         .addFields(
-          { name: __({ phrase: 'activity', locale }), value: activityName },
-          { name: __({ phrase: 'role', locale }), value: `<@&${role.id}>` },
+          { name: __({ phrase: 'Activity', locale }), value: activityName },
+          { name: __({ phrase: 'Role', locale }), value: `<@&${role.id}>` },
           {
-            name: __({ phrase: 'exact activity name', locale }),
+            name: __({ phrase: 'Exact Activity Name', locale }),
             value: exactActivityName ? __('Yes') : __('No')
           },
           {
-            name: __({ phrase: 'live', locale }),
+            name: __({ phrase: 'Live', locale }),
             value: live ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale })
           }
         )

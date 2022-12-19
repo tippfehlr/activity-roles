@@ -53,6 +53,8 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
  - @dangerBEclose#1654 **[Dutch]**
  - @skyykc#0218
  - @Mann#9999
+ - Hugo Moreira#4306
+ - Tillmann Taute **[German]**
 
 If I forgot you, please let me know!
 
