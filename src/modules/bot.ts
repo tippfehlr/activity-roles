@@ -130,14 +130,14 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
       newMember.member?.roles.add(role);
       if (activityRole.live) {
         db.prepare(
-          'INSERT OR IGNORE INTO currentlyActiveActivities (userID, guildID, activityName) VALUES (?, ?, ?)'
+          'INSERT OR IGNORE INTO currentlyActiveActivities (userIDHash, guildID, activityName) VALUES (?, ?, ?)'
         ).run(userIDHash, newMember.guild?.id, activityRole.activityName);
       }
     });
 
   const res = db
     .prepare(
-      'SELECT * FROM currentlyActiveActivities LEFT JOIN activityRoles ON activityRoles.activityName = currentlyActiveActivities.activityName WHERE currentlyActiveActivities.userID = ? AND currentlyActiveActivities.guildID = ?'
+      'SELECT * FROM currentlyActiveActivities LEFT JOIN activityRoles ON activityRoles.activityName = currentlyActiveActivities.activityName WHERE currentlyActiveActivities.userIDHash = ? AND currentlyActiveActivities.guildID = ?'
     )
     .all(userIDHash, newMember.guild.id);
   res.forEach((activityRole: any) => {
@@ -145,12 +145,12 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
       const role = newMember.guild?.roles.cache.get(activityRole.roleID);
       if (!role || !newMember.member?.roles.cache.has(role.id)) {
         db.prepare(
-          'DELETE FROM currentlyActiveActivities WHERE userID = ? AND activityName = ?'
+          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND activityName = ?'
         ).run(userIDHash, activityRole.activityName);
       } else {
         newMember.member?.roles.remove(role);
         db.prepare(
-          'DELETE FROM currentlyActiveActivities WHERE userID = ? AND activityName = ?'
+          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND activityName = ?'
         ).run(userIDHash, activityRole.activityName);
       }
     }
