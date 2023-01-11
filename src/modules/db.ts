@@ -11,6 +11,7 @@ export interface DBUser {
 export interface DBGuild {
   guildID: string;
   language: Locale;
+  requiredRoleID: string | null;
 }
 export interface DBActivityRole {
   guildID: string;
@@ -35,7 +36,7 @@ export function prepareDB() {
     'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)'
   ).run();
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT)'
+    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT, requiredRoleID TEXT)'
   ).run();
   db.prepare(
     'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
@@ -65,8 +66,8 @@ export function getUserConfig(userID: string): DBUser {
 export function getGuildConfig(guildID: string): DBGuild {
   const guild = db.prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
   if (guild) return guild;
-  db.prepare('INSERT INTO guilds VALUES (?, ?)').run(guildID, 'en-US');
-  return { guildID: guildID, language: 'en-US' as Locale };
+  db.prepare('INSERT INTO guilds VALUES (?, ?, NULL)').run(guildID, 'en-US');
+  return { guildID: guildID, language: 'en-US' as Locale, requiredRoleID: null };
 }
 
 export function getActivityRoles(guildID: string): DBActivityRole[] {

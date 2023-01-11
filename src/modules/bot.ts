@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import Discord, { ActivityType, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
 
-import { db, getActivityRoles, getUserConfig } from './db';
+import { db, getActivityRoles, getGuildConfig, getUserConfig } from './db';
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
@@ -45,7 +45,9 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
+              'COUNT(*)'
+            ]
           }),
           type: ActivityType.Watching
         }
@@ -61,7 +63,9 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
+            count: (
+              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number }
+            )['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -75,14 +79,17 @@ client.on(Events.ClientReady, () => {
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${
+      (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
     } users`
   );
 });
 
 client.on(Events.PresenceUpdate, async (_, newMember) => {
   if (!newMember.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-    log.error(`MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`);
+    log.error(
+      `MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`
+    );
     return;
   }
   if (
@@ -94,6 +101,7 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
     return;
   }
   await newMember.member?.fetch();
+  const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
   const activityRoles = getActivityRoles(newMember.guild.id);
   if (activityRoles.length === 0) return;
@@ -125,7 +133,6 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
         currentlyActiveActivities.push(activityRole.activityName);
       }
       if (newMember.member?.roles.cache.has(role.id)) return;
-      const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;
       if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
       newMember.member?.roles.add(role);
       if (activityRole.live) {
@@ -159,10 +166,7 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
 
 client.on(Events.GuildCreate, guild => {
   log.info(`Joined guild ${guild.name} (${guild.id})`);
-  db.prepare('INSERT OR IGNORE INTO guilds (guildID, language) VALUES (?, ?)').run(
-    guild.id,
-    'en-US'
-  );
+  getGuildConfig(guild.id);
 });
 
 client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name} (${guild.id})`));
