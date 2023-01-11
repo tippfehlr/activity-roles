@@ -19,8 +19,8 @@ export interface DBActivityRole {
   exactActivityName: 1 | 0;
   live: 1 | 0;
 }
-export interface DBCurrentlyActiveActivitiy {
-  userID: string; //TODO: change to userIDHash
+export interface DBCurrentlyActiveActivity {
+  userIDHash: string;
   guildID: string;
   activityName: string;
 }
@@ -39,7 +39,7 @@ export function prepareDB() {
     'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userID TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userID, guildID, activityName))'
+    'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userIDHash TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userIDHash, guildID, activityName))'
   ).run();
 }
 
