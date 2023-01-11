@@ -82,5 +82,11 @@
   "language": "language",
   "listactivityroles": "listactivityroles",
   "stats": "stats",
-  "toggleautorole": "toggleautorole"
+  "toggleautorole": "toggleautorole",
+  "requirerole": "requirerole",
+  "Require users to have this role in order to receive Activity Roles.": "Require users to have this role in order to receive Activity Roles.",
+  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
+  "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
+  "%s is already set as the required role.": "%s is already set as the required role.",
+  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles."
 }
