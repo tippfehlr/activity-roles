@@ -32,9 +32,11 @@ export function prepareDB() {
   db = new sqlite3('db/activity-roles.db');
 
   db.prepare(
-    'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language STRING)'
+    'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)'
   ).run();
-  db.prepare('CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language STRING)').run();
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT)'
+  ).run();
   db.prepare(
     'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
