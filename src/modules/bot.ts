@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import Discord, { ActivityType, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
 
-import { db, getActivityRoles, getGuildConfig, getUserConfig } from './db';
+import { addActivity, db, getActivityRoles, getGuildConfig, getUserConfig } from './db';
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
@@ -83,13 +83,12 @@ client.on(Events.ClientReady, () => {
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${
-      (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
     } users`
   );
 });
 
-client.on(Events.PresenceUpdate, async (_, newMember) => {
+client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   if (!newMember.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
     log.warn(
       `MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`
@@ -99,7 +98,12 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
   if (!newMember.user || !newMember.guild || newMember.member?.user.bot) return;
   const userConfig = getUserConfig(newMember.userId);
   if (!userConfig.autoRole) return;
-
+  const addedActivities = newMember?.activities.filter(activity => {
+    return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
+  });
+  for (const activity of addedActivities) {
+    addActivity(newMember.guild.id, activity.name);
+  }
   const guildConfig = getGuildConfig(newMember.guild.id);
   await newMember.member?.fetch();
   const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;

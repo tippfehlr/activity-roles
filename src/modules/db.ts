@@ -26,6 +26,12 @@ export interface DBCurrentlyActiveActivity {
   activityName: string;
 }
 
+export interface DBActivityStats {
+  guildID: string;
+  activityName: string;
+  count: number;
+}
+
 export let db: sqlite3.Database;
 
 export function prepareDB() {
@@ -44,15 +50,9 @@ export function prepareDB() {
   db.prepare(
     'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userIDHash TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userIDHash, guildID, activityName))'
   ).run();
-}
-
-/** @deprecated use getUserConfig instead*/
-export function getUserAutoRole(userID: string): boolean {
-  const userIDHash = createHash('sha256').update(userID).digest('base64');
-  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
-  if (user) return Boolean(user.autoRole);
-  db.prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
-  return true;
+  db.prepare(
+    'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))'
+  ).run();
 }
 
 export function getUserConfig(userID: string): DBUser {
@@ -83,4 +83,10 @@ export function getLang(interaction: CommandInteraction): Locale {
   if (!interaction.guild) return 'en-US' as Locale;
 
   return getGuildConfig(interaction.guild.id).language;
+}
+
+export async function addActivity(guildID: string, activityName: string) {
+  db.prepare(
+    'INSERT INTO activityStats VALUES (?, ?, ?) ON CONFLICT(guildID, activityName) DO UPDATE SET count = count + 1'
+  ).run(guildID, activityName, 1);
 }
