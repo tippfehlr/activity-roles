@@ -56,6 +56,7 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
  - @Mann#9999
  - Hugo Moreira#4306
  - Tillmann Taute **[German]**
+ - ZamestoTV **[Russian]**
 
 If I forgot you, please let me know!
 
