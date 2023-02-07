@@ -4,7 +4,7 @@ import pino from 'pino';
 import { I18n } from 'i18n';
 
 export const i18n = new I18n({
-  locales: ['en-US', 'cs', 'nl', 'pt-BR', 'de'],
+  locales: ['en-US', 'cs', 'nl', 'pt-BR', 'de', 'ru'],
   directory: __dirname + '/../../locales',
   defaultLocale: 'en-US'
 });
