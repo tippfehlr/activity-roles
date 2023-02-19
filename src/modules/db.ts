@@ -1,7 +1,7 @@
 import fs from 'fs'
 import sqlite3 from 'better-sqlite3';
 import { createHash } from 'crypto';
-import { CommandInteraction, Locale } from 'discord.js';
+import { CommandInteraction, Locale, StringSelectMenuInteraction } from 'discord.js';
 
 export interface DBUser {
   userIDHash: string;
@@ -76,7 +76,7 @@ export function getActivityRoles(guildID: string): DBActivityRole[] {
     .all(guildID) as DBActivityRole[];
 }
 
-export function getLang(interaction: CommandInteraction): Locale {
+export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): Locale {
   const userLang = getUserConfig(interaction.user.id).language;
   if (userLang !== 'none') return userLang;
 

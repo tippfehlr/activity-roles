@@ -2,7 +2,6 @@ import { Client, CommandInteraction, InteractionType, SlashCommandBuilder } from
 import fs from 'fs';
 import path from 'path';
 import { getLang } from './db';
-export { CommandInteraction } from 'discord.js';
 import { log, __ } from './messages';
 
 export interface Command {

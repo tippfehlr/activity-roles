@@ -1,5 +1,5 @@
 import { Locale } from 'discord.js';
-import pino from 'pino';
+import { pino } from 'pino';
 
 import { I18n } from 'i18n';
 

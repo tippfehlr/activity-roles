@@ -93,5 +93,7 @@
       "": "встановлює мову для користувача. Перезаписує мову сервера."
     }
   },
-  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language."
+  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
+  "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
+  "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)"
 }

@@ -87,6 +87,13 @@
   "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
   "%s is already set as the required role.": "%s is already set as the required role.",
   "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles.",
-  "No activity roles were deleted.": "No activity roles were deleted.",
-  "Yes": "Yes"
+  "activitystats": "activitystats",
+  "Shows a list of activities that have been recorded in your guild.": "Shows a list of activities that have been recorded in your guild.",
+  "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
+  "Activities (sorted by frequency):": "Activities (sorted by frequency):",
+  "roleids": "roleids",
+  "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
+  "batchaddactivityrole": "batchaddactivityrole",
+  "Adds many activity roles to your guild.": "Adds many activity roles to your guild.",
+  "No activity stats found.": "No activity stats found."
 }
