@@ -4,7 +4,6 @@ import fs from 'fs';
 
 import { db, DBActivityRole, getLang } from '../db';
 import { Command } from '../commandHandler';
-import config from '../../../config';
 import { __, __h_dc } from '../messages';
 
 export default {
@@ -41,7 +40,7 @@ export default {
       array.push([
         String(Number(i) + 1),
         interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-          ` <@&${res[i].roleID}>`,
+        ` <@&${res[i].roleID}>`,
         res[i].activityName,
         String(Boolean(res[i].exactActivityName)),
         String(Boolean(res[i].live))
@@ -52,10 +51,10 @@ export default {
         return index === 0 || index === 1 || index === array.length;
       }
     });
-    fs.writeFileSync(config.listRolesFileName, response);
+    fs.writeFileSync(interaction.id, response);
     await interaction.reply({
-      files: [config.listRolesFileName]
+      files: [interaction.id]
     });
-    fs.unlinkSync(config.listRolesFileName);
+    fs.unlinkSync(interaction.id);
   }
 } as Command;

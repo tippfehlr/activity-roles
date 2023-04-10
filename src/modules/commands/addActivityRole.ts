@@ -16,7 +16,7 @@ import {
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
-import config from '../../../config';
+import config from '../config';
 import { log, __ } from '../messages';
 import { db, getLang } from '../db';
 
@@ -166,7 +166,7 @@ export default {
 async function createRole(interaction: CommandInteraction, activityName: string) {
   return await interaction.guild!.roles.create({
     name: activityName,
-    color: config.botColor,
+    color: config.COLOR,
     mentionable: true
   });
 }
@@ -258,7 +258,7 @@ function process(
     );
     reply(interaction, undefined, [
       new EmbedBuilder()
-        .setColor(config.botColor)
+        .setColor(config.COLOR)
         .setTitle(__({ phrase: 'Success!', locale }))
         .addFields(
           { name: __({ phrase: 'Activity', locale }), value: activityName },

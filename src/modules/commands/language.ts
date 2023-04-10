@@ -3,7 +3,7 @@ import { Locale, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../commandHandler';
 import { db, getGuildConfig, getLang, getUserConfig } from '../db';
 import { __ } from '../messages';
-import config from '../../../config';
+import config from '../config';
 import { createHash } from 'crypto';
 
 export default {
@@ -75,17 +75,17 @@ export default {
                   { phrase: 'The current guild language is **`%s`**.', locale },
                   getEnumKey(Locale, guildLanguage)
                 ) +
-                  '\n\n' +
-                  __(
-                    {
-                      phrase:
-                        'If you want to help translating the bot, you can do so at %s. Thanks!',
-                      locale
-                    },
-                    'https://crowdin.com/project/activity-roles'
-                  )
+                '\n\n' +
+                __(
+                  {
+                    phrase:
+                      'If you want to help translating the bot, you can do so at %s. Thanks!',
+                    locale
+                  },
+                  'https://crowdin.com/project/activity-roles'
+                )
               )
-              .setColor(config.botColor)
+              .setColor(config.COLOR)
           ]
         }); //TODO reply with language list with percentages and link to crowdin and credits.
         return;
@@ -132,7 +132,7 @@ export default {
                 getEnumKey(Locale, newLanguage)
               )
             )
-            .setColor(config.botColor)
+            .setColor(config.COLOR)
         ],
         ephemeral: true
       });
@@ -151,23 +151,23 @@ export default {
                     ? __({ phrase: ' The guild language will be used.', locale })
                     : ''
                 ) +
-                  '\n\n' +
-                  __({
+                '\n\n' +
+                __({
+                  phrase:
+                    'The language of the command names and description is managed by your Discord language.',
+                  locale
+                }) +
+                '\n\n' +
+                __(
+                  {
                     phrase:
-                      'The language of the command names and description is managed by your Discord language.',
+                      'If you want to help translating the bot, you can do so at %s. Thanks!',
                     locale
-                  }) +
-                  '\n\n' +
-                  __(
-                    {
-                      phrase:
-                        'If you want to help translating the bot, you can do so at %s. Thanks!',
-                      locale
-                    },
-                    'https://crowdin.com/project/activity-roles'
-                  )
+                  },
+                  'https://crowdin.com/project/activity-roles'
+                )
               )
-              .setColor(config.botColor)
+              .setColor(config.COLOR)
           ]
         }); //TODO reply with language list with percentages and link to crowdin and credits.
         return;
@@ -209,14 +209,14 @@ export default {
                   ? __({ phrase: ' The guild language will be used.', locale })
                   : ''
               ) +
-                '\n\n' +
-                __({
-                  phrase:
-                    'The language of the command names and description is managed by your Discord language.',
-                  locale
-                })
+              '\n\n' +
+              __({
+                phrase:
+                  'The language of the command names and description is managed by your Discord language.',
+                locale
+              })
             )
-            .setColor(config.botColor)
+            .setColor(config.COLOR)
         ],
         ephemeral: true
       });

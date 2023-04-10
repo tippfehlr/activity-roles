@@ -1,3 +1,4 @@
+import fs from 'fs'
 import sqlite3 from 'better-sqlite3';
 import { createHash } from 'crypto';
 import { CommandInteraction, Locale } from 'discord.js';
@@ -24,9 +25,12 @@ export interface DBCurrentlyActiveActivitiy {
   activityName: string;
 }
 
-export const db = sqlite3('activity-roles.db');
+export let db: sqlite3.Database;
 
 export function prepareDB() {
+  if (!fs.existsSync('db')) fs.mkdirSync('db');
+  db = new sqlite3('db/activity-roles.db');
+
   db.prepare(
     'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language STRING)'
   ).run();

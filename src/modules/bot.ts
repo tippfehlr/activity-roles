@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 
 import { db, getActivityRoles, getUserConfig } from './db';
-import config from '../../config';
+import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
 
@@ -75,25 +75,12 @@ client.on(Events.ClientReady, () => {
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${
-      db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
     } users`
   );
 });
 
-client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
-  const removedActivities = oldMember?.activities.filter(activity => {
-    return !newMember?.activities.find(newActivity => newActivity.name === activity.name);
-  });
-  const addedActivities = newMember?.activities.filter(activity => {
-    return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
-  });
-  if (
-    config.presenceUpdateOnlyChanges &&
-    removedActivities?.length === 0 &&
-    addedActivities.length === 0
-  )
-    return;
+client.on(Events.PresenceUpdate, async (_, newMember) => {
   if (
     !newMember.user ||
     !newMember.guild ||
@@ -137,8 +124,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;
       if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
       newMember.member?.roles.add(role);
-      if (removedActivities?.length === 0 && addedActivities.length === 0)
-        log.warn('the bot would have missed a role');
       if (activityRole.live) {
         db.prepare(
           'INSERT OR IGNORE INTO currentlyActiveActivities (userID, guildID, activityName) VALUES (?, ?, ?)'
@@ -151,7 +136,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       'SELECT * FROM currentlyActiveActivities LEFT JOIN activityRoles ON activityRoles.activityName = currentlyActiveActivities.activityName WHERE currentlyActiveActivities.userID = ? AND currentlyActiveActivities.guildID = ?'
     )
     .all(userIDHash, newMember.guild.id);
-  res.forEach(activityRole => {
+  res.forEach((activityRole: any) => {
     if (!currentlyActiveActivities.includes(activityRole.activityName)) {
       const role = newMember.guild?.roles.cache.get(activityRole.roleID);
       if (!role || !newMember.member?.roles.cache.has(role.id)) {
@@ -160,8 +145,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         ).run(userIDHash, activityRole.activityName);
       } else {
         newMember.member?.roles.remove(role);
-        if (removedActivities?.length === 0 && addedActivities.length === 0)
-          log.warn('the bot would have missed a role');
         db.prepare(
           'DELETE FROM currentlyActiveActivities WHERE userID = ? AND activityName = ?'
         ).run(userIDHash, activityRole.activityName);

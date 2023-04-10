@@ -1,7 +1,6 @@
 import { SlashCommandBuilder, PermissionsBitField, CommandInteraction } from 'discord.js';
 import { db, DBActivityRole } from './../db';
 import fs from 'fs';
-import config from '../../../config';
 import { Command } from '../commandHandler';
 import { __h_dc } from '../messages';
 
@@ -26,8 +25,8 @@ export default {
         exactActivityName: Boolean(activityRole.exactActivityName)
       });
     }
-    fs.writeFileSync(config.exportFileName, JSON.stringify(array, null, 1));
-    await interaction.reply({ files: [config.exportFileName] });
-    fs.unlinkSync(config.exportFileName);
+    fs.writeFileSync(interaction.id, JSON.stringify(array, null, 1));
+    await interaction.reply({ files: [interaction.id] });
+    fs.unlinkSync(interaction.id);
   }
 } as Command;

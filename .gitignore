@@ -1,5 +1,4 @@
 *.env
-config.ts
 *.db
 *.log
 node_modules/
@@ -7,3 +6,5 @@ out/
 activityRolesList.txt
 export.json
 scripts/
+justfile
+docker-compose.yaml
