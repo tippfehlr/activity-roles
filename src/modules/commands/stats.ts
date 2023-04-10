@@ -28,13 +28,13 @@ export default {
               singular: '%s role',
               plural: '%s roles',
               locale,
-              count: db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)']
+              count: db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number }['COUNT(*)']
             }),
             i18n.__n({
               singular: '%s user',
               plural: '%s users',
               locale,
-              count: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
+              count: db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number }['COUNT(*)']
             })
           )
         )
