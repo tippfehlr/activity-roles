@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import config from '../../../config';
+import config from '../config';
 import { Command } from '../commandHandler';
 import { db, getLang } from '../db';
 import { i18n, __, __h_dc } from '../messages';
@@ -15,7 +15,7 @@ export default {
 
     interaction.reply({
       embeds: [
-        new EmbedBuilder().setColor(config.botColor).setDescription(
+        new EmbedBuilder().setColor(config.COLOR).setDescription(
           __(
             { phrase: 'The bot currently serves **%s** and manages **%s** for **%s**.', locale },
             i18n.__n({

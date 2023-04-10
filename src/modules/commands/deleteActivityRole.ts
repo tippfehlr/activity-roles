@@ -16,7 +16,7 @@ import {
   SlashCommandBuilder
 } from 'discord.js';
 
-import config from '../../../config';
+import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()
@@ -160,7 +160,7 @@ function process(
 ) {
   if (deleted.length > 0) {
     const embeds = [
-      // new EmbedBuilder().setTitle('Deleted Activity Roles:').setColor(config.botColor)
+      // new EmbedBuilder().setTitle('Deleted Activity Roles:').setColor(config.COLOR)
     ];
     embeds.push(
       ...deleted.map(activityRole => {
@@ -191,7 +191,7 @@ function process(
               inline: true
             }
           )
-          .setColor(config.botColor);
+          .setColor(config.COLOR);
       })
     );
     if (interaction instanceof CommandInteraction)

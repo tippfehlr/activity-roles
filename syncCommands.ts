@@ -1,11 +1,10 @@
 import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
 
 import { Command } from './modules/commandHandler';
-import config from '../config';
-dotenv.config();
+import config from './modules/config';
+
 
 const commandsDir = './src/modules/commands/';
 const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
@@ -28,11 +27,11 @@ const rest = new REST({ version: '10' }).setToken(
     console.log(`Started refreshing ${commands.length} application (/) commands.`);
     let data: any;
     if (production) {
-      data = await rest.put(Routes.applicationCommands(config.applicationID), {
+      data = await rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
         body: commands
       });
-    } else if (config.debug) {
-      data = await rest.put(Routes.applicationGuildCommands(config.applicationID, config.debug), {
+    } else if (config.GUILD) {
+      data = await rest.put(Routes.applicationGuildCommands(config.APPLICATION_ID, config.GUILD), {
         body: commands
       });
     }
