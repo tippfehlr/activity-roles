@@ -14,7 +14,7 @@ export default {
   execute: async (interaction: CommandInteraction) => {
     const activityRoles: DBActivityRole[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-      .all(interaction.guild!.id);
+      .all(interaction.guild!.id) as DBActivityRole[];
     const array = [];
     for (const activityRole of activityRoles) {
       array.push({

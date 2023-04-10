@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
+import Discord, { ActivityType, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
 
 import { db, getActivityRoles, getUserConfig } from './db';
 import config from './config';
@@ -45,7 +45,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -61,7 +61,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: db.prepare('SELECT COUNT(*) FROM activityRoles').get()['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -75,12 +75,16 @@ client.on(Events.ClientReady, () => {
     `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)']
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
     } users`
   );
 });
 
 client.on(Events.PresenceUpdate, async (_, newMember) => {
+  if (!newMember.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+    log.error(`MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`);
+    return;
+  }
   if (
     !newMember.user ||
     !newMember.guild ||

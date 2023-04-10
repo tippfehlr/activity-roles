@@ -93,7 +93,7 @@ export default {
                 int,
                 db
                   .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-                  .all(interaction.guildId),
+                  .all(interaction.guildId) as DBActivityRole[],
                 locale
               );
               db.prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
@@ -117,7 +117,7 @@ export default {
         interaction,
         db
           .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
-          .all(interaction.guildId, role.id),
+          .all(interaction.guildId, role.id) as DBActivityRole[],
         locale
       );
       db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
@@ -129,7 +129,7 @@ export default {
         interaction,
         db
           .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?')
-          .all(interaction.guildId, activity),
+          .all(interaction.guildId, activity) as DBActivityRole[],
         locale
       );
       db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
@@ -143,7 +143,7 @@ export default {
           .prepare(
             'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
           )
-          .all(interaction.guildId, role.id, activity),
+          .all(interaction.guildId, role.id, activity) as DBActivityRole[],
         locale
       );
       db.prepare(

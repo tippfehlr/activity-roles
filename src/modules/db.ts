@@ -46,7 +46,7 @@ export function prepareDB() {
 /** @deprecated use getUserConfig instead*/
 export function getUserAutoRole(userID: string): boolean {
   const userIDHash = createHash('sha256').update(userID).digest('base64');
-  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash);
+  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
   if (user) return Boolean(user.autoRole);
   db.prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
   return true;
@@ -54,14 +54,14 @@ export function getUserAutoRole(userID: string): boolean {
 
 export function getUserConfig(userID: string): DBUser {
   const userIDHash = createHash('sha256').update(userID).digest('base64');
-  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash);
+  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
   if (user) return user;
   db.prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
   return { userIDHash: userIDHash, autoRole: 1, language: 'none' };
 }
 
 export function getGuildConfig(guildID: string): DBGuild {
-  const guild = db.prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID);
+  const guild = db.prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
   if (guild) return guild;
   db.prepare('INSERT INTO guilds VALUES (?, ?)').run(guildID, 'en-US');
   return { guildID: guildID, language: 'en-US' as Locale };
