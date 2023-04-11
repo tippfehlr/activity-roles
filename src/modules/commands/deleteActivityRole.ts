@@ -21,7 +21,6 @@ import config from '../config';
 export default {
   data: new SlashCommandBuilder()
     .setName('deleteactivityrole')
-    .setNameLocalizations(__h_dc('deleteactivityrole'))
     .setDescription(
       'Deletes an activity role from your guild. Provide the activity or the role, or both.'
     )
@@ -33,7 +32,6 @@ export default {
     .addStringOption(option =>
       option
         .setName('activity')
-        .setNameLocalizations(__h_dc('activity'))
         .setDescription('the activity roles with this name will be deleted')
         .setDescriptionLocalizations(__h_dc('the activity roles with this name will be deleted'))
         .setRequired(false)
@@ -41,7 +39,6 @@ export default {
     .addRoleOption(option =>
       option
         .setName('role')
-        .setNameLocalizations(__h_dc('role'))
         .setDescription('the activity roles of this role will be deleted')
         .setDescriptionLocalizations(__h_dc('the activity roles of this role will be deleted'))
         .setRequired(false)
@@ -49,7 +46,6 @@ export default {
     .addBooleanOption(option =>
       option
         .setName('all')
-        .setNameLocalizations(__h_dc('all'))
         .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
         .setDescriptionLocalizations(__h_dc('ATTENTION: DELETES ALL ACTIVITY ROLES'))
         .setRequired(false)

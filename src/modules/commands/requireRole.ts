@@ -12,7 +12,6 @@ import config from '../config';
 export default {
   data: new SlashCommandBuilder()
     .setName('requirerole')
-    .setNameLocalizations(__h_dc('requirerole'))
     .setDescription('Require users to have this role in order to receive Activity Roles.')
     .setDescriptionLocalizations(
       __h_dc('Require users to have this role in order to receive Activity Roles.')
@@ -22,7 +21,6 @@ export default {
     .addRoleOption(option =>
       option
         .setName('role')
-        .setNameLocalizations(__h_dc('role'))
         .setDescription(
           'The role to require. To get the current role, omit this. To reset, enter @everyone.'
         )

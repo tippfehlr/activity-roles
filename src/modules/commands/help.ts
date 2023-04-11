@@ -9,7 +9,6 @@ import { getLang } from '../db';
 export default {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setNameLocalizations(__h_dc('help'))
     .setDescription('Shows the help menu')
     .setDescriptionLocalizations(__h_dc('Shows the help menu')),
 
