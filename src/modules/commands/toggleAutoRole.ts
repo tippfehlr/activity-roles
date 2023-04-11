@@ -6,7 +6,6 @@ import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('toggleautorole')
-    .setNameLocalizations(__h_dc('toggleautorole'))
     .setDescription('Enable/Disable automatic role assignment')
     .setDescriptionLocalizations(__h_dc('Enable/Disable automatic role assignment'))
     .addBooleanOption(option =>

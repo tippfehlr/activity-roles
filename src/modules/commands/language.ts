@@ -9,7 +9,6 @@ import { createHash } from 'crypto';
 export default {
   data: new SlashCommandBuilder()
     .setName('language')
-    .setNameLocalizations(__h_dc('language'))
     .setDescription('Sets the language of the bot')
     .setDescriptionLocalizations(__h_dc('Sets the language of the bot'))
     .addSubcommand(subcommand =>

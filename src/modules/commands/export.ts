@@ -6,7 +6,7 @@ import { __h_dc } from '../messages';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('export').setNameLocalizations(__h_dc('export'))
+    .setName('export')
     .setDescription('Exports all game roles in your guild as a JSON file.')
     .setDescriptionLocalizations(__h_dc('Exports all game roles in your guild as a JSON file.'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)

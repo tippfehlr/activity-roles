@@ -7,7 +7,6 @@ import { i18n, __, __h_dc } from '../messages';
 export default {
   data: new SlashCommandBuilder()
     .setName('stats')
-    .setNameLocalizations(__h_dc('stats'))
     .setDescription('Shows some stats about the bot.')
     .setDescriptionLocalizations(__h_dc('Shows some stats about the bot.')),
   execute: async interaction => {
