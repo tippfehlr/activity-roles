@@ -92,14 +92,11 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
     );
     return;
   }
-  if (
-    !newMember.user ||
-    !newMember.guild ||
-    newMember.member?.user.bot ||
-    !getUserConfig(newMember.user?.id).autoRole
-  ) {
-    return;
-  }
+  if (!newMember.user || !newMember.guild || newMember.member?.user.bot) return;
+  const userConfig = getUserConfig(newMember.userId);
+  if (!userConfig.autoRole) return;
+
+  const guildConfig = getGuildConfig(newMember.guild.id);
   await newMember.member?.fetch();
   const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
@@ -134,7 +131,13 @@ client.on(Events.PresenceUpdate, async (_, newMember) => {
       }
       if (newMember.member?.roles.cache.has(role.id)) return;
       if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
-      newMember.member?.roles.add(role);
+      //check for required role
+      if (
+        guildConfig.requiredRoleID === null ||
+        newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
+      ) {
+        newMember.member?.roles.add(role);
+      }
       if (activityRole.live) {
         db.prepare(
           'INSERT OR IGNORE INTO currentlyActiveActivities (userIDHash, guildID, activityName) VALUES (?, ?, ?)'

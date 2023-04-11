@@ -55,7 +55,7 @@ export default {
           ]
         });
       } else {
-        db.prepare('UPDATE guilds WHERE requiredRoleID = ? AND WHERE guildID = ?').run(
+        db.prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
           role.id === interaction.guild?.roles.everyone.id ? null : role.id,
           interaction.guildId!
         );
