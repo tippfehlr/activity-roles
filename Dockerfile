@@ -1,13 +1,14 @@
-FROM node:19-alpine AS build
+FROM --platform=$BUILDPLATFORM node:19-alpine AS build
 
 WORKDIR /activity-roles/
 
-COPY package.json yarn.lock .
 RUN apk add python3 make g++
-
 RUN yarn global add typescript
-RUN yarn install
+
 COPY tsconfig.json .
+COPY package.json yarn.lock .
+
+RUN yarn install
 
 COPY src src
 
@@ -16,14 +17,15 @@ RUN tsc --outDir out/
 
 FROM node:19-alpine AS release
 
-RUN apk add python3 make g++
 WORKDIR /activity-roles/
+RUN apk add python3 make g++
+
+COPY img/discord-header.png img/discord-header.png
+COPY locales locales
 
 COPY package.json yarn.lock .
 RUN yarn install --prod
 
-COPY locales locales
-COPY img/discord-header.png img/discord-header.png
 
 COPY --from=build /activity-roles/out src
 

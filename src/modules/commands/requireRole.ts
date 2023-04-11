@@ -7,7 +7,7 @@ import {
 import { db, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
 import { __, __h_dc } from '../messages';
-import config from '../../../config';
+import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()
@@ -53,11 +53,11 @@ export default {
                     : `<@&${guildConfig.requiredRoleID}>`
                 )
               )
-              .setColor(config.botColor)
+              .setColor(config.COLOR)
           ]
         });
       } else {
-        db.prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
+        db.prepare('UPDATE guilds WHERE requiredRoleID = ? AND WHERE guildID = ?').run(
           role.id === interaction.guild?.roles.everyone.id ? null : role.id,
           interaction.guildId!
         );
@@ -73,7 +73,7 @@ export default {
                   role.id === interaction.guild?.roles.everyone.id ? '@everyone' : `<@&${role.id}>`
                 )
               )
-              .setColor(config.botColor)
+              .setColor(config.COLOR)
           ]
         });
       }
@@ -89,7 +89,7 @@ export default {
                   : `<@&${guildConfig.requiredRoleID}>`
               )
             )
-            .setColor(config.botColor)
+            .setColor(config.COLOR)
         ]
       });
     }
