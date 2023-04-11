@@ -26,7 +26,7 @@ export default {
       });
     }
     fs.writeFileSync(interaction.id + '.txt', JSON.stringify(array, null, 1));
-    await interaction.reply({ files: [interaction.id] });
+    await interaction.reply({ files: [interaction.id + '.txt'] });
     fs.unlinkSync(interaction.id + '.txt');
   }
 } as Command;

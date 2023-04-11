@@ -86,5 +86,7 @@
   "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
   "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
   "%s is already set as the required role.": "%s is already set as the required role.",
-  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles."
+  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles.",
+  "No activity roles were deleted.": "No activity roles were deleted.",
+  "Yes": "Yes"
 }

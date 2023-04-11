@@ -52,7 +52,7 @@ export default {
     });
     fs.writeFileSync(interaction.id + '.txt', response);
     await interaction.reply({
-      files: [interaction.id]
+      files: [interaction.id + '.txt']
     });
     fs.unlinkSync(interaction.id + '.txt');
   }
