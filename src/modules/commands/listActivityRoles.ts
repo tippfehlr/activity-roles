@@ -50,10 +50,10 @@ export default {
         return index === 0 || index === 1 || index === array.length;
       }
     });
-    fs.writeFileSync(interaction.id, response);
+    fs.writeFileSync(interaction.id + '.txt', response);
     await interaction.reply({
       files: [interaction.id]
     });
-    fs.unlinkSync(interaction.id);
+    fs.unlinkSync(interaction.id + '.txt');
   }
 } as Command;

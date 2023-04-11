@@ -25,8 +25,8 @@ export default {
         exactActivityName: Boolean(activityRole.exactActivityName)
       });
     }
-    fs.writeFileSync(interaction.id, JSON.stringify(array, null, 1));
+    fs.writeFileSync(interaction.id + '.txt', JSON.stringify(array, null, 1));
     await interaction.reply({ files: [interaction.id] });
-    fs.unlinkSync(interaction.id);
+    fs.unlinkSync(interaction.id + '.txt');
   }
 } as Command;
