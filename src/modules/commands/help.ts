@@ -107,7 +107,7 @@ export default {
             name: __({ phrase: 'Thanks', locale }),
             value: __(
               { phrase: '%s\nIf I forgot you, please let me know!', locale },
-              '@EianLee#7234, @Krampus#2007 **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerBEclose#1654 **[Dutch]**, @skyykc#0218, @Mann#9999, Hugo Moreira#4306, Tillmann Taute **[German]**, ZamestoTV **[Russian]**'
+              '@EianLee#7234, @Krampus#2007 **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerBEclose#1654 **[Dutch]**, @skyykc#0218, @Mann#9999, Hugo Moreira#4306, Tillmann Taute **[German]**, ZamestoTV **[Russian]**, onepunch#0001 **[Ukrainian]**'
             )
           }),
         commandEmbed

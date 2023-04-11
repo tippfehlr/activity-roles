@@ -46,7 +46,6 @@
   "Success!": "Hotovo!",
   "activity": "aktivita",
   "role": "role",
-  "exact activity name": "přesný název aktivity",
   "No": "Ne",
   "You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.": "Musíte zadat roli nebo aktivitu. Pokud zadáte roli, všechny aktivity pro tuto roli budou smazány. Pokud zadáte aktivitu, všechny aktivity s tímto názvem budou odstraněny.\nPokud zadáte obojí, všechny aktivity s tímto názvem pro tuto roli budou smazány.",
   "Activity": "Aktivita",
@@ -67,7 +66,6 @@
   "disabled": "vypnuto",
   "Automatic role assignment for your user is now **%s**.": "Automatic role assignment for your user is now **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "You can change this with the command `/toggleAutoRole`.",
-  "Guild language set to **%s**": "Guild language set to **%s**",
   "undefined": "undefined",
   " The guild language will be used.": " The guild language will be used.",
   "The current user language is **%s**.%s": "The current user language is **%s**.%s",
@@ -82,5 +80,11 @@
   "language": "language",
   "listactivityroles": "listactivityroles",
   "stats": "stats",
-  "toggleautorole": "toggleautorole"
+  "toggleautorole": "toggleautorole",
+  "requirerole": "requirerole",
+  "Require users to have this role in order to receive Activity Roles.": "Require users to have this role in order to receive Activity Roles.",
+  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
+  "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
+  "%s is already set as the required role.": "%s is already set as the required role.",
+  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles."
 }
