@@ -46,7 +46,6 @@
   "Success!": "Sucesso!",
   "activity": "atividade",
   "role": "cargo",
-  "exact activity name": "nome exato da atividade",
   "No": "Não",
   "You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.": "Você precisa fornecer um cargo ou uma atividade. Se você fornecer um cargo, todos os cargos de atividade para esse cargo serão excluídos. Se você fornecer uma atividade, todos os cargos de atividade com esse nome serão apagados.\nSe você fornecer os dois, todos os papéis de atividade com esse nome para esse papel serão excluídos.",
   "Activity": "Atividade",
@@ -67,7 +66,6 @@
   "disabled": "desabilitado",
   "Automatic role assignment for your user is now **%s**.": "Atribuição automática do cargo para o seu usuário agora é **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Você pode mudar isso com o comando `/toggleAutoRole`.",
-  "Guild language set to **%s**": "Idioma do servidor definido para **%s**",
   "undefined": "não definido",
   " The guild language will be used.": " O idioma do servidor será usado.",
   "The current user language is **%s**.%s": "O idioma atual do usuário é **%s**.%s",
@@ -82,5 +80,11 @@
   "language": "idioma",
   "listactivityroles": "listarcargosdeatividade",
   "stats": "estatísticas",
-  "toggleautorole": "alternarautocargo"
+  "toggleautorole": "alternarautocargo",
+  "requirerole": "requirerole",
+  "Require users to have this role in order to receive Activity Roles.": "Require users to have this role in order to receive Activity Roles.",
+  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
+  "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
+  "%s is already set as the required role.": "%s is already set as the required role.",
+  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles."
 }

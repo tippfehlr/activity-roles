@@ -46,7 +46,6 @@
   "Success!": "Geslaagd!",
   "activity": "activiteit",
   "role": "rol",
-  "exact activity name": "exacte activiteitsnaam",
   "No": "Nee",
   "You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.": "Je moet een rol of een activiteit opgeven. Als je een rol opgeeft, zullen alle activiteit rollen van die rol worden verwijderd. Als u een activiteit opgeeft, worden alle activiteit rollen met die naam verwijderd.\nAls je beide opgeeft, worden alle activiteit rollen met die naam voor die rol verwijderd.",
   "Activity": "Activiteit",
@@ -67,7 +66,6 @@
   "disabled": "uitgeschakeld",
   "Automatic role assignment for your user is now **%s**.": "Automatische roltoewijzing voor uw gebruiker is nu **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Je kunt dit wijzigen met het commando `/toggleAutoRole`.",
-  "Guild language set to **%s**": "Guild taal ingesteld op **`%s**",
   "undefined": "onbepaald",
   " The guild language will be used.": " De guild taal zal worden gebruikt.",
   "The current user language is **%s**.%s": "De huidige gebruikerstaal is **%s**.%s",
@@ -82,5 +80,11 @@
   "language": "taal",
   "listactivityroles": "toonactiviteitsrollen",
   "stats": "statistieken",
-  "toggleautorole": "autorolomschakelen"
+  "toggleautorole": "autorolomschakelen",
+  "requirerole": "requirerole",
+  "Require users to have this role in order to receive Activity Roles.": "Require users to have this role in order to receive Activity Roles.",
+  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
+  "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
+  "%s is already set as the required role.": "%s is already set as the required role.",
+  "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles."
 }
