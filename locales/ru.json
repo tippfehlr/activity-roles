@@ -75,7 +75,7 @@
   "exact_activity_name": "exact_activity_name",
   "deleteactivityrole": "deleteactivityrole",
   "all": "все",
-  "export": "Экспорт",
+  // "export": "Экспорт",
   "help": "Справка",
   "language": "язык",
   "listactivityroles": "listactivityroles",
