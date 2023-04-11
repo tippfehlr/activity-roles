@@ -1,3 +1,12 @@
+FROM --platform=$BUILDPLATFORM endeveit/docker-jq AS deps
+
+# https://stackoverflow.com/a/58487433
+# To prevent cache invalidation from changes in fields other than dependencies
+
+COPY package.json /tmp
+
+RUN jq '{ dependencies, devDependencies }' < /tmp/package.json > /tmp/deps.json
+
 FROM --platform=$BUILDPLATFORM node:19-alpine AS build
 
 WORKDIR /activity-roles/
@@ -5,8 +14,8 @@ WORKDIR /activity-roles/
 RUN apk add python3 make g++
 RUN yarn global add typescript
 
-COPY tsconfig.json .
-COPY package.json yarn.lock .
+COPY tsconfig.json yarn.lock .
+COPY --from=deps /tmp/deps.json ./package.json
 
 RUN yarn install
 
@@ -23,11 +32,10 @@ RUN apk add python3 make g++
 COPY img/discord-header.png img/discord-header.png
 COPY locales locales
 
-COPY package.json yarn.lock .
+COPY yarn.lock .
+COPY --from=deps /tmp/deps.json ./package.json
 RUN yarn install --prod
 
-
 COPY --from=build /activity-roles/out src
-
 
 CMD ["node", "src/index.js"]
