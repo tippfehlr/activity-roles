@@ -45,9 +45,11 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
-              'COUNT(*)'
-            ]
+            count: (
+              db.prepare('SELECT COUNT(*) FROM users').get() as {
+                'COUNT(*)': number;
+              }
+            )['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -64,7 +66,9 @@ client.on(Events.ClientReady, () => {
             plural: '%s roles',
             locale: 'en-US',
             count: (
-              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number }
+              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
+                'COUNT(*)': number;
+              }
             )['COUNT(*)']
           }),
           type: ActivityType.Watching
@@ -87,7 +91,7 @@ client.on(Events.ClientReady, () => {
 
 client.on(Events.PresenceUpdate, async (_, newMember) => {
   if (!newMember.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-    log.error(
+    log.warn(
       `MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`
     );
     return;
