@@ -8,3 +8,12 @@ export.json
 scripts/
 justfile
 docker-compose.yaml
+
+# yarn v2+:
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

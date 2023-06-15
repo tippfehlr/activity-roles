@@ -17,7 +17,8 @@
     "i18n": "^0.15.1",
     "pino": "^8.6.1",
     "pino-pretty": "^9.1.0",
-    "table": "^6.8.0"
+    "table": "^6.8.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
@@ -36,5 +37,6 @@
     "sync": "ts-node ./syncCommands.ts",
     "dev": "./node_modules/.bin/nodemon -i locales/",
     "build": "rm -r out && ./node_modules/.bin/tsc --outDir out/ && cp -r locales out/locales"
-  }
+  },
+  "packageManager": "yarn@3.6.0"
 }
