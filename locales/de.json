@@ -13,7 +13,6 @@
   "Shows the help menu": "Zeigt das Hilfe-Menü",
   "Sets the language of the bot": "Setzt die Sprache des Bots",
   "sets the language for the guild": "setzt die Sprache für die Gilde",
-  "sets the language for the user. Overwrites the guild language.": "legt die Sprache des Benutzers fest. Überschreibt die Gildensprache.",
   "Lists all activity roles in your guild.": "Listet alle Aktivitätsrollen in deiner Gilde auf.",
   "Shows some stats about the bot.": "Zeigt Statistiken über den Bot.",
   "Enable/Disable automatic role assignment": "Enable/Disable automatic role assignment",
@@ -26,11 +25,11 @@
     "other": "%s users"
   },
   "%s role": {
-    "one": "%s role",
-    "other": "%s roles"
+    "one": "%s Rolle",
+    "other": "%s Rollen"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** for **%s**.",
-  "Commands": "Commands",
+  "Commands": "Befehle",
   "Made and hosted by %s": "Made and hosted by %s",
   "A Discord bot for automatic role assignment based on activities.\n": "A Discord bot for automatic role assignment based on activities.\n",
   "Support/Suggestions: %s\n": "Support/Suggestions: %s\n",
@@ -88,5 +87,11 @@
   "%s is already set as the required role.": "%s is already set as the required role.",
   "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles.",
   "No activity roles were deleted.": "No activity roles were deleted.",
-  "Yes": "Yes"
+  "Yes": "Ja",
+  "sets the language for the user": {
+    " Overwrites the guild language": {
+      "": "legt die Sprache des Benutzers fest. Überschreibt die Gildensprache."
+    }
+  },
+  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language."
 }
