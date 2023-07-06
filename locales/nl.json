@@ -13,7 +13,6 @@
   "Shows the help menu": "Geeft het help menu weer",
   "Sets the language of the bot": "Stelt de taal van de bot in",
   "sets the language for the guild": "stelt de taal van de guild in",
-  "sets the language for the user. Overwrites the guild language.": "stelt de taal voor de gebruiker in. Hiermee overschrijft u de guild standaard.",
   "Lists all activity roles in your guild.": "Geef alle activiteits rollen weer in jouw guild.",
   "Shows some stats about the bot.": "Toont enkele statistieken over de bot.",
   "Enable/Disable automatic role assignment": "Inschakelen/uitschakelen automatische rol toewijzing",
@@ -88,5 +87,11 @@
   "%s is already set as the required role.": "%s is already set as the required role.",
   "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles.",
   "No activity roles were deleted.": "No activity roles were deleted.",
-  "Yes": "Yes"
+  "Yes": "Yes",
+  "sets the language for the user": {
+    " Overwrites the guild language": {
+      "": "stelt de taal voor de gebruiker in. Hiermee overschrijft u de guild standaard."
+    }
+  },
+  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language."
 }
