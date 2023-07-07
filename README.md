@@ -1,5 +1,5 @@
 ![](./img/header.png)
-[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=invite%20me&color=7289DA)](https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=8&scope=bot%20applications.commands)
+[![](https://img.shields.io/static/v1?style=for-the-badge&logo=discord&logoColor=FFF&label=&message=invite%20me&color=7289DA)](https://discord.com/api/oauth2/authorize?client_id=813130993640013874&permissions=268435456&scope=bot%20applications.commands)
 [![](https://img.shields.io/discord/958393035543175258?label=support&logo=DISCORD&style=for-the-badge)](https://discord.gg/3K9Yx4ufN7)
 [![](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
@@ -34,6 +34,7 @@ The database is separate from stable.
 It updates from the [dev brach](https://github.com/tippf3hlr/activity-roles/tree/dev).* -->
 
 Contribution is highly appreciated. Feel free to join the support/suggestions server and open an issue or pull request.
+
 ### Translation
 
 The default language of the bot is English.  
