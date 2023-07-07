@@ -77,7 +77,7 @@ export default {
       });
       interaction.channel
         ?.createMessageComponentCollector({
-          componentType: ComponentType.SelectMenu,
+          componentType: ComponentType.StringSelect,
           filter: btnInt => interaction.user.id === btnInt.user.id,
           max: 1,
           time: 1000 * 60
