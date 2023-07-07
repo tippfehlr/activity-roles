@@ -3,11 +3,11 @@ import {
   Role,
   CommandInteraction,
   PermissionsBitField,
-  SelectMenuInteraction,
+  StringSelectMenuInteraction,
   InteractionType,
   EmbedBuilder,
   ActionRowBuilder,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
   APIRole,
   SlashCommandBuilder,
   ComponentType,
@@ -102,8 +102,8 @@ export default {
         process(interaction, role, activityName, exactActivityName, live, locale);
       } else {
         // select role
-        const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-          new SelectMenuBuilder()
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+          new StringSelectMenuBuilder()
             .setCustomId('addactivityrole:roleSelector')
             .setPlaceholder(__({ phrase: "Please select a role for '%s'", locale }, activityName))
             .addOptions([
@@ -126,7 +126,7 @@ export default {
         );
         interaction.channel
           ?.createMessageComponentCollector({
-            componentType: ComponentType.SelectMenu,
+            componentType: ComponentType.StringSelect,
             filter: componentInteraction =>
               componentInteraction.customId === 'addactivityrole:roleSelector',
             time: 60000,
@@ -134,7 +134,7 @@ export default {
           })
           .once('collect', async selectMenuInteraction => {
             if (selectMenuInteraction.user.id !== interaction.user.id) return;
-            if (!selectMenuInteraction.isSelectMenu()) return;
+            if (!selectMenuInteraction.isStringSelectMenu()) return;
             if (selectMenuInteraction.customId !== 'addactivityrole:roleSelector') return;
             if (selectMenuInteraction.values[0] === 'create') {
               role = await createRole(interaction, activityName);
@@ -167,19 +167,19 @@ async function createRole(interaction: CommandInteraction, activityName: string)
 }
 
 function reply(
-  interaction: CommandInteraction | SelectMenuInteraction,
+  interaction: CommandInteraction | StringSelectMenuInteraction,
   content?: string,
   embeds?: EmbedBuilder[]
 ) {
   if (interaction.type === InteractionType.ApplicationCommand) {
     interaction.reply({ content, embeds, ephemeral: true });
-  } else if (interaction.isSelectMenu()) {
+  } else if (interaction.isStringSelectMenu()) {
     interaction.update({ content, embeds, components: [] });
   }
 }
 
 function process(
-  interaction: CommandInteraction | SelectMenuInteraction,
+  interaction: CommandInteraction | StringSelectMenuInteraction,
   role: Role | APIRole,
   activityName: string,
   exactActivityName: boolean,
