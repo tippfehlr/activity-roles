@@ -49,16 +49,16 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
 
- - @EianLee#7234
- - @Krampus#2007 **[Brazilian Portuguese]**
+ - @eianlee
+ - @umkrampus **[Brazilian Portuguese]**
  - @RstY_CZ#2033 **[Czech]**
- - @dangerBEclose#1654 **[Dutch]**
+ - @dangerbeclose **[Dutch]**
  - @skyykc#0218
- - @Mann#9999
- - Hugo Moreira#4306
+ - @money143
+ - @Hugo Moreira#4306
  - Tillmann Taute **[German]**
  - ZamestoTV **[Russian]**
- - onepunch#0001 **[Ukrainian]**
+ - @.onepunch. **[Ukrainian]**
 
 If I forgot you, please let me know!
 
