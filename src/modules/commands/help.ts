@@ -43,11 +43,13 @@ export default {
       command.data.options.forEach(option => {
         const option_description_localization = option.toJSON().description_localizations;
         const option_name_localization = option.toJSON().name_localizations;
-        commandDescription += `\`\n${option_name_localization ? option_name_localization[locale] : option.toJSON().name
-          }\`: ${option_description_localization
+        commandDescription += `\`\n${
+          option_name_localization ? option_name_localization[locale] : option.toJSON().name
+        }\`: ${
+          option_description_localization
             ? option_description_localization[locale]
             : option.toJSON().description
-          }`;
+        }`;
       });
       //@ts-ignore
       commandEmbed.addFields({ name: commandName, value: commandDescription });
@@ -64,7 +66,11 @@ export default {
             text:
               config.AUTHOR === config.HOSTER_NAME
                 ? __({ phrase: 'Made and hosted by %s', locale }, config.AUTHOR)
-                : __({ phrase: 'Made by %s and hosted by %s', locale }, config.AUTHOR, config.HOSTER_NAME),
+                : __(
+                    { phrase: 'Made by %s and hosted by %s', locale },
+                    config.AUTHOR,
+                    config.HOSTER_NAME
+                  ),
             iconURL: config.AUTHOR_LOGO_LINK
           })
           .setDescription(
@@ -72,41 +78,41 @@ export default {
               phrase: 'A Discord bot for automatic role assignment based on activities.\n',
               locale
             }) +
-            __({ phrase: 'Support/Suggestions: %s\n', locale }, 'https://discord.gg/3K9Yx4ufN7') +
-            __(
-              { phrase: 'GitHub: %s\n', locale },
-              'https://github.com/tippf3hlr/activity-roles/'
-            ) +
-            __({ phrase: 'Contact: %s\n\n', locale }, 'tippfehlr#3575 | tippfehlr@gmail.com') +
-            __({
-              phrase:
-                'If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n',
-              locale
-            }) +
-            __({
-              phrase:
-                'If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n',
-              locale
-            }) +
-            __({
-              phrase: 'If it is true, the activity must match exactly and case-sensitively.\n',
-              locale
-            }) +
-            __({
-              phrase:
-                "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n",
-              locale
-            }) +
-            __({
-              phrase: '**The bot will not remove any roles that were added manually.**',
-              locale
-            })
+              __({ phrase: 'Support/Suggestions: %s\n', locale }, 'https://discord.gg/3K9Yx4ufN7') +
+              __(
+                { phrase: 'GitHub: %s\n', locale },
+                'https://github.com/tippf3hlr/activity-roles/'
+              ) +
+              __({ phrase: 'Contact: %s\n\n', locale }, 'tippfehlr#3575 | tippfehlr@gmail.com') +
+              __({
+                phrase:
+                  'If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n',
+                locale
+              }) +
+              __({
+                phrase:
+                  'If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n',
+                locale
+              }) +
+              __({
+                phrase: 'If it is true, the activity must match exactly and case-sensitively.\n',
+                locale
+              }) +
+              __({
+                phrase:
+                  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n",
+                locale
+              }) +
+              __({
+                phrase: '**The bot will not remove any roles that were added manually.**',
+                locale
+              })
           )
           .addFields({
             name: __({ phrase: 'Thanks', locale }),
             value: __(
               { phrase: '%s\nIf I forgot you, please let me know!', locale },
-              '@EianLee#7234, @Krampus#2007 **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerBEclose#1654 **[Dutch]**, @skyykc#0218, @Mann#9999, Hugo Moreira#4306, Tillmann Taute **[German]**, ZamestoTV **[Russian]**, onepunch#0001 **[Ukrainian]**'
+              '@eianlee, @umkrampus **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerbeclose **[Dutch]**, @skyykc#0218, @money143, Hugo Moreira#4306, Tillmann Taute **[German]**, ZamestoTV **[Russian]**, @.onepunch. **[Ukrainian]**'
             )
           }),
         commandEmbed
