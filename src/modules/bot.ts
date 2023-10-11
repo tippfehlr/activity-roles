@@ -45,11 +45,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: (
-              db.prepare('SELECT COUNT(*) FROM users').get() as {
-                'COUNT(*)': number;
-              }
-            )['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number; })['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -65,11 +61,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: (
-              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
-                'COUNT(*)': number;
-              }
-            )['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number; })['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -80,11 +72,11 @@ client.on(Events.ClientReady, () => {
   setActivityGuilds();
 
   log.info(
-    `Logged in to Discord as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
+    `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
     `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
-    } users`
+    } users and manages ${(db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number; })['COUNT(*)']} roles`
   );
 });
 
