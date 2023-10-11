@@ -12,7 +12,8 @@ import {
   SlashCommandBuilder,
   ComponentType,
   Colors,
-  Locale
+  Locale,
+  ChannelType
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -69,6 +70,11 @@ export default {
     ),
   execute: async interaction => {
     const locale = getLang(interaction);
+    if (!interaction.channel) return;
+    if (interaction.channel.type !== ChannelType.GuildText) {
+      await interaction.reply(__({ phrase: 'This command can only be used in text channels.', locale }));
+      return;
+    }
 
     const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 1024) {
@@ -125,7 +131,7 @@ export default {
             ])
         );
         interaction.channel
-          ?.createMessageComponentCollector({
+          .createMessageComponentCollector({
             componentType: ComponentType.StringSelect,
             filter: componentInteraction =>
               componentInteraction.customId === 'addactivityrole:roleSelector',

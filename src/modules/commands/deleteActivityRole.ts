@@ -8,6 +8,7 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
+  ChannelType,
   CommandInteraction,
   ComponentType,
   EmbedBuilder,
@@ -53,6 +54,11 @@ export default {
 
   execute: async interaction => {
     const locale = getLang(interaction);
+    if (!interaction.channel) return;
+    if (interaction.channel.type !== ChannelType.GuildText) {
+      await interaction.reply(__({ phrase: 'This command can only be used in text channels.', locale }));
+      return;
+    }
 
     const role = interaction.options.get('role')?.role;
     const activity = interaction.options.get('activity')?.value as string | undefined;
@@ -76,7 +82,7 @@ export default {
         ephemeral: true
       });
       interaction.channel
-        ?.createMessageComponentCollector({
+        .createMessageComponentCollector({
           componentType: ComponentType.StringSelect,
           filter: btnInt => interaction.user.id === btnInt.user.id,
           max: 1,
