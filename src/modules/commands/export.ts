@@ -25,7 +25,7 @@ export default {
 
     const activityRoles: DBActivityRole[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-      .all(interaction.guild!.id);
+      .all(interaction.guild!.id) as any as DBActivityRole[];
     if (activityRoles.length === 0) {
       interaction.reply({
         content: __({ phrase: 'There are no activity roles in this guild.', locale })
