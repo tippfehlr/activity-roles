@@ -1,7 +1,16 @@
 import { createHash } from 'crypto';
 import Discord, { ActivityType, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
 
-import { addActivity, db, getActivityRoles, getGuildConfig, getUserConfig } from './db';
+import {
+  DBActiveTemporaryRoles,
+  DBCurrentlyActiveActivity,
+  addActivity,
+  db,
+  getActivityRoles,
+  getGuildConfig,
+  getStatusRoles,
+  getUserConfig
+} from './db';
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
@@ -45,7 +54,9 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number; })['COUNT(*)']
+            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
+              'COUNT(*)'
+            ]
           }),
           type: ActivityType.Watching
         }
@@ -61,7 +72,11 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number; })['COUNT(*)']
+            count: (
+              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
+                'COUNT(*)': number;
+              }
+            )['COUNT(*)']
           }),
           type: ActivityType.Watching
         }
@@ -75,95 +90,168 @@ client.on(Events.ClientReady, () => {
     `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
-    } users and manages ${(db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number; })['COUNT(*)']} roles`
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${
+      (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+    } users and manages ${
+      (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
+    } roles`
   );
+
+  const activityCountInCurrentlyActiveActivities = (
+    db.prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as any
+  )['COUNT(*)'];
+  if (activityCountInCurrentlyActiveActivities > 0) {
+    log.info(
+      `There are still ${activityCountInCurrentlyActiveActivities} activites in currentlyActiveActivites left.`
+    );
+  } else {
+    log.info(
+      'There are no activites in currentlyActiveActivites left and it can safely be deleted :)'
+    );
+  }
 });
 
 client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
-  if (!newMember.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+  if (!newMember.guild) return;
+  const guildID = newMember.guild.id;
+  if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
     log.warn(
-      `MISSING ACCESS: Guild: ${newMember.guild?.name} (ID: ${newMember.guild?.id}, OwnerID: ${newMember.guild?.ownerId}), Permission: MANAGE_ROLES`
+      `MISSING ACCESS: Guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`
     );
     return;
   }
   if (!newMember.user || !newMember.guild || newMember.member?.user.bot) return;
+
   const userConfig = getUserConfig(newMember.userId);
   if (!userConfig.autoRole) return;
+
+  const highestBotRolePosition = newMember.guild.members.me?.roles.highest.position;
+  const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
+  const guildConfig = getGuildConfig(guildID);
+  await newMember.member?.fetch();
+
+  if (
+    guildConfig.requiredRoleID !== null &&
+    newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
+  )
+    return;
+
   const addedActivities = newMember?.activities.filter(activity => {
     return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
   });
-  for (const activity of addedActivities) {
-    addActivity(newMember.guild.id, activity.name);
-  }
-  const guildConfig = getGuildConfig(newMember.guild.id);
-  await newMember.member?.fetch();
-  const highestBotRolePosition = newMember.guild?.members.me?.roles.highest.position;
-  const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
-  const activityRoles = getActivityRoles(newMember.guild.id);
-  if (activityRoles.length === 0) return;
-  const userActivities = newMember.activities.map(activity => activity.name);
-  const currentlyActiveActivities: string[] = [];
-  activityRoles
-    .filter(activityRole => {
-      if (activityRole.exactActivityName) {
-        if (userActivities.includes(activityRole.activityName)) {
-          return true;
-        }
-      } else {
-        if (
-          userActivities.find(userActivity =>
-            userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
-          )
-        ) {
-          return true;
-        }
-      }
-    })
-    .forEach(activityRole => {
-      const role = newMember.guild?.roles.cache.get(activityRole.roleID);
-      if (!role) {
-        db.prepare('DELETE FROM activityRoles WHERE roleID = ?').run(activityRole.roleID);
-        return;
-      }
-      if (activityRole.live) {
-        currentlyActiveActivities.push(activityRole.activityName);
-      }
-      if (newMember.member?.roles.cache.has(role.id)) return;
-      if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
-      //check for required role
-      if (
-        guildConfig.requiredRoleID === null ||
-        newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
-      ) {
-        newMember.member?.roles.add(role);
-      }
-      if (activityRole.live) {
-        db.prepare(
-          'INSERT OR IGNORE INTO currentlyActiveActivities (userIDHash, guildID, activityName) VALUES (?, ?, ?)'
-        ).run(userIDHash, newMember.guild?.id, activityRole.activityName);
-      }
-    });
 
-  const res = db
-    .prepare(
-      'SELECT * FROM currentlyActiveActivities LEFT JOIN activityRoles ON activityRoles.activityName = currentlyActiveActivities.activityName WHERE currentlyActiveActivities.userIDHash = ? AND currentlyActiveActivities.guildID = ?'
-    )
-    .all(userIDHash, newMember.guild.id);
-  res.forEach((activityRole: any) => {
-    if (!currentlyActiveActivities.includes(activityRole.activityName)) {
-      const role = newMember.guild?.roles.cache.get(activityRole.roleID);
-      if (!role || !newMember.member?.roles.cache.has(role.id)) {
-        db.prepare(
-          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND activityName = ?'
-        ).run(userIDHash, activityRole.activityName);
-      } else {
-        newMember.member?.roles.remove(role);
-        db.prepare(
-          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND activityName = ?'
-        ).run(userIDHash, activityRole.activityName);
-      }
+  for (const activity of addedActivities) {
+    addActivity(guildID, activity.name);
+  }
+
+  const statusRoles = getStatusRoles(guildID);
+  const activityRoles = getActivityRoles(guildID);
+  const activeTemporaryRoles = db
+    .prepare('SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?')
+    .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
+
+  if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
+    return;
+  }
+
+  const roleIDsToBeAdded: Set<string> = new Set();
+  const tempRoleIDsToBeAdded: Set<string> = new Set();
+  const addRole = (roleID: string, temporary: boolean) => {
+    if (temporary) {
+      tempRoleIDsToBeAdded.add(roleID);
+    } else {
+      roleIDsToBeAdded.add(roleID);
     }
+  };
+
+  // ------------ status roles ------------
+  const states: Set<ActivityType> = new Set();
+  for (const activity of newMember.activities) {
+    states.add(activity.type);
+  }
+  statusRoles.forEach(statusRole => {
+    if (states.has(statusRole.type)) addRole(statusRole.roleID, true);
+  });
+
+  // ------------ activity roles ------------
+  const userActivities = newMember.activities.map(activity => activity.name);
+
+  activityRoles.forEach(activityRole => {
+    if (
+      // exactActivityName
+      (activityRole.exactActivityName && userActivities.includes(activityRole.activityName)) ||
+      // not exactActivityName
+      (!activityRole.exactActivityName &&
+        userActivities.find(userActivity =>
+          userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
+        ))
+    ) {
+      addRole(activityRole.roleID, Boolean(activityRole.live));
+    }
+  });
+
+  // ------------ “apply changes” ------------
+  const addDiscordRoleToMember = (roleID: string, temporary: boolean) => {
+    const role = newMember.guild?.roles.cache.get(roleID);
+    if (!role) {
+      db.prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
+        newMember.guild?.id,
+        roleID
+      );
+      db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
+      return;
+    }
+    if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
+    if (newMember.member?.roles.cache.has(role.id)) return;
+    if (temporary) {
+      db.prepare(
+        'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
+      ).run(userIDHash, guildID, roleID);
+    }
+    newMember.member?.roles.add(role);
+  };
+  roleIDsToBeAdded.forEach(roleID => {
+    addDiscordRoleToMember(roleID, false);
+  });
+  tempRoleIDsToBeAdded.forEach(roleID => {
+    addDiscordRoleToMember(roleID, true);
+  });
+
+  // remove temporary roles --- new activeTemporaryRoles
+  activeTemporaryRoles.forEach(activeTemporaryRole => {
+    if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
+      const role = newMember.guild?.roles.cache.get(activeTemporaryRole.roleID);
+      if (role) newMember.member?.roles.remove(role);
+      db.prepare(
+        'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?'
+      ).run(newMember.guild?.id, userIDHash, activeTemporaryRole.roleID);
+    }
+  });
+
+  // remove temporary activites that no longer apply --- @deprecated: phase out currentlyActiveActivities and use activeTemporaryRoles
+  (
+    db
+      .prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?')
+      .all(userIDHash, guildID) as DBCurrentlyActiveActivity[]
+  ).forEach(activeActivity => {
+    activityRoles
+      .filter(activityRole => activityRole.activityName === activeActivity.activityName)
+      .map(activityRole => activityRole.roleID)
+      .forEach(roleID => {
+        if (roleIDsToBeAdded.has(roleID)) {
+          db.prepare(
+            'INSERT OR IGNORE INTO aciveTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
+          ).run(userIDHash, guildID, roleID);
+        } else {
+          const role = newMember.guild?.roles.cache.get(roleID);
+          if (role && newMember.member?.roles.cache.has(role.id)) {
+            newMember.member?.roles.remove(role);
+          }
+        }
+        db.prepare(
+          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?'
+        ).run(userIDHash, guildID, activeActivity.activityName);
+      });
   });
 });
 
