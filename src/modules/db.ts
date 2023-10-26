@@ -91,13 +91,14 @@ export function prepareDB() {
   }
 
   const latestDBVersion = 2;
-  const dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
+  let dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
 
   if (dbVersion === 1) {
     // add status roles
     // add activeTemporaryRoles
     // fade out currentlyActiveActivites
     db.prepare('UPDATE dbversion SET version = 2').run();
+    dbVersion = 2;
   }
 
   //TODO: add bot version?
