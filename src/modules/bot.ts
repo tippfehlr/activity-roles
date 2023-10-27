@@ -72,11 +72,17 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: (
-              db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
-                'COUNT(*)': number;
-              }
-            )['COUNT(*)']
+            count:
+              (
+                db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
+                  'COUNT(*)': number;
+                }
+              )['COUNT(*)'] +
+              (
+                db.prepare('SELECT COUNT(*) FROM statusRoles').get() as {
+                  'COUNT(*)': number;
+                }
+              )['COUNT(*)']
           }),
           type: ActivityType.Watching
         }

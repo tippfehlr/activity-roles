@@ -16,7 +16,10 @@ export default {
       embeds: [
         new EmbedBuilder().setColor(config.COLOR).setDescription(
           __(
-            { phrase: 'The bot currently serves **%s** and manages **%s** for **%s**.', locale },
+            {
+              phrase: 'The bot currently serves **%s** and manages **%s** and **%s** for **%s**.',
+              locale
+            },
             i18n.__n({
               singular: '%s guild',
               plural: '%s guilds',
@@ -24,16 +27,28 @@ export default {
               count: interaction.client.guilds.cache.size
             }),
             i18n.__n({
-              singular: '%s role',
-              plural: '%s roles',
+              singular: '%s activity role',
+              plural: '%s activity roles',
               locale,
-              count: (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
+              count: (
+                db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number }
+              )['COUNT(*)']
+            }),
+            i18n.__n({
+              singular: '%s status role',
+              plural: '%s status roles',
+              locale,
+              count: (
+                db.prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number }
+              )['COUNT(*)']
             }),
             i18n.__n({
               singular: '%s user',
               plural: '%s users',
               locale,
-              count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+              count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
+                'COUNT(*)'
+              ]
             })
           )
         )
