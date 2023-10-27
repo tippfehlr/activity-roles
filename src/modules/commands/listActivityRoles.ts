@@ -1,10 +1,11 @@
-import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
+import { ActivityType, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from 'discord.js';
 import { table } from 'table';
 import fs from 'fs';
 
-import { db, DBActivityRole, getLang } from '../db';
+import { db, DBActivityRole, DBStatusRole, getLang } from '../db';
 import { Command } from '../commandHandler';
-import { __, __h_dc } from '../messages';
+import { __, __h_dc, getEnumKey } from '../messages';
+import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()
@@ -39,7 +40,7 @@ export default {
       array.push([
         String(Number(i) + 1),
         interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-        ` <@&${res[i].roleID}>`,
+          ` <@&${res[i].roleID}>`,
         res[i].activityName,
         String(Boolean(res[i].exactActivityName)),
         String(Boolean(res[i].live))
@@ -50,8 +51,25 @@ export default {
         return index === 0 || index === 1 || index === array.length;
       }
     });
+
+    // ------------ status roles ------------
+
+    let statusRoles = '';
+    (
+      db
+        .prepare('SELECT * FROM statusRoles WHERE guildID = ?')
+        .all(interaction.guildId) as DBStatusRole[]
+    ).forEach(statusRole => {
+      statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;
+    });
     fs.writeFileSync(interaction.id + '.txt', response);
     await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle(__({ phrase: 'Status Roles', locale }))
+          .setDescription(statusRoles)
+          .setColor(config.COLOR)
+      ],
       files: [interaction.id + '.txt']
     });
     fs.unlinkSync(interaction.id + '.txt');
