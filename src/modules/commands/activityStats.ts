@@ -37,12 +37,13 @@ export default {
       for (const activity of activityStats) {
         activities += activity.activityName + '\n';
       }
-      fs.writeFileSync('activities.txt', activities);
+      const filename = `activities-${interaction.id.substring(0, 7)}.txt`;
+      fs.writeFileSync(filename, activities);
       await interaction.reply({
         content: __({ phrase: 'Activities (sorted by frequency):', locale }),
-        files: ['activities.txt']
+        files: [filename]
       });
-      fs.unlinkSync('activities.txt');
+      fs.unlinkSync(filename);
     }
   }
 } as Command;

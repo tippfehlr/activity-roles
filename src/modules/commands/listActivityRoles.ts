@@ -62,7 +62,8 @@ export default {
     ).forEach(statusRole => {
       statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;
     });
-    fs.writeFileSync(interaction.id + '.txt', response);
+    const filename = `listActivityRoles-${interaction.id.substring(0, 7)}.txt`;
+    fs.writeFileSync(filename, response);
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
@@ -70,8 +71,8 @@ export default {
           .setDescription(statusRoles)
           .setColor(config.COLOR)
       ],
-      files: [interaction.id + '.txt']
+      files: [filename]
     });
-    fs.unlinkSync(interaction.id + '.txt');
+    fs.unlinkSync(filename);
   }
 } as Command;

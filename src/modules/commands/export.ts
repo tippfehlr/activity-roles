@@ -52,7 +52,7 @@ export default {
       output += '\n';
     }
 
-    const filename = interaction.id.substring(0, 7) + '.txt';
+    const filename = `export-${interaction.id.substring(0, 7)}.txt`;
     fs.writeFileSync(filename, output);
     await interaction.reply({
       files: [filename]
