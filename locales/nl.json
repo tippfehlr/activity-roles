@@ -95,5 +95,14 @@
   },
   "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
   "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
-  "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)"
+  "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
+  "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
+  "the event the user must have to receive the role": "the event the user must have to receive the role",
+  "Playing": "Playing",
+  "Streaming": "Streaming",
+  "Listening": "Listening",
+  "Watching": "Watching",
+  "Custom": "Custom",
+  "Competing": "Competing",
+  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option"
 }

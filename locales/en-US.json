@@ -25,9 +25,13 @@
     "one": "%s user",
     "other": "%s users"
   },
-  "%s role": {
-    "one": "%s role",
-    "other": "%s roles"
+  "%s activity role": {
+    "one": "%s activity role",
+    "other": "%s activity roles"
+  },
+  "%s status role": {
+    "one": "%s status role",
+    "other": "%s status roles"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** for **%s**.",
   "Commands": "Commands",
@@ -95,5 +99,20 @@
   "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
   "batchaddactivityrole": "batchaddactivityrole",
   "Adds many activity roles to your guild.": "Adds many activity roles to your guild.",
-  "No activity stats found.": "No activity stats found."
+  "No activity stats found.": "No activity stats found.",
+  "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
+  "the event the user must have to receive the role": "the event the user must have to receive the role",
+  "Playing": "Playing",
+  "Streaming": "Streaming",
+  "Listening": "Listening",
+  "Watching": "Watching",
+  "Custom": "Custom",
+  "Competing": "Competing",
+  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
+  "The status role for **%s** is now <@&%s>!": "The status role for **%s** is now <@&%s>!",
+  "the status role for **%s** already is <@&%s>!": "the status role for **%s** already is <@&%s>!",
+  "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
+  "There is no status role set for **%s**": "There is no status role set for **%s**",
+  "Status Roles": "Status Roles",
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**."
 }
