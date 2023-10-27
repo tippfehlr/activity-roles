@@ -60,6 +60,7 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
  - Tillmann Taute **[German]**
  - ZamestoTV **[Russian]**
  - @.onepunch. **[Ukrainian]**
+ - @deflanko
 
 If I forgot you, please let me know!
 
