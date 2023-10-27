@@ -9,11 +9,10 @@ import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('listactivityroles')
-    .setDescription('Lists all activity roles in your guild.')
-    .setDescriptionLocalizations(__h_dc('Lists all activity roles in your guild.'))
-    .setDMPermission(false)
-    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
+    .setName('listroles')
+    .setDescription('Lists all managed roles in your guild.')
+    .setDescriptionLocalizations(__h_dc('Lists all managed roles in your guild.'))
+    .setDMPermission(false),
 
   execute: async interaction => {
     const locale = getLang(interaction);
@@ -21,37 +20,35 @@ export default {
     const res: DBActivityRole[] = db
       .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
       .all(interaction.guild!.id) as DBActivityRole[];
+    let activityRolesTable = '';
     if (res.length === 0) {
-      interaction.reply({
-        content: __({ phrase: 'There are no activity roles in this guild.', locale })
-      });
-      return;
-    }
-    const array = [
-      [
-        '#',
-        __({ phrase: 'Role', locale }),
-        __({ phrase: 'Activity', locale }),
-        __({ phrase: 'Exact Activity Name', locale }),
-        __({ phrase: 'Live', locale })
-      ]
-    ];
-    for (const i in res) {
-      array.push([
-        String(Number(i) + 1),
-        interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-          ` <@&${res[i].roleID}>`,
-        res[i].activityName,
-        String(Boolean(res[i].exactActivityName)),
-        String(Boolean(res[i].live))
-      ]);
-    }
-    const response = table(array, {
-      drawHorizontalLine: (index: number) => {
-        return index === 0 || index === 1 || index === array.length;
+      activityRolesTable = __({ phrase: 'There are no activity roles in this guild.', locale });
+    } else {
+      const array = [
+        [
+          '#',
+          __({ phrase: 'Role', locale }),
+          __({ phrase: 'Activity', locale }),
+          __({ phrase: 'Exact Activity Name', locale }),
+          __({ phrase: 'Live', locale })
+        ]
+      ];
+      for (const i in res) {
+        array.push([
+          String(Number(i) + 1),
+          interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
+            ` <@&${res[i].roleID}>`,
+          res[i].activityName,
+          String(Boolean(res[i].exactActivityName)),
+          String(Boolean(res[i].live))
+        ]);
       }
-    });
-
+      activityRolesTable = table(array, {
+        drawHorizontalLine: (index: number) => {
+          return index === 0 || index === 1 || index === array.length;
+        }
+      });
+    }
     // ------------ status roles ------------
 
     let statusRoles = '';
@@ -62,8 +59,11 @@ export default {
     ).forEach(statusRole => {
       statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;
     });
+    if (statusRoles === '') {
+      statusRoles = __({ phrase: 'There are no status roles in this guild', locale });
+    }
     const filename = `listActivityRoles-${interaction.id.substring(0, 7)}.txt`;
-    fs.writeFileSync(filename, response);
+    fs.writeFileSync(filename, activityRolesTable);
     await interaction.reply({
       embeds: [
         new EmbedBuilder()

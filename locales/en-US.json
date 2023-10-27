@@ -114,5 +114,11 @@
   "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
   "There is no status role set for **%s**": "There is no status role set for **%s**",
   "Status Roles": "Status Roles",
-  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**."
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.",
+  "Lists all managed roles in your guild.": "Lists all managed roles in your guild.",
+  "%s role": {
+    "one": "%s role",
+    "other": "%s roles"
+  },
+  "There are no status roles in this guild": "There are no status roles in this guild"
 }

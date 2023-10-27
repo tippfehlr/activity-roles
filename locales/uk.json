@@ -104,5 +104,6 @@
   "Watching": "Watching",
   "Custom": "Custom",
   "Competing": "Competing",
-  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option"
+  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
+  "Lists all managed roles in your guild.": "Lists all managed roles in your guild."
 }
