@@ -147,7 +147,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   });
 
   for (const activity of addedActivities) {
-    addActivity(guildID, activity.name);
+    if (activity.name !== 'Custom Status') addActivity(guildID, activity.name);
   }
 
   const statusRoles = getStatusRoles(guildID);

@@ -90,7 +90,7 @@ export function prepareDB() {
     db.prepare('INSERT INTO dbversion (version) VALUES (1)').run();
   }
 
-  const latestDBVersion = 2;
+  const latestDBVersion = 3;
   let dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
 
   if (dbVersion === 1) {
@@ -99,6 +99,11 @@ export function prepareDB() {
     // fade out currentlyActiveActivites
     db.prepare('UPDATE dbversion SET version = 2').run();
     dbVersion = 2;
+  }
+  if (dbVersion === 2) {
+    db.prepare("DELETE FROM activityStats WHERE activityName = 'Custom Status'").run();
+    db.prepare('UPDATE dbversion SET version = 3').run();
+    dbVersion = 3;
   }
 
   //TODO: add bot version?
