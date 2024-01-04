@@ -32,14 +32,6 @@ export default {
       let commandDescription = command.data.description_localizations
         ? command.data.description_localizations[locale]
         : command.data.description;
-      // if (command.requiredPermissions) {
-      //   commandDescription += `\nRequired Permissions: ${command.requiredPermissions
-      //     .map(permission => `\`${permission}\``)
-      //     .join(', ')}`;
-      // }
-      // if (command.guildOnly) {
-      //   commandDescription += '\nCan only be used in a guild';
-      // }
 
       command.data.options.forEach(option => {
         const name_localizations = option.toJSON().name_localizations;
