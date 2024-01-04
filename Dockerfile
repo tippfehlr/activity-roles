@@ -38,4 +38,5 @@ RUN yarn install --prod
 
 COPY --from=build /activity-roles/out src
 
+VOLUME ["/activity-roles/db"]
 ENTRYPOINT ["node", "src/index.js"]
