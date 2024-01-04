@@ -91,7 +91,7 @@ export default {
       (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
       false;
     const live: boolean =
-      (interaction.options.get('live', false)?.value as boolean | undefined) ?? false;
+      (interaction.options.get('live', false)?.value as boolean | undefined) ?? true;
     let role = interaction.options.get('role', false)?.role;
     if (!role) {
       // role not provided
