@@ -40,20 +40,18 @@ export default {
       // if (command.guildOnly) {
       //   commandDescription += '\nCan only be used in a guild';
       // }
+
       command.data.options.forEach(option => {
-        const option_description_localization = option.toJSON().description_localizations;
-        const option_name_localization = option.toJSON().name_localizations;
-        commandDescription += `\`\n${
-          option_name_localization ? option_name_localization[locale] : option.toJSON().name
-        }\`: ${
-          option_description_localization
-            ? option_description_localization[locale]
-            : option.toJSON().description
-        }`;
+        const name_localizations = option.toJSON().name_localizations;
+        const description_localizations = option.toJSON().description_localizations;
+        const name = name_localizations ? name_localizations[locale] : option.toJSON().name;
+        const description = description_localizations ? description_localizations[locale] : option.toJSON().description
+        commandDescription += `\n\`${name}\`: ${description}`;
       });
-      //@ts-ignore
-      commandEmbed.addFields({ name: commandName, value: commandDescription });
+
+      commandEmbed.addFields({ name: commandName, value: commandDescription! });
     });
+
     interaction.reply({
       files: ['./img/discord-header.png'],
       embeds: [
