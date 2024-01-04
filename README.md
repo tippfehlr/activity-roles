@@ -10,6 +10,7 @@ Support/Suggestions: <https://discord.gg/3K9Yx4ufN7>.
 Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 ---
+
 **Now with `/statusrole`!** \
 Assign roles based only on the status.
 Every person playing could have the role `@playing`, for example.
