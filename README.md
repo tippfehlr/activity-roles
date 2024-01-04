@@ -5,9 +5,19 @@
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
 ---
-A Discord bot for automatic role assignment based on activities.  
-Support/Suggestions: <https://discord.gg/3K9Yx4ufN7>.  
-Inspired by [Game Roles](https://top.gg/bot/511010215290863636).
+A Discord bot for automatic role assignment based on activities. \
+Please join the [support guild](https://discord.gg/3K9Yx4ufN7>) for the latest updates and infos. \
+Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
+
+⭐ star me up!
+
+---
+
+I don’t use the bot myself. If you want to speed up development or help
+me pay the server, please consider supporting me.
+
+<iframe src="https://github.com/sponsors/tippfehlr/button" title="Sponsor tippfehlr" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+<a href='https://ko-fi.com/Z8Z7SYDDJ' target='_blank'><img height='36' style='padding-left:1em;border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ---
 
@@ -33,8 +43,8 @@ Further help is available via the `/help` command and in the support server.
 
 ## Privacy
 
-User IDs are only stored as a sha256 hash to allow users to disable the bot for them.  
-No activity data ist stored.
+User IDs are only stored as a sha256 hash to allow users to disable the bot for them. \
+No activity data is stored.
 
 ## Contribution
 
@@ -51,7 +61,7 @@ Available translations:
 [![Brazilian Portuguese translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Brazilian%20Portuguese&style=for-the-badge&logo=crowdin&query=%24.progress.3.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/pt-BR)
 [![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)
 [![Russian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Russian&style=for-the-badge&logo=crowdin&query=%24.progress.4.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085-update.json)](https://crowdin.com/project/activity-roles/ru)
-[![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=uk&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk)  
+[![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=uk&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk) \
 Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
