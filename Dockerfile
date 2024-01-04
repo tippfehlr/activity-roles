@@ -7,8 +7,8 @@ COPY package.json /tmp
 
 RUN jq '{ dependencies, devDependencies }' < /tmp/package.json > /tmp/deps.json
 
-FROM --platform=$BUILDPLATFORM node:19-alpine AS build
 
+FROM --platform=$BUILDPLATFORM node:current-alpine AS build
 WORKDIR /activity-roles/
 
 RUN apk add python3 make g++
@@ -24,8 +24,8 @@ COPY src src
 RUN tsc --outDir out/
 
 
-FROM node:19-alpine AS release
 
+FROM node:current-alpine AS release
 WORKDIR /activity-roles/
 RUN apk add python3 make g++
 
