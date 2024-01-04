@@ -56,53 +56,46 @@ export default {
             text:
               config.AUTHOR === config.HOSTER_NAME
                 ? __({ phrase: 'Made and hosted by %s', locale }, config.AUTHOR)
-                : __(
-                    { phrase: 'Made by %s and hosted by %s', locale },
-                    config.AUTHOR,
-                    config.HOSTER_NAME
-                  ),
+                : __({ phrase: 'Made by %s and hosted by %s', locale }, config.AUTHOR, config.HOSTER_NAME),
             iconURL: config.AUTHOR_LOGO_LINK
           })
           .setDescription(
+            __({ phrase: 'A Discord bot for automatic role assignment based on activities.\n', locale }) +
+            __({ phrase: 'Support/Suggestions: %s\n', locale }, 'https://discord.gg/3K9Yx4ufN7') +
+            __({ phrase: 'GitHub: %s\n', locale }, 'https://github.com/tippf3hlr/activity-roles/') +
+            __({ phrase: 'Contact: %s\n\n', locale }, 'tippfehlr#3575 | tippfehlr@gmail.com') +
             __({
-              phrase: 'A Discord bot for automatic role assignment based on activities.\n',
+              phrase:
+                'If you add an activity role with `/addactivityrole`, ' +
+                'the bot will start looking for activities with the specified name. ' +
+                'If a user starts an activity with that name, ' +
+                'the bot will add the role to the user.\n',
               locale
             }) +
-              __({ phrase: 'Support/Suggestions: %s\n', locale }, 'https://discord.gg/3K9Yx4ufN7') +
-              __(
-                { phrase: 'GitHub: %s\n', locale },
-                'https://github.com/tippf3hlr/activity-roles/'
-              ) +
-              __({ phrase: 'Contact: %s\n\n', locale }, 'tippfehlr#3575 | tippfehlr@gmail.com') +
-              __({
-                phrase:
-                  'If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n',
-                locale
-              }) +
-              __({
-                phrase:
-                  'If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n',
-                locale
-              }) +
-              __({
-                phrase: 'If it is true, the activity must match exactly and case-sensitively.\n',
-                locale
-              }) +
-              __({
-                phrase:
-                  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n",
-                locale
-              }) +
-              __({
-                phrase: '**The bot will not remove any roles that were added manually.**',
-                locale
-              })
+            __({
+              phrase:
+                'If `exact_activity_name` is set to false, the activity ' +
+                'name `Chrome` would also trigger for `Google Chrome`.\n',
+              locale
+            }) +
+            __({ phrase: 'If it is true, the activity must match exactly and case-sensitively.\n', locale }) +
+            __({
+              phrase:
+                'If you set `live` to true, the bot will remove the ' +
+                'role from users who got the role from the bot and ' +
+                " don't have the activity anymore.\n",
+              locale
+            }) +
+            __({ phrase: '**The bot will not remove any roles that were added manually.**', locale })
           )
           .addFields({
             name: __({ phrase: 'Thanks', locale }),
             value: __(
               { phrase: '%s\nIf I forgot you, please let me know!', locale },
-              '@eianlee, @umkrampus **[Brasilian Portuguese]**, @RstY_CZ#2033 **[Czech]**, @dangerbeclose **[Dutch]**, @skyykc#0218, @money143, Hugo Moreira#4306, Tillmann Taute **[German]**, ZamestoTV **[Russian]**, @.onepunch. **[Ukrainian]**, @deflanko'
+              '@eianlee, @umkrampus **[Brasilian Portuguese]**, @RstY_CZ#2033 ' +
+              '**[Czech]**, @dangerbeclose **[Dutch]**, @skyykc#0218, ' +
+              ' @money143, Hugo Moreira#4306, Tillmann Taute **[German]**, ' +
+              'ZamestoTV **[Russian]**, @.onepunch. **[Ukrainian]**, @deflanko'
             )
           }),
         commandEmbed
