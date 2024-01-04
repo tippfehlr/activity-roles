@@ -38,4 +38,4 @@ RUN yarn install --prod
 
 COPY --from=build /activity-roles/out src
 
-CMD ["node", "src/index.js"]
+ENTRYPOINT ["node", "src/index.js"]
