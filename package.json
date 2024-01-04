@@ -3,7 +3,6 @@
   "description": "A Discord bot that gives roles to users based on their Discord presence",
   "version": "1.9.0",
   "main": "src/index.ts",
-  "test": "src/tests",
   "license": "AGPL-3.0",
   "author": "tippfehlr",
   "repository": {
@@ -13,23 +12,19 @@
   "dependencies": {
     "better-sqlite3": "^9.0.0",
     "discord.js": "^14.13.0",
-    "dotenv": "^16.3.1",
     "i18n": "^0.15.1",
     "pino": "^8.16.1",
     "pino-pretty": "^10.2.3",
-    "table": "^6.8.1",
-    "yarn": "^1.22.19"
+    "table": "^6.8.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.6",
-    "@types/command-line-args": "^5.2.2",
     "@types/i18n": "^0.13.8",
     "@types/node": "^20.8.9",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
-    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
