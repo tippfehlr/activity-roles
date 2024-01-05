@@ -34,9 +34,9 @@ export default {
     }
 
     /*
-    Import is: ActivityName,ExactActivityNaime,Live,RoleName,RoleColor, so we can import on another server
+    Import is: ActivityName,ExactActivityNaime,Permanent,RoleName,RoleColor, so we can import on another server
     */
-    let output = '# ActivityName,\tmode,\ttemporary,\tRoleName,\tRoleColor';
+    let output = '# ActivityName,\tmode,\tpermanent,\tRoleName,\tRoleColor';
     if (roleIDs) output += '\t# RoleID';
     output += '\n\n';
 
@@ -45,7 +45,7 @@ export default {
       output +=
         activityRole.activityName +
         `,\t${activityRole.exactActivityName}` +
-        `,\t${activityRole.live}` +
+        `,\t${Number(!activityRole.live)}` +
         `,\t\t${role?.name}` +
         `,\t${role?.hexColor}`;
       if (roleIDs) output += `  \t# ${activityRole.roleID}`;

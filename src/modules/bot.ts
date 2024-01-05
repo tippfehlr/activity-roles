@@ -96,10 +96,8 @@ client.on(Events.ClientReady, () => {
     `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${
-      (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
-    } users and manages ${
-      (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
+    } users and manages ${(db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
     } roles`
   );
 
@@ -192,12 +190,12 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
           userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
         ))
     ) {
-      addRole(activityRole.roleID, Boolean(activityRole.live));
+      addRole(activityRole.roleID, !activityRole.live);
     }
   });
 
   // ------------ “apply changes” ------------
-  const addDiscordRoleToMember = (roleID: string, temporary: boolean) => {
+  const addDiscordRoleToMember = (roleID: string, permanent: boolean) => {
     const role = newMember.guild?.roles.cache.get(roleID);
     if (!role) {
       db.prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
@@ -209,7 +207,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     }
     if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
     if (newMember.member?.roles.cache.has(role.id)) return;
-    if (temporary) {
+    if (!permanent) {
       db.prepare(
         'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
       ).run(userIDHash, guildID, roleID);

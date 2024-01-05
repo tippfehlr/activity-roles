@@ -66,26 +66,13 @@ export default {
             __({ phrase: 'Contact: %s\n\n', locale }, '@tippfehlr | tippfehlr@gmail.com') +
             __({
               phrase:
-                'If you add an activity role with `/addactivityrole`, ' +
-                'the bot will start looking for activities with the specified name. ' +
-                'If a user starts an activity with that name, ' +
-                'the bot will add the role to the user.\n',
+                "Add an activity role with `/addactivityrole`. " +
+                "By default, the bot will be removed when the user stops the activity.\n" +
+                "If you set `permanent` to true, the bot will not remove the role.\n" +
+                "`exact_activity_name` can be set to true if you get false-positives.\n",
               locale
             }) +
-            __({
-              phrase:
-                'If `exact_activity_name` is set to false, the activity ' +
-                'name `Chrome` would also trigger for `Google Chrome`.\n',
-              locale
-            }) +
-            __({ phrase: 'If it is true, the activity must match exactly and case-sensitively.\n', locale }) +
-            __({
-              phrase:
-                'If you set `live` to true, the bot will remove the ' +
-                'role from users who got the role from the bot and ' +
-                " don't have the activity anymore.\n",
-              locale
-            }) +
+            __({ phrase: "Set a status role with /setstatusrole!\n", locale }) +
             __({ phrase: '**The bot will not remove any roles that were added manually.**', locale })
           ),
         commandEmbed

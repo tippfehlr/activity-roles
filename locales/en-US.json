@@ -3,7 +3,6 @@
   "the name of the discord activity": "the name of the discord activity",
   "If not provided, the bot will look for roles with the same name or create a new one": "If not provided, the bot will look for roles with the same name or create a new one",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
-  "live": "live",
   "Should the bot remove the role again when the activity stops?": "Should the bot remove the role again when the activity stops?",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Deletes an activity role from your guild. Provide the activity or the role, or both.",
   "the activity roles with this name will be deleted": "the activity roles with this name will be deleted",
@@ -40,10 +39,6 @@
   "Support/Suggestions: %s\n": "Support/Suggestions: %s\n",
   "GitHub: %s\n": "GitHub: %s\n",
   "Contact: %s\n\n": "Contact: %s\n\n",
-  "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n": "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n",
-  "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n": "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n",
-  "If it is true, the activity must match exactly and case-sensitively.\n": "If it is true, the activity must match exactly and case-sensitively.\n",
-  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n": "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n",
   "**The bot will not remove any roles that were added manually.**": "**The bot will not remove any roles that were added manually.**",
   "Thanks": "Thanks",
   "%s\nIf I forgot you, please let me know!": "%s\nIf I forgot you, please let me know!",
@@ -55,7 +50,6 @@
   "Activity": "Activity",
   "Role": "Role",
   "Exact Activity Name": "Exact Activity Name",
-  "Live": "Live",
   "Deleted Activity Roles:": "Deleted Activity Roles:",
   "Languages": "Languages",
   "If you want to help translating the bot, you can do so at %s. Thanks!": "If you want to help translating the bot, you can do so at %s. Thanks!",
@@ -120,5 +114,11 @@
     "one": "%s role",
     "other": "%s roles"
   },
-  "There are no status roles in this guild": "There are no status roles in this guild"
+  "There are no status roles in this guild": "There are no status roles in this guild",
+  "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
+  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
+  "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
+  "Permanent": "Permanent",
+  "Yes": "Yes",
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
 }

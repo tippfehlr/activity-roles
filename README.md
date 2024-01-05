@@ -27,29 +27,32 @@ Every person playing could have the role `@playing`, for example.
 
 ---
 
-If you add an activity role with `/addactivityrole`, the bot will start
-looking for activities with the specified name.
-If a user starts an activity with that name, the bot will add the role to the user.
+## Configuration
 
-If `exact_activity_name` is set to false, the activity name `Chrome`
-would also trigger for `Google Chrome`. \
-If it is true, the activity must match exactly and case-sensitively.
-
-If you set `live` to true, the bot will remove the role from users who got
-the role from the bot and don't have the activity anymore. \
 **The bot will not remove any roles that were added manually.**
 
-Further help is available via the `/help` command and in the support server.
+To list all roles, use `/listroles`.
+
+### Activity Roles
+
+Add an activity role with `/addactivityrole`.
+By default, the bot will be removed when the user stops the activity. \
+If you set `permanent` to true, the bot will not remove the role.
+
+`exact_activity_name` can be set to true if you get false-positives.
+
+### Status Roles
+
+Set a status role with `/setstatusrole`.
 
 ## Privacy
 
-User IDs are only stored as a sha256 hash to allow users to disable the bot for them. \
+User IDs are stored as sha256 hash. \
 No activity data is stored.
 
 ## Contribution
-
-Contribution is highly appreciated. Feel free to join the support/suggestions
-server and open an issue or pull request.
+Contribution is highly appreciated. Feel free to join the support
+guild or open an issue or pull request.
 
 ### Translation
 

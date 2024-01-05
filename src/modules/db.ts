@@ -60,6 +60,7 @@ export function prepareDB() {
   if (!fs.existsSync('db')) fs.mkdirSync('db');
   db = new sqlite3('db/activity-roles.db');
 
+  // live -> permanent: the database was not updated on purpose.
   // enforcer: see https://stackoverflow.com/a/3010975/16292720 (comment 4)
   db.prepare(
     'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))'

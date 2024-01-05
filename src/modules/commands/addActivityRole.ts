@@ -61,7 +61,7 @@ export default {
     )
     .addBooleanOption(option =>
       option
-        .setName('live')
+        .setName('permanent')
         .setDescription('Should the bot remove the role again when the activity stops?')
         .setDescriptionLocalizations(
           __h_dc('Should the bot remove the role again when the activity stops?')
@@ -87,11 +87,10 @@ export default {
       });
       return;
     }
-    const exactActivityName: boolean =
-      (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
-      false;
-    const live: boolean =
-      (interaction.options.get('live', false)?.value as boolean | undefined) ?? true;
+
+    const exactActivityName = (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ?? false;
+    const permanent = (interaction.options.get('permanent', false)?.value as boolean | undefined) ?? false;
+
     let role = interaction.options.get('role', false)?.role;
     if (!role) {
       // role not provided
@@ -101,11 +100,11 @@ export default {
       if (!possibleRoles || possibleRoles.size === 0) {
         // create role
         role = await createRole(interaction, activityName);
-        process(interaction, role, activityName, exactActivityName, live, locale);
+        process(interaction, role, activityName, exactActivityName, permanent, locale);
       } else if (possibleRoles.size === 1) {
         // use role
         role = possibleRoles.first()!;
-        process(interaction, role, activityName, exactActivityName, live, locale);
+        process(interaction, role, activityName, exactActivityName, permanent, locale);
       } else {
         // select role
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
@@ -150,7 +149,7 @@ export default {
                 null;
             }
             if (role) {
-              process(selectMenuInteraction, role, activityName, exactActivityName, live, locale);
+              process(selectMenuInteraction, role, activityName, exactActivityName, permanent, locale);
             }
           });
         interaction.reply({
@@ -159,7 +158,7 @@ export default {
         });
       }
     } else {
-      process(interaction, role, activityName, exactActivityName, live, locale);
+      process(interaction, role, activityName, exactActivityName, permanent, locale);
     }
   }
 } as Command;
@@ -189,7 +188,7 @@ function process(
   role: Role | APIRole,
   activityName: string,
   exactActivityName: boolean,
-  live: boolean,
+  permanent: boolean,
   locale: Locale
 ) {
   if (!role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
@@ -252,10 +251,10 @@ function process(
       activityName,
       role.id,
       Number(exactActivityName),
-      Number(live)
+      Number(!permanent)
     );
     log.info(
-      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, live mode: ${live}`
+      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}`
     );
     reply(interaction, undefined, [
       new EmbedBuilder()
@@ -269,8 +268,8 @@ function process(
             value: exactActivityName ? __('Yes') : __('No')
           },
           {
-            name: __({ phrase: 'Live', locale }),
-            value: live ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale })
+            name: __({ phrase: 'Permanent', locale }),
+            value: permanent ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale })
           }
         )
     ]);

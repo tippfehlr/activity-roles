@@ -3,7 +3,6 @@
   "the name of the discord activity": "назва активності discord",
   "If not provided, the bot will look for roles with the same name or create a new one": "Якщо не вказано, бот шукатиме ролі з такою ж назвою або створить нову",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Якщо значення false, назва активності 'Chrome' також спрацьовуватиме для 'Google Chrome'",
-  "live": "онлайн",
   "Should the bot remove the role again when the activity stops?": "Чи повинен бот знову видаляти роль, коли активність припиняється?",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Видаляє роль активності з вашого сервера. Вкажіть вид активності або роль, або і те, й інше.",
   "the activity roles with this name will be deleted": "ролі активності з такою назвою буде видалено",
@@ -13,6 +12,7 @@
   "Shows the help menu": "Показує меню допомоги",
   "Sets the language of the bot": "Встановити мову бота",
   "sets the language for the guild": "встановлює мову для сервера\n",
+  "sets the language for the user. Overwrites the guild language.": "встановлює мову для користувача. Перезаписує мову сервера.",
   "Lists all activity roles in your guild.": "Показує всі ролі активності у вашому сервері.",
   "Shows some stats about the bot.": "Показує деяку статистику про бота.",
   "Enable/Disable automatic role assignment": "Увімкнути / Вимкнути автоматичне призначення ролей",
@@ -24,9 +24,13 @@
     "one": "%s користувач",
     "other": "%s користувачі"
   },
-  "%s role": {
-    "one": "%s роль",
-    "other": "%s ролі"
+  "%s activity role": {
+    "one": "%s activity role",
+    "other": "%s activity roles"
+  },
+  "%s status role": {
+    "one": "%s status role",
+    "other": "%s status roles"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "Наразі бот обслуговує **%s** і керує **%s** для **%s**.",
   "Commands": "Команди",
@@ -35,10 +39,6 @@
   "Support/Suggestions: %s\n": "Підтримка / Пропозиції: %s\n",
   "GitHub: %s\n": "GitHub: %s\n",
   "Contact: %s\n\n": "Контакт: %s\n\n",
-  "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n": "Якщо ви додасте роль активності за допомогою `/addactivityrole`, бот почне шукати активності з вказаною назвою. Якщо користувач почне активність з такою назвою, бот додасть роль користувачеві.\n",
-  "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n": "Якщо `exact_activity_name` встановлено у false, то для `Google Chrome` також спрацьовуватиме назва активності `Chrome`.\n",
-  "If it is true, the activity must match exactly and case-sensitively.\n": "Якщо true, то активність повинна точно відповідати назві та регістру букв.\n",
-  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n": "Якщо ви встановите `live` в true, бот видалить роль у користувачів, які отримали роль від бота і більше не мають активності.\n",
   "**The bot will not remove any roles that were added manually.**": "**Бот не видаляє ролі, що були додані вручну.**",
   "Thanks": "Дякую",
   "%s\nIf I forgot you, please let me know!": "%s\nЯкщо я вас забув, будь ласка, дайте мені знати!",
@@ -50,7 +50,6 @@
   "Activity": "Активність",
   "Role": "Роль",
   "Exact Activity Name": "Точна назва активності",
-  "Live": "Діючий",
   "Deleted Activity Roles:": "Видалені ролі активності:",
   "Languages": "Мови",
   "If you want to help translating the bot, you can do so at %s. Thanks!": "Якщо ви хочете допомогти перекласти бота, ви можете зробити це за допомогою %s. Дякуємо!",
@@ -86,24 +85,40 @@
   "Users need to have %s in order to receive Activity Roles.": "Користувачі повинні мати %s, щоб отримати ролі активності.",
   "%s is already set as the required role.": "%s вже встановлено як необхідну роль.",
   "Users now need to have %s in order to receive Activity Roles.": "Тепер користувачі повинні мати %s, щоб отримати ролі активності.",
-  "No activity roles were deleted.": "Жодної ролі активності не видалено.",
-  "Yes": "Так",
-  "sets the language for the user": {
-    " Overwrites the guild language": {
-      "": "встановлює мову для користувача. Перезаписує мову сервера."
-    }
-  },
-  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
-  "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
+  "activitystats": "activitystats",
+  "Shows a list of activities that have been recorded in your guild.": "Показує список активностей, які були записані у вашому сервері.",
+  "Shows a list of activities in this guild.": "Показує список активностей на цьому сервері.",
+  "Activities (sorted by frequency):": "Активності (відсортовано за частотою):",
+  "roleids": "roleids",
   "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
-  "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
-  "the event the user must have to receive the role": "the event the user must have to receive the role",
-  "Playing": "Playing",
-  "Streaming": "Streaming",
-  "Listening": "Listening",
-  "Watching": "Watching",
-  "Custom": "Custom",
+  "batchaddactivityrole": "batchaddactivityrole",
+  "Adds many activity roles to your guild.": "Додає до вашого сервера багато ролей активності.",
+  "No activity stats found.": "Статистики активності не знайдено.",
+  "role to assign on LISTENING/WATCHING/etc.": "роль для призначення на СЛУХАЄ/ДИВИТЬСЯ/тощо.",
+  "the event the user must have to receive the role": "подія, яка повинна відбутися, щоб користувач отримав роль",
+  "Playing": "Грає",
+  "Streaming": "Транслює",
+  "Listening": "Слухає",
+  "Watching": "Дивиться",
+  "Custom": "Кастом",
   "Competing": "Competing",
   "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
-  "Lists all managed roles in your guild.": "Lists all managed roles in your guild."
+  "The status role for **%s** is now <@&%s>!": "The status role for **%s** is now <@&%s>!",
+  "the status role for **%s** already is <@&%s>!": "the status role for **%s** already is <@&%s>!",
+  "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
+  "There is no status role set for **%s**": "There is no status role set for **%s**",
+  "Status Roles": "Статус Ролі",
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "Наразі бот обслуговує **%s** і керує **%s** та **%s** для **%s**.",
+  "Lists all managed roles in your guild.": "Lists all managed roles in your guild.",
+  "%s role": {
+    "one": "%s role",
+    "other": "%s roles"
+  },
+  "There are no status roles in this guild": "There are no status roles in this guild",
+  "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
+  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
+  "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
+  "Permanent": "Permanent",
+  "Yes": "Yes",
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
 }

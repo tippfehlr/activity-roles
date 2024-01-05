@@ -3,7 +3,6 @@
   "the name of the discord activity": "Název Discord aktivity",
   "If not provided, the bot will look for roles with the same name or create a new one": "Pokud není zadáno, bot bude hledat role se stejným názvem nebo vytvoří novou roli",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Pokud je nastaveno False, název aktivity \"Chrome\" bude brát v potaz i aktivitu 'Google Chrome'",
-  "live": "live",
   "Should the bot remove the role again when the activity stops?": "Pokud je nastaveno True, bot odebere roli, když aktivita skončí",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Odstraní aktivitu z tvého serveru. Zadej aktivitu nebo roli nebo obojí.",
   "the activity roles with this name will be deleted": "role aktivity s tímto názvem budou odstraněny",
@@ -13,6 +12,7 @@
   "Shows the help menu": "Zobrazit nabídku nápovědy",
   "Sets the language of the bot": "Nastaví jazyk bota",
   "sets the language for the guild": "Nastav jazyk pro server",
+  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
   "Lists all activity roles in your guild.": "Seznam všech rolí aktivity na serveru",
   "Shows some stats about the bot.": "Zobrazí statistiky bota",
   "Enable/Disable automatic role assignment": "Povolit/zakázat automatické přiřazení rolí",
@@ -24,9 +24,13 @@
     "one": "%s uživatel",
     "other": "%s uživatelů"
   },
-  "%s role": {
-    "one": "%s role",
-    "other": "%s rolí"
+  "%s activity role": {
+    "one": "%s activity role",
+    "other": "%s activity roles"
+  },
+  "%s status role": {
+    "one": "%s status role",
+    "other": "%s status roles"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "Bot aktuálně slouží **%s** a spravuje **%s** pro **%s**.",
   "Commands": "Příkazy",
@@ -35,10 +39,6 @@
   "Support/Suggestions: %s\n": "Podpora/návrhy: %s\n",
   "GitHub: %s\n": "GitHub: %s\n",
   "Contact: %s\n\n": "Kontakt: %s\n\n",
-  "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n": "Přidáte-li roli aktivity pomocí `/addactivityrole`, bot začne hledat aktivity se zadaným názvem. Pokud uživatel spustí aktivitu s tímto názvem, bot přidá roli uživateli.\n",
-  "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n": "Je-li `exact_activity_name` nastaveno na hodnotu false, název aktivity \"Chrome\" bude brát v potaz i aktivitu 'Google Chrome'\n",
-  "If it is true, the activity must match exactly and case-sensitively.\n": "Je-li `exact_activity_name` nastaveno na hodnotu True, aktivita se musí přesně shodovat! včetně malých a velkých písmen\n",
-  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n": "Pokud nastavíte `live` na true, bot odebere přiřazenou roli uživateli, pokud skončí jeho aktivita\n",
   "**The bot will not remove any roles that were added manually.**": "**Bot neodstraní žádné role, které byly přidány ručně. **",
   "Thanks": "Děkuji",
   "%s\nIf I forgot you, please let me know!": "%s\nPokud jsem na vás zapomněl, dejte mi prosím vědět!",
@@ -50,7 +50,6 @@
   "Activity": "Aktivita",
   "Role": "Role",
   "Exact Activity Name": "Přesný název aktivity",
-  "Live": "Live",
   "Deleted Activity Roles:": "Odstraněné role aktivity:",
   "Languages": "Jazyk",
   "If you want to help translating the bot, you can do so at %s. Thanks!": "Pokud chcete pomoci s překladem bota, můžete tak učinit na %s. Děkujeme!",
@@ -86,16 +85,15 @@
   "Users need to have %s in order to receive Activity Roles.": "Uživatelé nyní potřebují %s aby mohli přijímat role aktivity.",
   "%s is already set as the required role.": "%s je již nastaven jako povinná role.",
   "Users now need to have %s in order to receive Activity Roles.": "Uživatelé nyní potřebují %s aby mohli přijímat role aktivity.",
-  "No activity roles were deleted.": "Žádné role aktivity nebyly odstraněny.",
-  "Yes": "Ano",
-  "sets the language for the user": {
-    " Overwrites the guild language": {
-      "": "nastaví jazyk pro uživatele. Přepište jazyk serveru."
-    }
-  },
-  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
+  "activitystats": "activitystats",
+  "Shows a list of activities that have been recorded in your guild.": "Shows a list of activities that have been recorded in your guild.",
   "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
+  "Activities (sorted by frequency):": "Activities (sorted by frequency):",
+  "roleids": "roleids",
   "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
+  "batchaddactivityrole": "batchaddactivityrole",
+  "Adds many activity roles to your guild.": "Adds many activity roles to your guild.",
+  "No activity stats found.": "No activity stats found.",
   "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
   "the event the user must have to receive the role": "the event the user must have to receive the role",
   "Playing": "Playing",
@@ -105,5 +103,22 @@
   "Custom": "Custom",
   "Competing": "Competing",
   "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
-  "Lists all managed roles in your guild.": "Lists all managed roles in your guild."
+  "The status role for **%s** is now <@&%s>!": "The status role for **%s** is now <@&%s>!",
+  "the status role for **%s** already is <@&%s>!": "the status role for **%s** already is <@&%s>!",
+  "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
+  "There is no status role set for **%s**": "There is no status role set for **%s**",
+  "Status Roles": "Status Roles",
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.",
+  "Lists all managed roles in your guild.": "Lists all managed roles in your guild.",
+  "%s role": {
+    "one": "%s role",
+    "other": "%s roles"
+  },
+  "There are no status roles in this guild": "There are no status roles in this guild",
+  "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
+  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
+  "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
+  "Permanent": "Permanent",
+  "Yes": "Yes",
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
 }

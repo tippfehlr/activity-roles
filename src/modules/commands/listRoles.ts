@@ -30,17 +30,17 @@ export default {
           __({ phrase: 'Role', locale }),
           __({ phrase: 'Activity', locale }),
           __({ phrase: 'Exact Activity Name', locale }),
-          __({ phrase: 'Live', locale })
+          __({ phrase: 'Permanent', locale })
         ]
       ];
       for (const i in res) {
         array.push([
           String(Number(i) + 1),
           interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-            ` <@&${res[i].roleID}>`,
+          ` <@&${res[i].roleID}>`,
           res[i].activityName,
           String(Boolean(res[i].exactActivityName)),
-          String(Boolean(res[i].live))
+          String(!Boolean(res[i].live))
         ]);
       }
       activityRolesTable = table(array, {

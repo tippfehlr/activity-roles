@@ -3,7 +3,6 @@
   "the name of the discord activity": "der Name der Discord-Aktivität",
   "If not provided, the bot will look for roles with the same name or create a new one": "Wenn nicht gegeben, wird der Bot Rollen mit dem gleichen Namen suchen oder eine neue erstellen",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Wenn falsch, wird für die Aktivität 'Chrome' auch die Rolle für 'Google Chrome' vergeben",
-  "live": "live",
   "Should the bot remove the role again when the activity stops?": "Soll der Bot die Rolle wieder entfernen, wenn die Aktivität beendet ist?",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Löscht eine Aktivitätsrolle. Gib die Aktivität, die Rolle oder beides an.",
   "the activity roles with this name will be deleted": "the activity roles with this name will be deleted",
@@ -13,6 +12,7 @@
   "Shows the help menu": "Zeigt das Hilfe-Menü",
   "Sets the language of the bot": "Setzt die Sprache des Bots",
   "sets the language for the guild": "setzt die Sprache für die Gilde",
+  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
   "Lists all activity roles in your guild.": "Listet alle Aktivitätsrollen in deiner Gilde auf.",
   "Shows some stats about the bot.": "Zeigt Statistiken über den Bot.",
   "Enable/Disable automatic role assignment": "Enable/Disable automatic role assignment",
@@ -24,9 +24,13 @@
     "one": "%s user",
     "other": "%s users"
   },
-  "%s role": {
-    "one": "%s Rolle",
-    "other": "%s Rollen"
+  "%s activity role": {
+    "one": "%s activity role",
+    "other": "%s activity roles"
+  },
+  "%s status role": {
+    "one": "%s status role",
+    "other": "%s status roles"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** for **%s**.",
   "Commands": "Befehle",
@@ -35,10 +39,6 @@
   "Support/Suggestions: %s\n": "Support/Suggestions: %s\n",
   "GitHub: %s\n": "GitHub: %s\n",
   "Contact: %s\n\n": "Kontakt: %s\n\n",
-  "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n": "If you add an activity role with `/addactivityrole`, the bot will start looking for activities with the specified name. If a user starts an activity with that name, the bot will add the role to the user.\n",
-  "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n": "If `exact_activity_name` is set to false, the activity name `Chrome` would also trigger for `Google Chrome`.\n",
-  "If it is true, the activity must match exactly and case-sensitively.\n": "If it is true, the activity must match exactly and case-sensitively.\n",
-  "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n": "If you set `live` to true, the bot will remove the role from users who got the role from the bot and don't have the activity anymore.\n",
   "**The bot will not remove any roles that were added manually.**": "**Der Bot wird keine Rollen entfernen, die manuell hinzugefügt wurden.**",
   "Thanks": "Thanks",
   "%s\nIf I forgot you, please let me know!": "%s\nIf I forgot you, please let me know!",
@@ -50,7 +50,6 @@
   "Activity": "Activity",
   "Role": "Role",
   "Exact Activity Name": "Exact Activity Name",
-  "Live": "Live",
   "Deleted Activity Roles:": "Deleted Activity Roles:",
   "Languages": "Sprachen",
   "If you want to help translating the bot, you can do so at %s. Thanks!": "If you want to help translating the bot, you can do so at %s. Thanks!",
@@ -86,16 +85,15 @@
   "Users need to have %s in order to receive Activity Roles.": "Users need to have %s in order to receive Activity Roles.",
   "%s is already set as the required role.": "%s is already set as the required role.",
   "Users now need to have %s in order to receive Activity Roles.": "Users now need to have %s in order to receive Activity Roles.",
-  "No activity roles were deleted.": "No activity roles were deleted.",
-  "Yes": "Ja",
-  "sets the language for the user": {
-    " Overwrites the guild language": {
-      "": "legt die Sprache des Benutzers fest. Überschreibt die Gildensprache."
-    }
-  },
-  "sets the language for the user. Overwrites the guild language.": "sets the language for the user. Overwrites the guild language.",
+  "activitystats": "activitystats",
+  "Shows a list of activities that have been recorded in your guild.": "Shows a list of activities that have been recorded in your guild.",
   "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
+  "Activities (sorted by frequency):": "Activities (sorted by frequency):",
+  "roleids": "roleids",
   "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
+  "batchaddactivityrole": "batchaddactivityrole",
+  "Adds many activity roles to your guild.": "Adds many activity roles to your guild.",
+  "No activity stats found.": "No activity stats found.",
   "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
   "the event the user must have to receive the role": "the event the user must have to receive the role",
   "Playing": "Playing",
@@ -105,5 +103,22 @@
   "Custom": "Custom",
   "Competing": "Competing",
   "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
-  "Lists all managed roles in your guild.": "Lists all managed roles in your guild."
+  "The status role for **%s** is now <@&%s>!": "The status role for **%s** is now <@&%s>!",
+  "the status role for **%s** already is <@&%s>!": "the status role for **%s** already is <@&%s>!",
+  "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
+  "There is no status role set for **%s**": "There is no status role set for **%s**",
+  "Status Roles": "Status Roles",
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.",
+  "Lists all managed roles in your guild.": "Lists all managed roles in your guild.",
+  "%s role": {
+    "one": "%s role",
+    "other": "%s roles"
+  },
+  "There are no status roles in this guild": "There are no status roles in this guild",
+  "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
+  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
+  "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
+  "Permanent": "Permanent",
+  "Yes": "Yes",
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
 }

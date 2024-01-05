@@ -17,5 +17,5 @@ Discord (@tippfehlr) or via Email (<tippfehlr@tippfehlr.eu>).
   currently enabling/disabling the bot for the user
 - When you add an Activity Role to your guild: the **guild id**,
   the **role id** of the role you provided, the **activity name**,
-  and the settings **exact activity** name and **live** ->
+  and the settings **exact_activity_name** and **permanent** ->
   for providing the core functionality of the bot.
