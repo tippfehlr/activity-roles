@@ -3,7 +3,6 @@
   "the name of the discord activity": "der Name der Discord-Aktivität",
   "If not provided, the bot will look for roles with the same name or create a new one": "Wenn nicht gegeben, wird der Bot Rollen mit dem gleichen Namen suchen oder eine neue erstellen",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Wenn falsch, wird für die Aktivität 'Chrome' auch die Rolle für 'Google Chrome' vergeben",
-  "Should the bot remove the role again when the activity stops?": "Soll der Bot die Rolle wieder entfernen, wenn die Aktivität beendet ist?",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Löscht eine Aktivitätsrolle. Gib die Aktivität, die Rolle oder beides an.",
   "the activity roles with this name will be deleted": "the activity roles with this name will be deleted",
   "the activity roles of this role will be deleted": "the activity roles of this role will be deleted",
@@ -120,5 +119,7 @@
   "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
   "Permanent": "Permanent",
   "Yes": "Yes",
-  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:",
+  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.",
+  "the role will not be removed again if set to true": "the role will not be removed again if set to true"
 }

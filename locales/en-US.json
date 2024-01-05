@@ -3,7 +3,6 @@
   "the name of the discord activity": "the name of the discord activity",
   "If not provided, the bot will look for roles with the same name or create a new one": "If not provided, the bot will look for roles with the same name or create a new one",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
-  "Should the bot remove the role again when the activity stops?": "Should the bot remove the role again when the activity stops?",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Deletes an activity role from your guild. Provide the activity or the role, or both.",
   "the activity roles with this name will be deleted": "the activity roles with this name will be deleted",
   "the activity roles of this role will be deleted": "the activity roles of this role will be deleted",
@@ -121,5 +120,6 @@
   "Permanent": "Permanent",
   "Yes": "Yes",
   ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:",
-  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me."
+  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.",
+  "the role will not be removed again if set to true": "the role will not be removed again if set to true"
 }

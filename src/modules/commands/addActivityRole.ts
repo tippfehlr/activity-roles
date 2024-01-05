@@ -62,9 +62,9 @@ export default {
     .addBooleanOption(option =>
       option
         .setName('permanent')
-        .setDescription('Should the bot remove the role again when the activity stops?')
+        .setDescription('the role will not be removed again if set to true')
         .setDescriptionLocalizations(
-          __h_dc('Should the bot remove the role again when the activity stops?')
+          __h_dc('the role will not be removed again if set to true')
         )
         .setRequired(false)
     ),
