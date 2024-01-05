@@ -120,5 +120,6 @@
   "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
   "Permanent": "Permanent",
   "Yes": "Yes",
-  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:"
+  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:",
+  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me."
 }

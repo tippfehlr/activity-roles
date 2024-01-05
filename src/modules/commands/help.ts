@@ -73,7 +73,9 @@ export default {
               locale
             }) +
             __({ phrase: "Set a status role with /setstatusrole!\n", locale }) +
-            __({ phrase: '**The bot will not remove any roles that were added manually.**', locale })
+            __({ phrase: '**The bot will not remove any roles that were added manually.**', locale }) + "\n\n" +
+            __({ phrase: "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.", locale }) + "\n" +
+            "https://github.com/sponsors/tippfehlr\nhttps://ko-fi.com/Z8Z7SYDDJ"
           ),
         commandEmbed
       ]
