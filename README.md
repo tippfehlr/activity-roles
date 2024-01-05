@@ -14,10 +14,7 @@ Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 ---
 
 I don’t use the bot myself. If you want to speed up development or help
-me pay the server, please consider supporting me.
-
-<iframe src="https://github.com/sponsors/tippfehlr/button" title="Sponsor tippfehlr" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
-<a href='https://ko-fi.com/Z8Z7SYDDJ' target='_blank'><img height='36' style='padding-left:1em;border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+me pay for the server, please consider supporting me ([GitHub Sponsors](https://github.com/sponsors/tippfehlr) or [Ko-fi](https://ko-fi.com/Z8Z7SYDDJ)).
 
 ---
 
