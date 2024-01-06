@@ -233,25 +233,18 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     }
   });
 
-  // remove temporary activites that no longer apply --- @deprecated: phase out currentlyActiveActivities and use activeTemporaryRoles
+  // @deprecated remove all roles still in currentlyActiveActivities
   (
     db
       .prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?')
       .all(userIDHash, guildID) as DBCurrentlyActiveActivity[]
   ).forEach(activeActivity => {
     activityRoles
-      .filter(activityRole => activityRole.activityName === activeActivity.activityName)
       .map(activityRole => activityRole.roleID)
       .forEach(roleID => {
-        if (permanentRoleIDsToBeAdded.has(roleID)) {
-          db.prepare(
-            'INSERT OR IGNORE INTO aciveTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
-          ).run(userIDHash, guildID, roleID);
-        } else {
-          const role = newMember.guild?.roles.cache.get(roleID);
-          if (role && newMember.member?.roles.cache.has(role.id)) {
-            newMember.member?.roles.remove(role);
-          }
+        const role = newMember.guild?.roles.cache.get(roleID);
+        if (role && newMember.member?.roles.cache.has(role.id)) {
+          newMember.member?.roles.remove(role);
         }
         db.prepare(
           'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?'
