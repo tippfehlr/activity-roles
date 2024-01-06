@@ -60,7 +60,7 @@ export function prepareDB() {
   if (!fs.existsSync('db')) fs.mkdirSync('db');
   db = new sqlite3('db/activity-roles.db');
 
-  // live -> permanent: the database was not updated on purpose.
+  // `v1.9.1` live -> permanent: the database was not updated on purpose.
   // enforcer: see https://stackoverflow.com/a/3010975/16292720 (comment 4)
   db.prepare(
     'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))'
@@ -87,12 +87,14 @@ export function prepareDB() {
     'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))'
   ).run();
 
-  if (!db.prepare('SELECT * FROM dbversion').get()) {
-    db.prepare('INSERT INTO dbversion (version) VALUES (1)').run();
-  }
-
   const latestDBVersion = 3;
-  let dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
+  let dbVersion = latestDBVersion;
+
+  if (!db.prepare('SELECT * FROM dbversion').get()) {
+    db.prepare('INSERT INTO dbversion (version) VALUES (?)').run(latestDBVersion);
+  } else {
+    dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
+  }
 
   if (dbVersion === 1) {
     // add status roles
