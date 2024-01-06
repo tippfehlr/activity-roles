@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.2](https://github.com/tippf3hlr/activity-roles/compare/v1.9.1...v1.9.2) (2024-01-06)
+
+
+### Bug Fixes
+
+* **commands/addactivityrole:** change description to match `permanent` ([d67a505](https://github.com/tippf3hlr/activity-roles/commit/d67a505e48ae497f3e6a0eb3a658cf8c4dc5f055))
+* set status roles to permanent=false ([5bfd2bd](https://github.com/tippf3hlr/activity-roles/commit/5bfd2bdff952f1a660e6bfd3fac21d938420e70f))
+* set the current dbversion in new databases ([0f6a907](https://github.com/tippf3hlr/activity-roles/commit/0f6a907f6514bb54041dce8fd88354618295b42d))
+
 ## [1.9.1](https://github.com/tippf3hlr/activity-roles/compare/v1.9.0...v1.9.1) (2024-01-05)
 
 
