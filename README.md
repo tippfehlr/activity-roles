@@ -9,8 +9,6 @@ A Discord bot for automatic role assignment based on activities. \
 Please join the [support guild](https://discord.gg/3K9Yx4ufN7>) for the latest updates and infos. \
 Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
-⭐ star me up!
-
 ---
 
 I don’t use the bot myself. If you want to speed up development or help
