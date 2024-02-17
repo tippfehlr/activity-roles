@@ -22,6 +22,9 @@ const AUTHOR_LOGO_LINK = 'https://drive.google.com/uc?id=1c-jP8Znqm72U2kEhoOdP-D
 const AUTHOR = 'tippfehlr#3575';
 const GUILD: string | false = process.env.GUILD || false;
 
+const INFLUX_URL = process.env.INFLUX_URL;
+const INFLUX_TOKEN = process.env.INFLUX_TOKEN;
+
 export default {
   TOKEN: TOKEN as string,
   APPLICATION_ID: APPLICATION_ID as string,
@@ -31,5 +34,7 @@ export default {
   SUPPORT_GUILD_LINK,
   AUTHOR_LOGO_LINK,
   AUTHOR,
-  GUILD
+  GUILD,
+  INFLUX_URL,
+  INFLUX_TOKEN,
 };

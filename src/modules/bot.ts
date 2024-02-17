@@ -7,13 +7,16 @@ import {
   addActivity,
   db,
   getActivityRoles,
+  getDBUserCount,
   getGuildConfig,
+  getRolesCount,
   getStatusRoles,
   getUserConfig
 } from './db';
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
+import { configureInfluxDB } from './metrics';
 
 export const client = new Discord.Client({
   intents: [
@@ -26,7 +29,21 @@ export const client = new Discord.Client({
 
 export let commandHandler: CommandHandler;
 
+
+const zeroStats = {
+  presenceUpdates: 0,
+  missingAccess: 0,
+  rolesAdded: 0,
+  rolesRemoved: 0,
+  webSocketErrors: 0
+};
+export function resetStats() {
+  stats = zeroStats;
+}
+export let stats = zeroStats;
+
 client.on(Events.ClientReady, () => {
+  configureInfluxDB();
   commandHandler = new CommandHandler(client);
   const setActivityGuilds = () => {
     client.user?.setPresence({
@@ -54,9 +71,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
-              'COUNT(*)'
-            ]
+            count: getDBUserCount()
           }),
           type: ActivityType.Watching
         }
@@ -72,17 +87,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count:
-              (
-                db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
-                  'COUNT(*)': number;
-                }
-              )['COUNT(*)'] +
-              (
-                db.prepare('SELECT COUNT(*) FROM statusRoles').get() as {
-                  'COUNT(*)': number;
-                }
-              )['COUNT(*)']
+            count: getRolesCount()
           }),
           type: ActivityType.Watching
         }
@@ -96,9 +101,7 @@ client.on(Events.ClientReady, () => {
     `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${(db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)']
-    } users and manages ${(db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)']
-    } roles`
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${getDBUserCount()} users and manages ${getRolesCount()} roles`
   );
 
   const activityCountInCurrentlyActiveActivities = (
@@ -116,9 +119,11 @@ client.on(Events.ClientReady, () => {
 });
 
 client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
+  stats.presenceUpdates++;
   if (!newMember.guild) return;
   const guildID = newMember.guild.id;
   if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+    stats.missingAccess++;
     log.warn(
       `MISSING ACCESS: Guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`
     );
@@ -214,6 +219,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       ).run(userIDHash, guildID, roleID);
     }
     newMember.member?.roles.add(role);
+    stats.rolesAdded++;
   };
   permanentRoleIDsToBeAdded.forEach(roleID => {
     addDiscordRoleToMember({ roleID, permanent: true });
@@ -230,6 +236,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       db.prepare(
         'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?'
       ).run(newMember.guild?.id, userIDHash, activeTemporaryRole.roleID);
+      stats.rolesRemoved++;
     }
   });
 
@@ -249,6 +256,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         db.prepare(
           'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?'
         ).run(userIDHash, guildID, activeActivity.activityName);
+        stats.rolesRemoved++;
       });
   });
 });
@@ -260,9 +268,10 @@ client.on(Events.GuildCreate, guild => {
 
 client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name} (${guild.id})`));
 
-client.on(Events.Error, error =>
+client.on(Events.Error, error => {
   log.error(error, 'The Discord WebSocket has encountered an error')
-);
+  stats.webSocketErrors++;
+});
 
 client.on(Events.GuildRoleDelete, async role => {
   db.prepare('DELETE FROM activityRoles WHERE roleID = ? AND guildID = ?').run(

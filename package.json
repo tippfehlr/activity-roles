@@ -10,6 +10,7 @@
     "url": "https://github.com/tippf3hlr/activity-roles.git"
   },
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.33.2",
     "better-sqlite3": "^9.0.0",
     "discord.js": "^14.13.0",
     "i18n": "^0.15.1",

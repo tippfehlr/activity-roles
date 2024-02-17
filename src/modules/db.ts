@@ -158,3 +158,32 @@ export async function addActivity(guildID: string, activityName: string) {
     'INSERT INTO activityStats VALUES (?, ?, ?) ON CONFLICT(guildID, activityName) DO UPDATE SET count = count + 1'
   ).run(guildID, activityName, 1);
 }
+
+export function getDBUserCount(): number {
+  return (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)'];
+}
+
+export function getDBActivityRoleCount(): number {
+  return (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
+}
+
+export function getDBStatusRoleCount(): number {
+  return (db.prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
+}
+
+export function getDBCurrentlyActiveActivityCount(): number {
+  return (db.prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number })['COUNT(*)'];
+}
+
+export function getRolesCount(): number {
+  return (
+    db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
+      'COUNT(*)': number;
+    }
+  )['COUNT(*)'] +
+    (
+      db.prepare('SELECT COUNT(*) FROM statusRoles').get() as {
+        'COUNT(*)': number;
+      }
+    )['COUNT(*)']
+}
