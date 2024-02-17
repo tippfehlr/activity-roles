@@ -1,0 +1,13 @@
+version: "3"
+services:
+  activity-roles:
+    image: tippfehlr/activity-roles
+    environment:
+      TOKEN: your-discord-token
+      APPLICATION_ID: your-application-id
+      HOSTER_NAME: your-username-here
+      INFLUX_URL: your-influx-url-here # optional
+      INFLUX_TOKEN: your-influx-token-here # optional
+      restart: unless-stopped
+    volumes:
+      - ./db:/activity-roles/db
