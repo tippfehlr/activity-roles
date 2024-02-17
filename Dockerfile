@@ -17,8 +17,7 @@ RUN tsc --outDir out/
 
 FROM node:current-alpine AS release
 WORKDIR /activity-roles/
-RUN apk add python3 make g++ openssl ca-certificates
-RUN update-ca-certificates
+RUN apk add python3 make g++
 COPY img/discord-header.png img/discord-header.png
 COPY locales locales
 COPY yarn.lock .

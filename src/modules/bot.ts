@@ -30,7 +30,7 @@ export const client = new Discord.Client({
 export let commandHandler: CommandHandler;
 
 
-const zeroStats = {
+export const stats = {
   presenceUpdates: 0,
   missingAccess: 0,
   rolesAdded: 0,
@@ -38,9 +38,12 @@ const zeroStats = {
   webSocketErrors: 0
 };
 export function resetStats() {
-  stats = zeroStats;
+  stats.presenceUpdates = 0;
+  stats.missingAccess = 0;
+  stats.rolesAdded = 0;
+  stats.rolesRemoved = 0;
+  stats.webSocketErrors = 0;
 }
-export let stats = zeroStats;
 
 client.on(Events.ClientReady, () => {
   configureInfluxDB();
