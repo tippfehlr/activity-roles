@@ -22,6 +22,8 @@ export async function configureInfluxDB() {
 
     writeIntPoint('process', 'started', 1);
     setInterval(() => {
+      const startTime = performance.now();
+
       writeIntPoint('presence_updates', 'presence_updates', botStats.presenceUpdates);
       writeIntPoint('missing_access', 'missing_access', botStats.missingAccess);
       writeIntPoint('roles_added', 'roles_added', botStats.rolesAdded);
@@ -35,9 +37,20 @@ export async function configureInfluxDB() {
           .intField('users_db_total', getDBUserCount())
       );
       writeIntPoint('db', 'calls', dbStats.dbCalls);
+      const ram = process.memoryUsage();
+      writeApi.writePoint(
+        new Point('memory')
+          .intField('rss', ram.rss)
+          .intField('heap_total', ram.heapTotal)
+          .intField('heap_used', ram.heapUsed)
+          .intField('external', ram.external)
+          .intField('array_buffers', ram.arrayBuffers)
+      );
 
       resetBotStats();
       resetDBStats();
+
+      writeIntPoint('metrics', 'time_ms', performance.now() - startTime);
     }, 1000);
 
     process.on('exit', () => {
