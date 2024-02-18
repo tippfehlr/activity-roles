@@ -1,5 +1,5 @@
 import { __h_dc } from './../messages';
-import { db, DBActivityRole, getLang } from '../db';
+import { DBActivityRole, getLang, prepare } from '../db';
 import { log, __ } from '../messages';
 
 import { Command } from '../commandHandler';
@@ -93,12 +93,11 @@ export default {
             case 'deleteactivityrole:confirm':
               process(
                 int,
-                db
-                  .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
+                prepare('SELECT * FROM activityRoles WHERE guildID = ?')
                   .all(interaction.guildId) as DBActivityRole[],
                 locale
               );
-              db.prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
+              prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
               break;
             case 'deleteactivityrole:cancel':
               int.update({ content: __({ phrase: 'Cancelled', locale }), components: [] });
@@ -117,38 +116,35 @@ export default {
     } else if (role && !activity) {
       process(
         interaction,
-        db
-          .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
+        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
           .all(interaction.guildId, role.id) as DBActivityRole[],
         locale
       );
-      db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
+      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
         interaction.guildId,
         role.id
       );
     } else if (!role && activity) {
       process(
         interaction,
-        db
-          .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?')
+        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?')
           .all(interaction.guildId, activity) as DBActivityRole[],
         locale
       );
-      db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
+      prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
         interaction.guildId,
         activity
       );
     } else if (role && activity) {
       process(
         interaction,
-        db
-          .prepare(
-            'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
-          )
+        prepare(
+          'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
+        )
           .all(interaction.guildId, role.id, activity) as DBActivityRole[],
         locale
       );
-      db.prepare(
+      prepare(
         'DELETE FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
       ).run(interaction.guildId, role.id, activity);
     }

@@ -1,8 +1,8 @@
-import { ActivityType, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from 'discord.js';
+import { ActivityType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { table } from 'table';
 import fs from 'fs';
 
-import { db, DBActivityRole, DBStatusRole, getLang } from '../db';
+import { prepare, DBActivityRole, DBStatusRole, getLang } from '../db';
 import { Command } from '../commandHandler';
 import { __, __h_dc, getEnumKey } from '../messages';
 import config from '../config';
@@ -17,9 +17,9 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const res: DBActivityRole[] = db
-      .prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-      .all(interaction.guild!.id) as DBActivityRole[];
+    const res: DBActivityRole[] =
+      prepare('SELECT * FROM activityRoles WHERE guildID = ?')
+        .all(interaction.guild!.id) as DBActivityRole[];
     let activityRolesTable = '';
     if (res.length === 0) {
       activityRolesTable = __({ phrase: 'There are no activity roles in this guild.', locale });
@@ -40,7 +40,7 @@ export default {
           ` <@&${res[i].roleID}>`,
           res[i].activityName,
           String(Boolean(res[i].exactActivityName)),
-          String(!Boolean(res[i].live))
+          String(!res[i].live)
         ]);
       }
       activityRolesTable = table(array, {
@@ -53,8 +53,7 @@ export default {
 
     let statusRoles = '';
     (
-      db
-        .prepare('SELECT * FROM statusRoles WHERE guildID = ?')
+      prepare('SELECT * FROM statusRoles WHERE guildID = ?')
         .all(interaction.guildId) as DBStatusRole[]
     ).forEach(statusRole => {
       statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;

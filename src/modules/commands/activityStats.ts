@@ -1,7 +1,7 @@
 import { PermissionsBitField, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import fs from 'fs';
 
-import { db, DBActivityStats, getLang } from '../db';
+import { DBActivityStats, getLang, prepare } from '../db';
 import { Command } from '../commandHandler';
 import config from '../config';
 import { __, __h_dc } from '../messages';
@@ -17,9 +17,9 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const activityStats = db
-      .prepare('SELECT * FROM activityStats WHERE guildID = ?')
-      .all(interaction.guildId!) as DBActivityStats[];
+    const activityStats =
+      prepare('SELECT * FROM activityStats WHERE guildID = ?')
+        .all(interaction.guildId!) as DBActivityStats[];
 
     if (activityStats.length === 0) {
       interaction.reply({

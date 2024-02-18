@@ -1,4 +1,4 @@
-import { db, getLang, getUserConfig } from './../db';
+import { prepare, getLang, getUserConfig } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, __h_dc } from '../messages';
@@ -42,7 +42,7 @@ export default {
         ]
       });
     } else {
-      db.prepare('UPDATE users SET autoRole = ? WHERE userIDHash = ?').run(
+      prepare('UPDATE users SET autoRole = ? WHERE userIDHash = ?').run(
         Number(autoRole),
         interaction.user.id
       );

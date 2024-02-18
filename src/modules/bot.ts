@@ -5,13 +5,13 @@ import {
   DBActiveTemporaryRoles,
   DBCurrentlyActiveActivity,
   addActivity,
-  db,
   getActivityRoles,
   getDBUserCount,
   getGuildConfig,
   getRolesCount,
   getStatusRoles,
-  getUserConfig
+  getUserConfig,
+  prepare
 } from './db';
 import config from './config';
 import { i18n, log } from './messages';
@@ -108,7 +108,7 @@ client.on(Events.ClientReady, () => {
   );
 
   const activityCountInCurrentlyActiveActivities = (
-    db.prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as any
+    prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as any
   )['COUNT(*)'];
   if (activityCountInCurrentlyActiveActivities > 0) {
     log.info(
@@ -159,9 +159,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   const statusRoles = getStatusRoles(guildID);
   const activityRoles = getActivityRoles(guildID);
-  const activeTemporaryRoles = db
-    .prepare('SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?')
-    .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
+  const activeTemporaryRoles =
+    prepare('SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?')
+      .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
 
   if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
     return;
@@ -207,17 +207,17 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const addDiscordRoleToMember = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
     const role = newMember.guild?.roles.cache.get(roleID);
     if (!role) {
-      db.prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
+      prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
         newMember.guild?.id,
         roleID
       );
-      db.prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
+      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
       return;
     }
     if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
     if (newMember.member?.roles.cache.has(role.id)) return;
     if (!permanent) {
-      db.prepare(
+      prepare(
         'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
       ).run(userIDHash, guildID, roleID);
     }
@@ -236,7 +236,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
       const role = newMember.guild?.roles.cache.get(activeTemporaryRole.roleID);
       if (role) newMember.member?.roles.remove(role);
-      db.prepare(
+      prepare(
         'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?'
       ).run(newMember.guild?.id, userIDHash, activeTemporaryRole.roleID);
       stats.rolesRemoved++;
@@ -245,8 +245,8 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   // @deprecated remove all roles still in currentlyActiveActivities
   (
-    db
-      .prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?')
+
+    prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?')
       .all(userIDHash, guildID) as DBCurrentlyActiveActivity[]
   ).forEach(activeActivity => {
     activityRoles
@@ -256,7 +256,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         if (role && newMember.member?.roles.cache.has(role.id)) {
           newMember.member?.roles.remove(role);
         }
-        db.prepare(
+        prepare(
           'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?'
         ).run(userIDHash, guildID, activeActivity.activityName);
         stats.rolesRemoved++;
@@ -277,7 +277,7 @@ client.on(Events.Error, error => {
 });
 
 client.on(Events.GuildRoleDelete, async role => {
-  db.prepare('DELETE FROM activityRoles WHERE roleID = ? AND guildID = ?').run(
+  prepare('DELETE FROM activityRoles WHERE roleID = ? AND guildID = ?').run(
     role.id,
     role.guild.id
   );

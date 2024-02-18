@@ -4,7 +4,7 @@ import {
   CommandInteraction,
   EmbedBuilder
 } from 'discord.js';
-import { db, getGuildConfig, getLang } from './../db';
+import { prepare, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
 import { __, __h_dc } from '../messages';
 import config from '../config';
@@ -55,7 +55,7 @@ export default {
           ]
         });
       } else {
-        db.prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
+        prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
           role.id === interaction.guild?.roles.everyone.id ? null : role.id,
           interaction.guildId!
         );
