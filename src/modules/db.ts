@@ -54,7 +54,21 @@ export interface DBVersion {
   enforcer: 0;
 }
 
-export let db: sqlite3.Database;
+let db: sqlite3.Database;
+
+export const stats = {
+  dbCalls: 0,
+}
+
+export function resetStats() {
+  stats.dbCalls = 0;
+}
+
+export function prepare(query: string) {
+  stats.dbCalls++;
+  return db.prepare(query);
+}
+
 
 export function prepareDB() {
   if (!fs.existsSync('db')) fs.mkdirSync('db');
@@ -62,50 +76,50 @@ export function prepareDB() {
 
   // `v1.9.1` live -> permanent: the database was not updated on purpose.
   // enforcer: see https://stackoverflow.com/a/3010975/16292720 (comment 4)
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT, requiredRoleID TEXT)'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS statusRoles (guildID TEXT, type INTEGER, roleID TEXT, PRIMARY KEY (guildID, type, roleID))'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userIDHash TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userIDHash, guildID, activityName))'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS activeTemporaryRoles (userIDHash, guildID TEXT, roleID TEXT, PRIMARY KEY (userIDHash, guildID, roleID))'
   ).run();
-  db.prepare(
+  prepare(
     'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))'
   ).run();
 
   const latestDBVersion = 3;
   let dbVersion = latestDBVersion;
 
-  if (!db.prepare('SELECT * FROM dbversion').get()) {
-    db.prepare('INSERT INTO dbversion (version) VALUES (?)').run(latestDBVersion);
+  if (!prepare('SELECT * FROM dbversion').get()) {
+    prepare('INSERT INTO dbversion (version) VALUES (?)').run(latestDBVersion);
   } else {
-    dbVersion = (db.prepare('SELECT * FROM dbversion').get() as DBVersion).version;
+    dbVersion = (prepare('SELECT * FROM dbversion').get() as DBVersion).version;
   }
 
   if (dbVersion === 1) {
     // add status roles
     // add activeTemporaryRoles
     // fade out currentlyActiveActivites
-    db.prepare('UPDATE dbversion SET version = 2').run();
+    prepare('UPDATE dbversion SET version = 2').run();
     dbVersion = 2;
   }
   if (dbVersion === 2) {
-    db.prepare("DELETE FROM activityStats WHERE activityName = 'Custom Status'").run();
-    db.prepare('UPDATE dbversion SET version = 3').run();
+    prepare("DELETE FROM activityStats WHERE activityName = 'Custom Status'").run();
+    prepare('UPDATE dbversion SET version = 3').run();
     dbVersion = 3;
   }
 
@@ -121,16 +135,16 @@ export function prepareDB() {
 
 export function getUserConfig(userID: string): DBUser {
   const userIDHash = createHash('sha256').update(userID).digest('base64');
-  const user = db.prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
+  const user = prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
   if (user) return user;
-  db.prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
+  prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
   return { userIDHash: userIDHash, autoRole: 1, language: 'none' };
 }
 
 export function getGuildConfig(guildID: string): DBGuild {
-  const guild = db.prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
+  const guild = prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
   if (guild) return guild;
-  db.prepare('INSERT INTO guilds VALUES (?, ?, NULL)').run(guildID, 'en-US');
+  prepare('INSERT INTO guilds VALUES (?, ?, NULL)').run(guildID, 'en-US');
   return { guildID: guildID, language: 'en-US' as Locale, requiredRoleID: null };
 }
 
@@ -141,7 +155,7 @@ export function getActivityRoles(guildID: string): DBActivityRole[] {
 }
 
 export function getStatusRoles(guildID: string): DBStatusRole[] {
-  return db.prepare('SELECT * FROM statusRoles WHERE guildID = ?').all(guildID) as DBStatusRole[];
+  return prepare('SELECT * FROM statusRoles WHERE guildID = ?').all(guildID) as DBStatusRole[];
 }
 
 export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): Locale {
@@ -154,35 +168,35 @@ export function getLang(interaction: CommandInteraction | StringSelectMenuIntera
 }
 
 export async function addActivity(guildID: string, activityName: string) {
-  db.prepare(
+  prepare(
     'INSERT INTO activityStats VALUES (?, ?, ?) ON CONFLICT(guildID, activityName) DO UPDATE SET count = count + 1'
   ).run(guildID, activityName, 1);
 }
 
 export function getDBUserCount(): number {
-  return (db.prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
 export function getDBActivityRoleCount(): number {
-  return (db.prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
 export function getDBStatusRoleCount(): number {
-  return (db.prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
 export function getDBCurrentlyActiveActivityCount(): number {
-  return (db.prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
 export function getRolesCount(): number {
   return (
-    db.prepare('SELECT COUNT(*) FROM activityRoles').get() as {
+    prepare('SELECT COUNT(*) FROM activityRoles').get() as {
       'COUNT(*)': number;
     }
   )['COUNT(*)'] +
     (
-      db.prepare('SELECT COUNT(*) FROM statusRoles').get() as {
+      prepare('SELECT COUNT(*) FROM statusRoles').get() as {
         'COUNT(*)': number;
       }
     )['COUNT(*)']

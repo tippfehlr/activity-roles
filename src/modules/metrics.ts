@@ -5,8 +5,8 @@ import { client as discordClient } from './bot';
 import config from './config';
 import { log } from './messages';
 
-import { stats, resetStats } from './bot';
-import { getDBUserCount, getRolesCount } from './db';
+import { stats as botStats, resetStats as resetBotStats } from './bot';
+import { getDBUserCount, getRolesCount, stats as dbStats, resetStats as resetDBStats } from './db';
 
 export let client: InfluxDB;
 export let writeApi: WriteApi;
@@ -22,11 +22,11 @@ export async function configureInfluxDB() {
 
     writeIntPoint('process', 'started', 1);
     setInterval(() => {
-      writeIntPoint('presence_updates', 'presence_updates', stats.presenceUpdates);
-      writeIntPoint('missing_access', 'missing_access', stats.missingAccess);
-      writeIntPoint('roles_added', 'roles_added', stats.rolesAdded);
-      writeIntPoint('roles_removed', 'roles_removed', stats.rolesRemoved);
-      writeIntPoint('web_socket_errors', 'web_socket_errors', stats.webSocketErrors);
+      writeIntPoint('presence_updates', 'presence_updates', botStats.presenceUpdates);
+      writeIntPoint('missing_access', 'missing_access', botStats.missingAccess);
+      writeIntPoint('roles_added', 'roles_added', botStats.rolesAdded);
+      writeIntPoint('roles_removed', 'roles_removed', botStats.rolesRemoved);
+      writeIntPoint('web_socket_errors', 'web_socket_errors', botStats.webSocketErrors);
       writeIntPoint('guilds', 'guilds_total', discordClient.guilds.cache.size);
       writeIntPoint('roles', 'roles_count', getRolesCount());
       writeApi.writePoint(
@@ -34,8 +34,10 @@ export async function configureInfluxDB() {
           .intField('users_cache_total', discordClient.users.cache.size)
           .intField('users_db_total', getDBUserCount())
       );
+      writeIntPoint('db', 'calls', dbStats.dbCalls);
 
-      resetStats();
+      resetBotStats();
+      resetDBStats();
     }, 1000);
 
     process.on('exit', () => {

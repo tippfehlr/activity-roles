@@ -19,7 +19,7 @@ import {
 import { Command } from '../commandHandler';
 import config from '../config';
 import { log, __ } from '../messages';
-import { db, getLang } from '../db';
+import { prepare, getLang } from '../db';
 
 export default {
   data: new SlashCommandBuilder()
@@ -236,8 +236,7 @@ function process(
     return;
   }
   if (
-    db
-      .prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?')
+    prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?')
       .get(interaction.guild!.id, role.id, activityName)
   ) {
     reply(
@@ -246,7 +245,7 @@ function process(
     );
     return;
   } else {
-    db.prepare('INSERT INTO activityRoles VALUES (?, ?, ?, ?, ?)').run(
+    prepare('INSERT INTO activityRoles VALUES (?, ?, ?, ?, ?)').run(
       interaction.guild!.id,
       activityName,
       role.id,

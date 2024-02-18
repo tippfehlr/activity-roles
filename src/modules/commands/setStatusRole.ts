@@ -1,8 +1,8 @@
-import { DBStatusRole, db, getLang, getUserConfig } from './../db';
+import { DBStatusRole, prepare, getLang } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, __h_dc, getEnumKey } from '../messages';
-import { ActivityType, Colors, EmbedBuilder, SlashCommandBuilder, codeBlock } from 'discord.js';
+import { ActivityType, Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('setstatusrole')
@@ -37,9 +37,9 @@ export default {
     const type = Number(interaction.options.get('event')?.value) as number;
     const typeString = getEnumKey(ActivityType, type);
     const role = interaction.options.get('role')?.role;
-    const currentStatusRole = db
-      .prepare('SELECT * FROM statusRoles WHERE guildID = ? and type = ?')
-      .get(interaction.guildId, type) as DBStatusRole | undefined;
+    const currentStatusRole =
+      prepare('SELECT * FROM statusRoles WHERE guildID = ? and type = ?')
+        .get(interaction.guildId, type) as DBStatusRole | undefined;
 
     if (role) {
       if (currentStatusRole && role.id === currentStatusRole.roleID) {
@@ -62,13 +62,13 @@ export default {
         });
       } else {
         if (currentStatusRole) {
-          db.prepare('UPDATE statusRoles SET roleID = ? WHERE guildID = ? AND type = ? ').run(
+          prepare('UPDATE statusRoles SET roleID = ? WHERE guildID = ? AND type = ? ').run(
             role.id,
             interaction.guildId,
             type
           );
         } else {
-          db.prepare('INSERT INTO statusRoles (guildID, type, roleID) VALUES (?, ?, ?)').run(
+          prepare('INSERT INTO statusRoles (guildID, type, roleID) VALUES (?, ?, ?)').run(
             interaction.guildId,
             type,
             role.id
@@ -94,7 +94,7 @@ export default {
       }
     } else {
       if (currentStatusRole) {
-        db.prepare('DELETE FROM statusRoles WHERE guildID = ? AND type = ?').run(
+        prepare('DELETE FROM statusRoles WHERE guildID = ? AND type = ?').run(
           interaction.guildId,
           type
         );

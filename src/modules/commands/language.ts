@@ -1,7 +1,7 @@
 import { getEnumKey, i18n, __h_dc } from './../messages';
 import { Locale, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../commandHandler';
-import { db, getGuildConfig, getLang, getUserConfig } from '../db';
+import { prepare, getGuildConfig, getLang, getUserConfig } from '../db';
 import { __ } from '../messages';
 import config from '../config';
 import { createHash } from 'crypto';
@@ -117,7 +117,7 @@ export default {
         });
         return;
       }
-      db.prepare('UPDATE guilds SET language = ? WHERE guildID = ?').run(
+      prepare('UPDATE guilds SET language = ? WHERE guildID = ?').run(
         newLanguage,
         interaction.guild.id
       );
@@ -192,7 +192,7 @@ export default {
         });
         return;
       }
-      db.prepare('UPDATE users SET language = ? WHERE userIDHash = ?').run(
+      prepare('UPDATE users SET language = ? WHERE userIDHash = ?').run(
         newLanguage,
         createHash('sha256').update(interaction.user.id).digest('base64')
       );
