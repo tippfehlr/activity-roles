@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.5](https://github.com/tippf3hlr/activity-roles/compare/v1.9.4...v1.9.5) (2024-03-09)
+
+
+### Bug Fixes
+
+* **commands/help:** remove embed for commands ([fa4fd52](https://github.com/tippf3hlr/activity-roles/commit/fa4fd524f0fd753b0194d11f9ef30fe5fdaea7ef))
+* fix docker image in compose.yaml ([5dfaee8](https://github.com/tippf3hlr/activity-roles/commit/5dfaee897810ccb1ec8a548fe7e2c205fe5eec8c))
+
 ## [1.9.4](https://github.com/tippf3hlr/activity-roles/compare/v1.9.3...v1.9.4) (2024-03-09)
 
 
