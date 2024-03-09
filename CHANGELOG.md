@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.4](https://github.com/tippf3hlr/activity-roles/compare/v1.9.3...v1.9.4) (2024-03-09)
+
+
+### Features
+
+* **i18n:** add Estonian (Thanks [@itshendrik](https://github.com/itshendrik)!) ([4f59614](https://github.com/tippf3hlr/activity-roles/commit/4f596148bd94ed3bae60b5bddcaf2f136f36ba03)), closes [#73](https://github.com/tippf3hlr/activity-roles/issues/73)
+
+
+### Bug Fixes
+
+* **readme:** fix eianlee’s name ([f52e74f](https://github.com/tippf3hlr/activity-roles/commit/f52e74ffd5c06b1e271c13d5ef64b63c5f6143a9))
+
 ## [1.9.3](https://github.com/tippf3hlr/activity-roles/compare/v1.9.2...v1.9.3) (2024-03-09)
 
 
