@@ -1,8 +1,8 @@
-import { __h_dc } from './../messages';
 import { DBActivityRole, getLang, prepare } from '../db';
-import { log, __ } from '../messages';
-
+import { __h_dc, Locale, log, __ } from '../messages';
+import config from '../config';
 import { Command } from '../commandHandler';
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -12,12 +12,10 @@ import {
   CommandInteraction,
   ComponentType,
   EmbedBuilder,
-  Locale,
   PermissionsBitField,
   SlashCommandBuilder
 } from 'discord.js';
 
-import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()

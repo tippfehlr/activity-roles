@@ -2,8 +2,8 @@ import { commandHandler } from './../bot';
 import { Command } from '../commandHandler';
 
 import config from '.././config';
-import { __, __h_dc } from '../messages';
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { DiscordLocale, __, __h_dc, discordLocales } from '../messages';
+import { EmbedBuilder, SlashCommandBuilder, Locale as DiscordsLocale } from 'discord.js';
 import { getLang } from '../db';
 
 export default {
@@ -29,15 +29,17 @@ export default {
       });
       commandName += `\`**`;
 
+      const discordLocale = discordLocales.includes(locale as DiscordLocale) ? locale as unknown as DiscordLocale : 'en-US';
+
       let commandDescription = command.data.description_localizations
-        ? command.data.description_localizations[locale]
+        ? command.data.description_localizations[discordLocale]
         : command.data.description;
 
       command.data.options.forEach(option => {
         const name_localizations = option.toJSON().name_localizations;
         const description_localizations = option.toJSON().description_localizations;
-        const name = name_localizations ? name_localizations[locale] : option.toJSON().name;
-        const description = description_localizations ? description_localizations[locale] : option.toJSON().description
+        const name = name_localizations ? name_localizations[discordLocale] : option.toJSON().name;
+        const description = description_localizations ? description_localizations[discordLocale as DiscordsLocale] : option.toJSON().description
         commandDescription += `\n\`${name}\`: ${description}`;
       });
 

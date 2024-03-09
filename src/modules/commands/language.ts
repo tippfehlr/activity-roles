@@ -1,4 +1,4 @@
-import { getEnumKey, i18n, __h_dc } from './../messages';
+import { __h_dc, locales, localesMap } from './../messages';
 import { Locale, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../commandHandler';
 import { prepare, getGuildConfig, getLang, getUserConfig } from '../db';
@@ -22,8 +22,8 @@ export default {
             .setDescription('The language to set the bot to')
             .setRequired(false)
             .addChoices(
-              ...i18n.getLocales().map(locale => {
-                return { name: getEnumKey(Locale, locale), value: locale };
+              ...locales.map(locale => {
+                return { name: localesMap[locale], value: locale };
               })
             )
         )
@@ -42,8 +42,8 @@ export default {
             .setRequired(false)
             .addChoices(
               { name: 'Undefined', value: 'none' },
-              ...i18n.getLocales().map(locale => {
-                return { name: getEnumKey(Locale, locale), value: locale };
+              ...locales.map(locale => {
+                return { name: localesMap[locale], value: locale };
               })
             )
         )
@@ -72,7 +72,7 @@ export default {
               .setDescription(
                 __(
                   { phrase: 'The current guild language is **`%s`**.', locale },
-                  getEnumKey(Locale, guildLanguage)
+                  localesMap[guildLanguage]
                 ) +
                 '\n\n' +
                 __(
@@ -105,7 +105,7 @@ export default {
           content:
             __(
               { phrase: 'The language is already set to **`%s`**.', locale },
-              getEnumKey(Locale, newLanguage)
+              localesMap[newLanguage]
             ) +
             '\n\n' +
             __({
@@ -128,7 +128,7 @@ export default {
             .setDescription(
               __(
                 { phrase: 'Guild language set to **`%s`**', locale },
-                getEnumKey(Locale, newLanguage)
+                localesMap[newLanguage]
               )
             )
             .setColor(config.COLOR)
@@ -145,7 +145,7 @@ export default {
               .setDescription(
                 __(
                   { phrase: 'The current user language is **`%s`**.%s', locale },
-                  getEnumKey(Locale, userLanguage) || __({ phrase: 'undefined', locale }),
+                  localesMap[userLanguage] || __({ phrase: 'undefined', locale }),
                   userLanguage === 'none'
                     ? __({ phrase: ' The guild language will be used.', locale })
                     : ''
@@ -177,7 +177,7 @@ export default {
           content:
             __(
               { phrase: 'The language is already set to **`%s`**.%s', locale },
-              getEnumKey(Locale, newLanguage) || 'undefined',
+              localesMap[newLanguage] || 'undefined',
               newLanguage === 'none'
                 ? __({ phrase: ' The guild language will be used.', locale })
                 : ''
@@ -203,7 +203,7 @@ export default {
             .setDescription(
               __(
                 { phrase: 'User language set to **`%s`**.%s', locale },
-                getEnumKey(Locale, newLanguage) || 'undefined',
+                localesMap[newLanguage] || 'undefined',
                 newLanguage === 'none'
                   ? __({ phrase: ' The guild language will be used.', locale })
                   : ''

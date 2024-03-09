@@ -12,13 +12,12 @@ import {
   SlashCommandBuilder,
   ComponentType,
   Colors,
-  Locale,
   ChannelType
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
 import config from '../config';
-import { log, __ } from '../messages';
+import { Locale, log, __ } from '../messages';
 import { prepare, getLang } from '../db';
 
 export default {

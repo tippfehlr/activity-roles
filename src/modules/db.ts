@@ -1,8 +1,8 @@
 import fs from 'fs';
 import sqlite3 from 'better-sqlite3';
 import { createHash } from 'crypto';
-import { ActivityType, CommandInteraction, Locale, StringSelectMenuInteraction } from 'discord.js';
-import { log } from './messages';
+import { ActivityType, CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
+import { Locale, log } from './messages';
 
 export interface DBUser {
   userIDHash: string;

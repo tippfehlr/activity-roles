@@ -59,7 +59,8 @@ Available translations:
 [![Brazilian Portuguese translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Brazilian%20Portuguese&style=for-the-badge&logo=crowdin&query=%24.progress.3.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/pt-BR)
 [![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)
 [![Russian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Russian&style=for-the-badge&logo=crowdin&query=%24.progress.4.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085-update.json)](https://crowdin.com/project/activity-roles/ru)
-[![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=uk&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk) \
+[![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Ukranian&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk)
+[![Estonian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Estonian&style=for-the-badge&logo=crowdin&query=%24.progress[?(@.data.languageId==%27et%27)].data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/et) \
 Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
@@ -75,6 +76,7 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 - ZamestoTV **[Russian]**
 - @.onepunch. **[Ukrainian]**
 - @deflanko
+- @itshendrik **[Estonian]**
 
 If I forgot you, please let me know!
 
