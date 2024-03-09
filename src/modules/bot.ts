@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import Discord, { ActivityType, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
+import Discord, { ActivityType, Events, GatewayIntentBits, Options, PermissionsBitField } from 'discord.js';
 
 import {
   DBActiveTemporaryRoles,
@@ -22,7 +22,35 @@ export const client = new Discord.Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildPresences,
-  ]
+  ],
+  makeCache: Options.cacheWithLimits({
+    ...Options.DefaultMakeCacheSettings,
+    MessageManager: 0,
+    UserManager: {
+      maxSize: 5000,
+      keepOverLimit: user => user.id === user.client.user.id,
+    },
+    GuildMemberManager: {
+      maxSize: 1000,
+      keepOverLimit: member => member.id === member.client.user.id,
+    },
+    PresenceManager: 1000,
+  }),
+  sweepers: {
+    ...Options.DefaultSweeperSettings,
+    users: {
+      interval: 30 * 60, // 30 minutes
+      filter: () => user => user.id !== user.client.user.id, // don’t remove the client’s user
+    },
+    presences: {
+      interval: 30 * 60,
+      filter: () => () => true, // remove all presences
+    },
+    guildMembers: {
+      interval: 30 * 60,
+      filter: () => member => member.id !== member.client.user.id,
+    },
+  },
 });
 
 export let commandHandler: CommandHandler;
