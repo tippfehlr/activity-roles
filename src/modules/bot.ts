@@ -27,14 +27,14 @@ export const client = new Discord.Client({
     ...Options.DefaultMakeCacheSettings,
     MessageManager: 0,
     UserManager: {
-      maxSize: 5000,
+      maxSize: 25000,
       keepOverLimit: user => user.id === user.client.user.id,
     },
     GuildMemberManager: {
-      maxSize: 1000,
+      maxSize: 5000,
       keepOverLimit: member => member.id === member.client.user.id,
     },
-    PresenceManager: 1000,
+    PresenceManager: 50000,
   }),
   sweepers: {
     ...Options.DefaultSweeperSettings,
