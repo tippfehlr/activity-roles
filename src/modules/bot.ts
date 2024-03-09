@@ -22,8 +22,6 @@ export const client = new Discord.Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.DirectMessages
   ]
 });
 
