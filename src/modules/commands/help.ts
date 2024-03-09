@@ -15,36 +15,36 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const commandEmbed = new EmbedBuilder()
-      .setTitle(__({ phrase: 'Commands', locale }))
-      .setColor(config.COLOR);
-    commandHandler.commands.forEach(command => {
-      let commandName = `**\`/${command.data.name}`;
-      command.data.options.forEach(option => {
-        if (option.toJSON().required) {
-          commandName += ` <${option.toJSON().name}>`;
-        } else {
-          commandName += ` [${option.toJSON().name}]`;
-        }
-      });
-      commandName += `\`**`;
-
-      const discordLocale = discordLocales.includes(locale as DiscordLocale) ? locale as unknown as DiscordLocale : 'en-US';
-
-      let commandDescription = command.data.description_localizations
-        ? command.data.description_localizations[discordLocale]
-        : command.data.description;
-
-      command.data.options.forEach(option => {
-        const name_localizations = option.toJSON().name_localizations;
-        const description_localizations = option.toJSON().description_localizations;
-        const name = name_localizations ? name_localizations[discordLocale] : option.toJSON().name;
-        const description = description_localizations ? description_localizations[discordLocale as DiscordsLocale] : option.toJSON().description
-        commandDescription += `\n\`${name}\`: ${description}`;
-      });
-
-      commandEmbed.addFields({ name: commandName, value: commandDescription! });
-    });
+    // const commandEmbed = new EmbedBuilder()
+    //   .setTitle(__({ phrase: 'Commands', locale }))
+    //   .setColor(config.COLOR);
+    // commandHandler.commands.forEach(command => {
+    //   let commandName = `**\`/${command.data.name}`;
+    //   command.data.options.forEach(option => {
+    //     if (option.toJSON().required) {
+    //       commandName += ` <${option.toJSON().name}>`;
+    //     } else {
+    //       commandName += ` [${option.toJSON().name}]`;
+    //     }
+    //   });
+    //   commandName += `\`**`;
+    //
+    //   const discordLocale = discordLocales.includes(locale as DiscordLocale) ? locale as unknown as DiscordLocale : 'en-US';
+    //
+    //   let commandDescription = command.data.description_localizations
+    //     ? command.data.description_localizations[discordLocale]
+    //     : command.data.description;
+    //
+    //   command.data.options.forEach(option => {
+    //     const name_localizations = option.toJSON().name_localizations;
+    //     const description_localizations = option.toJSON().description_localizations;
+    //     const name = name_localizations ? name_localizations[discordLocale] : option.toJSON().name;
+    //     const description = description_localizations ? description_localizations[discordLocale as DiscordsLocale] : option.toJSON().description
+    //     commandDescription += `\n\`${name}\`: ${description}`;
+    //   });
+    //
+    //   commandEmbed.addFields({ name: commandName, value: commandDescription! });
+    // });
 
     interaction.reply({
       files: ['./img/discord-header.png'],
@@ -79,7 +79,7 @@ export default {
             __({ phrase: "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.", locale }) + "\n" +
             "https://github.com/sponsors/tippfehlr\nhttps://ko-fi.com/Z8Z7SYDDJ"
           ),
-        commandEmbed
+        // commandEmbed
       ]
     });
   }
