@@ -1,7 +1,7 @@
 version: "3"
 services:
   activity-roles:
-    image: tippfehlr/activity-roles
+    image: ghcr.io/tippfehlr/activity-roles
     environment:
       TOKEN: your-discord-token
       APPLICATION_ID: your-application-id
