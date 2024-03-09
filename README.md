@@ -65,7 +65,7 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
 
-- @eianleeuu
+- @eianlee
 - @umkrampus **[Brazilian Portuguese]**
 - @RstY_CZ#2033 **[Czech]**
 - @dangerbeclose **[Dutch]**
