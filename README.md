@@ -6,7 +6,7 @@
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
 ---
 A Discord bot for automatic role assignment based on activities. \
-Please join the [support guild](https://discord.gg/3K9Yx4ufN7>) for the latest updates and infos. \
+Please join the [support guild](https://discord.gg/3K9Yx4ufN7) for the latest updates and infos. \
 Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 ---
