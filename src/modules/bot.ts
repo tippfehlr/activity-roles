@@ -140,7 +140,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const highestBotRolePosition = newMember.guild.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
   const guildConfig = getGuildConfig(guildID);
-  // await newMember.member?.fetch();
+  await newMember.member?.fetch();
 
   if (
     guildConfig.requiredRoleID !== null &&
