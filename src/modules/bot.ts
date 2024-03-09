@@ -26,15 +26,15 @@ export const client = new Discord.Client({
   makeCache: Options.cacheWithLimits({
     ...Options.DefaultMakeCacheSettings,
     MessageManager: 0,
-    UserManager: {
-      maxSize: 25000,
-      keepOverLimit: user => user.id === user.client.user.id,
-    },
-    GuildMemberManager: {
-      maxSize: 5000,
-      keepOverLimit: member => member.id === member.client.user.id,
-    },
-    PresenceManager: 50000,
+    // UserManager: {
+    //   maxSize: 25000,
+    //   keepOverLimit: user => user.id === user.client.user.id,
+    // },
+    // GuildMemberManager: {
+    //   maxSize: 5000,
+    //   keepOverLimit: member => member.id === member.client.user.id,
+    // },
+    // PresenceManager: 50000,
   }),
   sweepers: {
     ...Options.DefaultSweeperSettings,
@@ -42,13 +42,13 @@ export const client = new Discord.Client({
       interval: 30 * 60, // 30 minutes
       filter: () => user => user.id !== user.client.user.id, // don’t remove the client’s user
     },
-    presences: {
-      interval: 30 * 60,
-      filter: () => () => true, // remove all presences
-    },
     guildMembers: {
       interval: 30 * 60,
       filter: () => member => member.id !== member.client.user.id,
+    },
+    presences: {
+      interval: 30 * 60,
+      filter: () => () => true, // remove all presences
     },
   },
 });
