@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.3](https://github.com/tippf3hlr/activity-roles/compare/v1.9.2...v1.9.3) (2024-03-09)
+
+
+### Features
+
+* metrics for database access ([6992972](https://github.com/tippf3hlr/activity-roles/commit/69929724d6014cee7cf4057663aa670a4038249f))
+* send metrics to influxdb ([1837135](https://github.com/tippf3hlr/activity-roles/commit/1837135e02d88b9b160492b8bd78621978023a99))
+* send new metrics: memory and metric execution time ([8fff5ed](https://github.com/tippf3hlr/activity-roles/commit/8fff5ede42b94f2bcdd10261b774081eb5c882b7))
+
+
+### Bug Fixes
+
+* **readme:** remove > from invite link (text) ([206b23a](https://github.com/tippf3hlr/activity-roles/commit/206b23a16e281c2b84e0446e81bfd3ee7dfc8eec))
+* stats don’t reset ([1e58a46](https://github.com/tippf3hlr/activity-roles/commit/1e58a46b240cf0d9467e54aaa70738c0d5658f0f))
+
 ## [1.9.2](https://github.com/tippf3hlr/activity-roles/compare/v1.9.1...v1.9.2) (2024-01-06)
 
 
