@@ -23,6 +23,7 @@ export const client = new Discord.Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildPresences,
   ],
+  shards: 'auto',
   makeCache: Options.cacheWithLimits({
     ...Options.DefaultMakeCacheSettings,
     MessageManager: 0,
