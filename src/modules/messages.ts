@@ -56,5 +56,6 @@ export const log = pino({
       colorize: true,
       translateTime: 'HH:MM:ss.l'
     }
-  }
+  },
+  level: process.env.LOG_LEVEL || 'info'
 });
