@@ -25,7 +25,6 @@ export async function configureInfluxDB() {
       const startTime = performance.now();
 
       writeIntPoint('presence_updates', 'presence_updates', botStats.presenceUpdates);
-      writeIntPoint('missing_access', 'missing_access', botStats.missingAccess);
       writeIntPoint('roles_added', 'roles_added', botStats.rolesAdded);
       writeIntPoint('roles_removed', 'roles_removed', botStats.rolesRemoved);
       writeIntPoint('web_socket_errors', 'web_socket_errors', botStats.webSocketErrors);
@@ -54,7 +53,6 @@ export async function configureInfluxDB() {
     }, 1000);
 
     process.on('exit', () => {
-      writeIntPoint('process', 'exited', 1);
       writeApi.close();
     });
   } else {

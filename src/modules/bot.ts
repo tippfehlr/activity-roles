@@ -58,14 +58,12 @@ export let commandHandler: CommandHandler;
 
 export const stats = {
   presenceUpdates: 0,
-  missingAccess: 0,
   rolesAdded: 0,
   rolesRemoved: 0,
   webSocketErrors: 0
 };
 export function resetStats() {
   stats.presenceUpdates = 0;
-  stats.missingAccess = 0;
   stats.rolesAdded = 0;
   stats.rolesRemoved = 0;
   stats.webSocketErrors = 0;
@@ -152,9 +150,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   if (!newMember.guild) return;
   const guildID = newMember.guild.id;
   if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-    stats.missingAccess++;
+    await newMember.guild.leave();
     log.warn(
-      `MISSING ACCESS: Guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`
+      `MISSING ACCESS: LEFT guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`
     );
     return;
   }
