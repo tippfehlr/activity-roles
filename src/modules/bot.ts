@@ -152,10 +152,13 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   let logTime = false;
   // no activities changed
   // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
-  if (newMember.user?.username === 'tippfehlr' && newMember.guild?.name === 'ASTRONEER') {
+
+  // write timings only for tippfehlr (me) in ASTRONEER, because it has many members
+  if (newMember.user?.username === 'tippfehlr' && newMember.guild?.name === 'ASTRONEER' && log.isLevelEnabled('debug')) {
     log.debug(`PRESENCE UPDATE: User ${newMember.user?.username}, ${newMember.activities.toString()}, ${oldMember?.activities.toString() === newMember?.activities.toString()}`)
     logTime = true;
   }
+
   if (logTime) console.time('pre member-fetch');
   if (!newMember.guild) return;
   const guildID = newMember.guild.id;
@@ -202,76 +205,86 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
 
   if (logTime) console.timeEnd('roles');
+
+  // return if guild doesn’t have any roles
   if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
     return;
   }
-  if (logTime) console.time('detect changes');
+
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
-  const addRole = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
-    if (permanent) {
-      permanentRoleIDsToBeAdded.add(roleID);
-    } else {
-      tempRoleIDsToBeAdded.add(roleID);
-    }
-  };
 
-  // ------------ status roles ------------
-  const states: Set<ActivityType> = new Set();
-  for (const activity of newMember.activities) {
-    states.add(activity.type);
+  // if user is offline, skip checking for added activities
+  if (newMember.status !== 'offline') {
+    if (logTime) console.time('detect changes');
+
+    const addRole = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
+      if (permanent) {
+        permanentRoleIDsToBeAdded.add(roleID);
+      } else {
+        tempRoleIDsToBeAdded.add(roleID);
+      }
+    };
+
+    // ------------ status roles ------------
+    const states: Set<ActivityType> = new Set();
+    for (const activity of newMember.activities) {
+      states.add(activity.type);
+    }
+    statusRoles.forEach(statusRole => {
+      if (states.has(statusRole.type)) addRole({ roleID: statusRole.roleID, permanent: false });
+    });
+
+    // ------------ activity roles ------------
+    const userActivities = newMember.activities.map(activity => activity.name);
+
+    activityRoles.forEach(activityRole => {
+      if (
+        // exactActivityName
+        (activityRole.exactActivityName && userActivities.includes(activityRole.activityName)) ||
+        // not exactActivityName
+        (!activityRole.exactActivityName &&
+          userActivities.find(userActivity =>
+            userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
+          ))
+      ) {
+        addRole({ roleID: activityRole.roleID, permanent: !activityRole.live });
+      }
+    });
+
+    if (logTime) console.timeEnd('detect changes');
+    if (logTime) console.time('apply changes');
+
+    // ------------ “apply changes” ------------
+    const addDiscordRoleToMember = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
+      const role = newMember.guild?.roles.cache.get(roleID);
+      if (!role) {
+        prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
+          newMember.guild?.id,
+          roleID
+        );
+        prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
+        return;
+      }
+      if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
+      if (newMember.member?.roles.cache.has(role.id)) return;
+      if (!permanent) {
+        prepare(
+          'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
+        ).run(userIDHash, guildID, roleID);
+      }
+      newMember.member?.roles.add(role);
+      stats.rolesAdded++;
+    };
+    permanentRoleIDsToBeAdded.forEach(roleID => {
+      addDiscordRoleToMember({ roleID, permanent: true });
+    });
+    tempRoleIDsToBeAdded.forEach(roleID => {
+      addDiscordRoleToMember({ roleID, permanent: false });
+    });
+  } else {
+    if (logTime) console.time('apply changes');
   }
-  statusRoles.forEach(statusRole => {
-    if (states.has(statusRole.type)) addRole({ roleID: statusRole.roleID, permanent: false });
-  });
-
-  // ------------ activity roles ------------
-  const userActivities = newMember.activities.map(activity => activity.name);
-
-  activityRoles.forEach(activityRole => {
-    if (
-      // exactActivityName
-      (activityRole.exactActivityName && userActivities.includes(activityRole.activityName)) ||
-      // not exactActivityName
-      (!activityRole.exactActivityName &&
-        userActivities.find(userActivity =>
-          userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase())
-        ))
-    ) {
-      addRole({ roleID: activityRole.roleID, permanent: !activityRole.live });
-    }
-  });
-
-  if (logTime) console.timeEnd('detect changes');
-  if (logTime) console.time('apply changes');
-
-  // ------------ “apply changes” ------------
-  const addDiscordRoleToMember = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
-    const role = newMember.guild?.roles.cache.get(roleID);
-    if (!role) {
-      prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(
-        newMember.guild?.id,
-        roleID
-      );
-      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
-      return;
-    }
-    if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
-    if (newMember.member?.roles.cache.has(role.id)) return;
-    if (!permanent) {
-      prepare(
-        'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
-      ).run(userIDHash, guildID, roleID);
-    }
-    newMember.member?.roles.add(role);
-    stats.rolesAdded++;
-  };
-  permanentRoleIDsToBeAdded.forEach(roleID => {
-    addDiscordRoleToMember({ roleID, permanent: true });
-  });
-  tempRoleIDsToBeAdded.forEach(roleID => {
-    addDiscordRoleToMember({ roleID, permanent: false });
-  });
 
   // remove temporary roles --- new activeTemporaryRoles
   activeTemporaryRoles.forEach(activeTemporaryRole => {
