@@ -38,14 +38,14 @@ export const client = new Discord.Client({
   }),
   sweepers: {
     ...Options.DefaultSweeperSettings,
-    users: {
-      interval: 60 * 60, // in seconds, 1 hour
-      filter: () => user => user.id !== user.client.user.id, // don’t remove the client’s user
-    },
-    guildMembers: {
-      interval: 60 * 60,
-      filter: () => member => member.id !== member.client.user.id,
-    },
+    // users: {
+    //   interval: 60 * 60, // in seconds, 1 hour
+    //   filter: () => user => user.id !== user.client.user.id, // don’t remove the client’s user
+    // },
+    // guildMembers: {
+    //   interval: 60 * 60,
+    //   filter: () => member => member.id !== member.client.user.id,
+    // },
     // presences: {
     //   interval: 60 * 60,
     //   filter: () => () => true, // remove all presences
