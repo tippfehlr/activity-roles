@@ -23,7 +23,6 @@ export const client = new Discord.Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildPresences,
   ],
-  shards: 'auto',
   makeCache: Options.cacheWithLimits({
     ...Options.DefaultMakeCacheSettings,
     MessageManager: 0,
@@ -40,17 +39,17 @@ export const client = new Discord.Client({
   sweepers: {
     ...Options.DefaultSweeperSettings,
     users: {
-      interval: 30 * 60, // 30 minutes
+      interval: 60 * 60, // in seconds, 1 hour
       filter: () => user => user.id !== user.client.user.id, // don’t remove the client’s user
     },
     guildMembers: {
-      interval: 30 * 60,
+      interval: 60 * 60,
       filter: () => member => member.id !== member.client.user.id,
     },
-    presences: {
-      interval: 30 * 60,
-      filter: () => () => true, // remove all presences
-    },
+    // presences: {
+    //   interval: 60 * 60,
+    //   filter: () => () => true, // remove all presences
+    // },
   },
 });
 
