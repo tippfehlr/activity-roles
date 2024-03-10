@@ -11,14 +11,15 @@ import { getDBUserCount, getRolesCount, stats as dbStats, resetStats as resetDBS
 export let client: InfluxDB;
 export let writeApi: WriteApi;
 
+export function writeIntPoint(name: string, fieldName: string, value: number) {
+  if (writeApi) writeApi.writePoint(new Point(name).intField(fieldName, value));
+}
+
+
 export async function configureInfluxDB() {
   if (config.INFLUX_URL && config.INFLUX_TOKEN) {
     client = new InfluxDB({ url: config.INFLUX_URL, token: config.INFLUX_TOKEN });
     writeApi = client.getWriteApi('activity-roles', 'activity-roles');
-
-    const writeIntPoint = (name: string, fieldName: string, value: number) => {
-      writeApi.writePoint(new Point(name).intField(fieldName, value));
-    }
 
     writeIntPoint('process', 'started', 1);
     setInterval(() => {

@@ -16,7 +16,7 @@ import {
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
-import { configureInfluxDB } from './metrics';
+import { configureInfluxDB, writeIntPoint } from './metrics';
 
 export const client = new Discord.Client({
   intents: [
@@ -145,8 +145,18 @@ client.on(Events.ClientReady, () => {
   }
 });
 
+// PresenceUpdate fires once for every guild the bot shares with the user
 client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
+  const startTime = Date.now();
   stats.presenceUpdates++;
+  let logTime = false;
+  // no activities changed
+  // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
+  if (newMember.user?.username === 'tippfehlr' && newMember.guild?.name === 'ASTRONEER') {
+    log.debug(`PRESENCE UPDATE: User ${newMember.user?.username}, ${newMember.activities.toString()}, ${oldMember?.activities.toString() === newMember?.activities.toString()}`)
+    logTime = true;
+  }
+  if (logTime) console.time('pre member-fetch');
   if (!newMember.guild) return;
   const guildID = newMember.guild.id;
   if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
@@ -164,7 +174,11 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const highestBotRolePosition = newMember.guild.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
   const guildConfig = getGuildConfig(guildID);
-  await newMember.member?.fetch();
+  if (logTime) console.timeEnd('pre member-fetch');
+  // if (debug) console.time('fetch member ' + date);
+  // await newMember.member?.fetch(true);
+  // if (debug) console.timeEnd('fetch member ' + date);
+  if (logTime) console.time('roles');
 
   if (
     guildConfig.requiredRoleID !== null &&
@@ -187,10 +201,11 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     prepare('SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?')
       .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
 
+  if (logTime) console.timeEnd('roles');
   if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
     return;
   }
-
+  if (logTime) console.time('detect changes');
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
   const addRole = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
@@ -226,6 +241,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       addRole({ roleID: activityRole.roleID, permanent: !activityRole.live });
     }
   });
+
+  if (logTime) console.timeEnd('detect changes');
+  if (logTime) console.time('apply changes');
 
   // ------------ “apply changes” ------------
   const addDiscordRoleToMember = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
@@ -286,6 +304,8 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         stats.rolesRemoved++;
       });
   });
+  if (logTime) console.timeEnd('apply changes');
+  writeIntPoint('presence_updates', 'took_time', Date.now() - startTime)
 });
 
 client.on(Events.GuildCreate, guild => {
