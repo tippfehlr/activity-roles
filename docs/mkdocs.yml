@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: Activity Roles
+# site_url: https://tippfehlr.github.io/activity-roles/
+repo_name: tippfehlr/activity-roles
+repo_url: https://github.com/tippfehlr/activity-roles
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  language: en
+  # logo: assets/icon.png
+  favicon: images/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.expand
+    - navigation.indexes
+    - toc.follow
+    - search.highlight
+    - content.action.edit
+    - content.action.view
+  icon:
+    repo: fontawesome/brands/github
+plugins:
+  - search
+  - social
+extra:
+  analytics:
+    provider: custom

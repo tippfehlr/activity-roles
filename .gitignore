@@ -9,6 +9,9 @@ scripts/
 justfile
 docker-compose.yaml
 
+# Material for MkDocs
+docs/.cache
+
 # yarn v2+:
 .pnp.*
 .yarn/*
