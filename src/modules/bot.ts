@@ -290,6 +290,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   activeTemporaryRoles.forEach(activeTemporaryRole => {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
       const role = newMember.guild?.roles.cache.get(activeTemporaryRole.roleID);
+      // this does not check if the user has the role on purpose:
+      // trying to remove it when the user doesn’t have it does nothing
+      // and the local role cache *could* be invalid resulting in roles getting stuck
       if (role) newMember.member?.roles.remove(role);
       prepare(
         'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?'
