@@ -173,31 +173,30 @@ export async function addActivity(guildID: string, activityName: string) {
   ).run(guildID, activityName, 1);
 }
 
-export function getDBUserCount(): number {
+export function getUserCount(): number {
   return (prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
-export function getDBActivityRoleCount(): number {
+export function getActivityRoleCount(): number {
   return (prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
-export function getDBStatusRoleCount(): number {
+export function getStatusRoleCount(): number {
   return (prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
-export function getDBCurrentlyActiveActivityCount(): number {
+export function getCurrentlyActiveActivityCount(): number {
   return (prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number })['COUNT(*)'];
 }
 
+export function getTempRoleCount(): number {
+  return (prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 1').get() as { 'COUNT(*)': number; })['COUNT(*)'];
+}
+
+export function getPermRoleCount(): number {
+  return (prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 0').get() as { 'COUNT(*)': number; })['COUNT(*)'];
+}
+
 export function getRolesCount(): number {
-  return (
-    prepare('SELECT COUNT(*) FROM activityRoles').get() as {
-      'COUNT(*)': number;
-    }
-  )['COUNT(*)'] +
-    (
-      prepare('SELECT COUNT(*) FROM statusRoles').get() as {
-        'COUNT(*)': number;
-      }
-    )['COUNT(*)']
+  return getActivityRoleCount() + getStatusRoleCount()
 }

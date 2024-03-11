@@ -6,7 +6,7 @@ import {
   DBCurrentlyActiveActivity,
   addActivity,
   getActivityRoles,
-  getDBUserCount,
+  getUserCount,
   getGuildConfig,
   getRolesCount,
   getStatusRoles,
@@ -98,7 +98,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: getDBUserCount()
+            count: getUserCount()
           }),
           type: ActivityType.Watching
         }
@@ -128,7 +128,7 @@ client.on(Events.ClientReady, () => {
     `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${getDBUserCount()} users and manages ${getRolesCount()} roles`
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${getUserCount()} users and manages ${getRolesCount()} roles`
   );
 
   const activityCountInCurrentlyActiveActivities = (

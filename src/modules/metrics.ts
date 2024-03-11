@@ -6,7 +6,7 @@ import config from './config';
 import { log } from './messages';
 
 import { stats as botStats, resetStats as resetBotStats } from './bot';
-import { getDBUserCount, getRolesCount, stats as dbStats, resetStats as resetDBStats } from './db';
+import { getUserCount, getRolesCount, stats as dbStats, resetStats as resetDBStats, getTempRoleCount, getPermRoleCount, getStatusRoleCount } from './db';
 
 export let client: InfluxDB;
 export let writeApi: WriteApi;
@@ -31,10 +31,13 @@ export async function configureInfluxDB() {
       writeIntPoint('web_socket_errors', 'web_socket_errors', botStats.webSocketErrors);
       writeIntPoint('guilds', 'guilds_total', discordClient.guilds.cache.size);
       writeIntPoint('roles', 'roles_count', getRolesCount());
+      writeIntPoint('roles', 'temporary_roles_count', getTempRoleCount());
+      writeIntPoint('roles', 'permanent_roles_count', getPermRoleCount());
+      writeIntPoint('roles', 'status_roles_count', getStatusRoleCount());
       writeApi.writePoint(
         new Point('users')
           .intField('users_cache_total', discordClient.users.cache.size)
-          .intField('users_db_total', getDBUserCount())
+          .intField('users_db_total', getUserCount())
       );
       writeIntPoint('db', 'calls', dbStats.dbCalls);
       const ram = process.memoryUsage();
