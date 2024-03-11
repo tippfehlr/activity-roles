@@ -3,20 +3,9 @@
 *.log
 node_modules/
 out/
-activityRolesList.txt
-export.json
 scripts/
 justfile
 docker-compose.yaml
 
 # Material for MkDocs
 docs/.cache
-
-# yarn v2+:
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
