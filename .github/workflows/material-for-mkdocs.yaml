@@ -31,7 +31,7 @@ jobs:
       - name: install mkdocs-material
         run: pip install mkdocs-material
       - name: install other python dependencies
-        run: pip install $(mkdocs-material get-deps)
+        run: pip install $(mkdocs get-deps)
         working-directory: docs
       - name: build static site
         run: mkdocs build --site-dir public
