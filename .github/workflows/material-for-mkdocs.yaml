@@ -28,8 +28,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: pip install mkdocs-material
-      - run: mkdocs build --site-dir public
+      - name: install mkdocs-material
+        run: pip install mkdocs-material
+      - name: install other python dependencies
+        run: pip install $(mkdocs-material get-deps)
+        working-directory: docs
+      - name: build static site
+        run: mkdocs build --site-dir public
         working-directory: docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
