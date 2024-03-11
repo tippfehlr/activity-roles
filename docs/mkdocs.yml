@@ -3,7 +3,8 @@ site_name: Activity Roles
 site_url: https://tippfehlr.github.io/activity-roles/
 repo_name: tippfehlr/activity-roles
 repo_url: https://github.com/tippfehlr/activity-roles
-edit_uri: edit/main/docs/
+edit_uri: blob/main/docs/docs
+
 theme:
   name: material
   custom_dir: overrides
@@ -38,7 +39,7 @@ theme:
     - toc.follow
     - search.highlight
     - content.action.edit
-    - content.action.view
+    # - content.action.view
   icon:
     repo: fontawesome/brands/github
 plugins:
