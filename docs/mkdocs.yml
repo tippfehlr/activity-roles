@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 site_name: Activity Roles
-# site_url: https://tippfehlr.github.io/activity-roles/
+site_url: https://tippfehlr.github.io/activity-roles/
 repo_name: tippfehlr/activity-roles
 repo_url: https://github.com/tippfehlr/activity-roles
 edit_uri: edit/main/docs/
