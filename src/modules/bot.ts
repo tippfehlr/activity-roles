@@ -150,6 +150,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const startTime = Date.now();
   stats.presenceUpdates++;
   let logTime = false;
+
   // no activities changed
   // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
 
@@ -264,11 +265,15 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
           roleID
         );
         prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
+        prepare('DELETE FROM activeTemporaryRoles WHERE guildID = ? AND roleID = ?').run(guildID, roleID);
         return;
       }
       if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
       if (newMember.member?.roles.cache.has(role.id)) return;
-      if (!permanent) {
+      if (permanent) {
+        writeIntPoint('roles_added', 'permanent_roles_added', 1);
+      } else {
+        writeIntPoint('roles_added', 'temporary_roles_added', 1);
         prepare(
           'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)'
         ).run(userIDHash, guildID, roleID);
@@ -290,7 +295,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   activeTemporaryRoles.forEach(activeTemporaryRole => {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
       const role = newMember.guild?.roles.cache.get(activeTemporaryRole.roleID);
-      // this does not check if the user has the role on purpose:
+      // this purposefully does not check if the user has the role:
       // trying to remove it when the user doesn’t have it does nothing
       // and the local role cache *could* be invalid resulting in roles getting stuck
       if (role) newMember.member?.roles.remove(role);
@@ -321,7 +326,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       });
   });
   if (logTime) console.timeEnd('apply changes');
+  if (logTime) console.time('writeIntPoint');
   writeIntPoint('presence_updates', 'took_time', Date.now() - startTime)
+  if (logTime) console.timeEnd('writeIntPoint');
 });
 
 client.on(Events.GuildCreate, guild => {
