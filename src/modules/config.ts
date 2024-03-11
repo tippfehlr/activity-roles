@@ -24,6 +24,8 @@ const GUILD: string | false = process.env.GUILD || false;
 
 const INFLUX_URL = process.env.INFLUX_URL;
 const INFLUX_TOKEN = process.env.INFLUX_TOKEN;
+const INFLUX_ORG = process.env.INFLUX_ORG;
+const INFLUX_BUCKET = process.env.INFLUX_BUCKET;
 
 export default {
   TOKEN: TOKEN as string,
@@ -37,4 +39,6 @@ export default {
   GUILD,
   INFLUX_URL,
   INFLUX_TOKEN,
+  INFLUX_ORG,
+  INFLUX_BUCKET,
 };

@@ -17,9 +17,9 @@ export function writeIntPoint(name: string, fieldName: string, value: number) {
 
 
 export async function configureInfluxDB() {
-  if (config.INFLUX_URL && config.INFLUX_TOKEN) {
+  if (config.INFLUX_URL && config.INFLUX_TOKEN && config.INFLUX_ORG && config.INFLUX_BUCKET) {
     client = new InfluxDB({ url: config.INFLUX_URL, token: config.INFLUX_TOKEN });
-    writeApi = client.getWriteApi('activity-roles', 'activity-roles');
+    writeApi = client.getWriteApi(config.INFLUX_ORG, config.INFLUX_BUCKET);
 
     writeIntPoint('process', 'started', 1);
     setInterval(() => {
