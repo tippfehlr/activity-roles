@@ -180,10 +180,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   // await newMember.member?.fetch(true);
   // if (debug) console.timeEnd('fetch member ' + date);
 
-  if (debug) console.time('fetch roles');
-  await newMember.guild.roles.fetch();
-  if (debug) console.timeEnd('fetch roles');
-
   if (
     guildConfig.requiredRoleID !== null &&
     newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
