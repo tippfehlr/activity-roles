@@ -150,6 +150,12 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const startTime = Date.now();
   stats.presenceUpdates++;
 
+  let debug = false;
+
+  if (newMember.userId === '712702707986595880' && newMember.guild?.id === '226115726509998090') {
+    debug = true;
+  }
+
   // no activities changed
   // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
 
@@ -173,6 +179,10 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   // if (debug) console.time('fetch member ' + date);
   // await newMember.member?.fetch(true);
   // if (debug) console.timeEnd('fetch member ' + date);
+
+  if (debug) console.time('fetch roles');
+  await newMember.guild.roles.fetch();
+  if (debug) console.timeEnd('fetch roles');
 
   if (
     guildConfig.requiredRoleID !== null &&
@@ -264,6 +274,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       }
       newMember.member?.roles.add(role);
       stats.rolesAdded++;
+      if (role.id === '1215707840912695326' && newMember.activities[0].name !== 'ASTRONEER' && newMember.guild?.name === 'ASTRONEER') {
+        log.debug(`${newMember.guild.name}: user ${newMember.userId} activities: ${newMember.activities.toString()}`);
+      }
     };
     permanentRoleIDsToBeAdded.forEach(roleID => {
       addDiscordRoleToMember({ roleID, permanent: true });
@@ -290,7 +303,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   // @deprecated remove all roles still in currentlyActiveActivities
   (
-
     prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?')
       .all(userIDHash, guildID) as DBCurrentlyActiveActivity[]
   ).forEach(activeActivity => {
@@ -311,11 +323,11 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 });
 
 client.on(Events.GuildCreate, guild => {
-  log.info(`Joined guild ${guild.name} (${guild.id})`);
+  log.info(`Joined guild ${guild.name}(${guild.id})`);
   getGuildConfig(guild.id);
 });
 
-client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name} (${guild.id})`));
+client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name}(${guild.id})`));
 
 client.on(Events.Error, error => {
   log.error(error, 'The Discord WebSocket has encountered an error')
