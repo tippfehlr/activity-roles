@@ -260,6 +260,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         return;
       }
       if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
+      if (newMember.member?.roles.cache.has(role.id)) return;
       if (permanent) {
         writeIntPoint('roles_added', 'permanent_roles_added', 1);
       } else {
