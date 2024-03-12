@@ -149,18 +149,10 @@ client.on(Events.ClientReady, () => {
 client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const startTime = Date.now();
   stats.presenceUpdates++;
-  let logTime = false;
 
   // no activities changed
   // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
 
-  // write timings only for tippfehlr (me) in ASTRONEER, because it has many members
-  if (newMember.user?.username === 'tippfehlr' && newMember.guild?.name === 'ASTRONEER' && log.isLevelEnabled('debug')) {
-    log.debug(`PRESENCE UPDATE: User ${newMember.user?.username}, ${newMember.activities.toString()}, ${oldMember?.activities.toString() === newMember?.activities.toString()}`)
-    logTime = true;
-  }
-
-  if (logTime) console.time('pre member-fetch');
   if (!newMember.guild) return;
   const guildID = newMember.guild.id;
   if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
@@ -178,11 +170,9 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const highestBotRolePosition = newMember.guild.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
   const guildConfig = getGuildConfig(guildID);
-  if (logTime) console.timeEnd('pre member-fetch');
   // if (debug) console.time('fetch member ' + date);
   // await newMember.member?.fetch(true);
   // if (debug) console.timeEnd('fetch member ' + date);
-  if (logTime) console.time('roles');
 
   if (
     guildConfig.requiredRoleID !== null &&
@@ -205,7 +195,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     prepare('SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?')
       .all(userIDHash, guildID) as DBActiveTemporaryRoles[];
 
-  if (logTime) console.timeEnd('roles');
 
   // return if guild doesn’t have any roles
   if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
@@ -217,7 +206,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   // if user is offline, skip checking for added activities
   if (newMember.status !== 'offline') {
-    if (logTime) console.time('detect changes');
 
     const addRole = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
       if (permanent) {
@@ -253,9 +241,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       }
     });
 
-    if (logTime) console.timeEnd('detect changes');
-    if (logTime) console.time('apply changes');
-
     // ------------ “apply changes” ------------
     const addDiscordRoleToMember = ({ roleID, permanent }: { roleID: string, permanent: boolean }) => {
       const role = newMember.guild?.roles.cache.get(roleID);
@@ -286,8 +271,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     tempRoleIDsToBeAdded.forEach(roleID => {
       addDiscordRoleToMember({ roleID, permanent: false });
     });
-  } else {
-    if (logTime) console.time('apply changes');
   }
 
   // remove temporary roles --- new activeTemporaryRoles
@@ -324,10 +307,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
         stats.rolesRemoved++;
       });
   });
-  if (logTime) console.timeEnd('apply changes');
-  if (logTime) console.time('writeIntPoint');
   writeIntPoint('presence_updates', 'took_time', Date.now() - startTime)
-  if (logTime) console.timeEnd('writeIntPoint');
 });
 
 client.on(Events.GuildCreate, guild => {
