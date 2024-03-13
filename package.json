@@ -12,23 +12,23 @@
   "type": "module",
   "dependencies": {
     "@influxdata/influxdb-client": "^1.33.2",
-    "better-sqlite3": "^9.0.0",
-    "discord.js": "^14.13.0",
+    "better-sqlite3": "^9.4.3",
+    "discord.js": "^14.14.1",
     "i18n": "^0.15.1",
-    "pino": "^8.16.1",
-    "pino-pretty": "^10.2.3",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
     "table": "^6.8.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.6",
-    "@types/i18n": "^0.13.8",
-    "@types/node": "^20.8.9",
-    "@typescript-eslint/eslint-plugin": "^6.9.1",
-    "@typescript-eslint/parser": "^6.9.1",
-    "eslint": "^8.52.0",
-    "eslint-config-prettier": "^9.0.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "@types/better-sqlite3": "^7.6.9",
+    "@types/i18n": "^0.13.10",
+    "@types/node": "^20.11.27",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.2"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

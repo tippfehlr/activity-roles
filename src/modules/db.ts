@@ -56,6 +56,8 @@ export interface DBVersion {
 
 let db: Database;
 
+export const checkrolesCurrentGuilds: Set<string> = new Set();
+
 export const stats = {
   dbCalls: 0,
 };
@@ -130,6 +132,10 @@ export function prepareDB() {
   } else {
     log.info(`Database version: ${dbVersion}`);
   }
+}
+
+export function hashUserID(userID: string): string {
+  return createHash('sha256').update(userID).digest('base64');
 }
 
 export function getUserConfig(userID: string): DBUser {
