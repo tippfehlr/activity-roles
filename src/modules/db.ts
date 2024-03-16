@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Database } from 'bun:sqlite';
+import sqlite from 'better-sqlite3';
 import { createHash } from 'crypto';
 import { ActivityType, CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
 import { Locale, log } from './messages';
@@ -54,7 +54,7 @@ export interface DBVersion {
   enforcer: 0;
 }
 
-let db: Database;
+export let db: sqlite.Database;
 
 export const checkrolesCurrentGuilds: Set<string> = new Set();
 
@@ -68,12 +68,12 @@ export function resetStats() {
 
 export function prepare(query: string) {
   stats.dbCalls++;
-  return db.query(query);
+  return db.prepare(query);
 }
 
 export function prepareDB() {
   if (!fs.existsSync('db')) fs.mkdirSync('db');
-  db = new Database('db/activity-roles.db');
+  db = new sqlite('db/activity-roles.db');
 
   // `v1.9.1` live -> permanent: the database was not updated on purpose.
   // enforcer: see https://stackoverflow.com/a/3010975/16292720 (comment 4)

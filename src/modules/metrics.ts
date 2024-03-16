@@ -1,12 +1,20 @@
-import { InfluxDB, Point, WriteApi } from '@influxdata/influxdb-client'
-export { Point } from '@influxdata/influxdb-client'
+import { InfluxDB, Point, WriteApi } from '@influxdata/influxdb-client';
+export { Point } from '@influxdata/influxdb-client';
 
 import { client as discordClient } from './bot';
 import config from './config';
 import { log } from './messages';
 
 import { stats as botStats, resetStats as resetBotStats } from './bot';
-import { getUserCount, getRolesCount, stats as dbStats, resetStats as resetDBStats, getTempRoleCount, getPermRoleCount, getStatusRoleCount } from './db';
+import {
+  getUserCount,
+  getRolesCount,
+  stats as dbStats,
+  resetStats as resetDBStats,
+  getTempRoleCount,
+  getPermRoleCount,
+  getStatusRoleCount,
+} from './db';
 
 export let client: InfluxDB;
 export let writeApi: WriteApi;
@@ -14,7 +22,6 @@ export let writeApi: WriteApi;
 export function writeIntPoint(name: string, fieldName: string, value: number) {
   if (writeApi) writeApi.writePoint(new Point(name).intField(fieldName, value));
 }
-
 
 export async function configureInfluxDB() {
   if (config.INFLUX_URL && config.INFLUX_TOKEN && config.INFLUX_ORG && config.INFLUX_BUCKET) {
@@ -37,7 +44,7 @@ export async function configureInfluxDB() {
       writeApi.writePoint(
         new Point('users')
           .intField('users_cache_total', discordClient.users.cache.size)
-          .intField('users_db_total', getUserCount())
+          .intField('users_db_total', getUserCount()),
       );
       writeIntPoint('db', 'calls', dbStats.dbCalls);
       const ram = process.memoryUsage();
@@ -47,7 +54,7 @@ export async function configureInfluxDB() {
           .intField('heap_total', ram.heapTotal)
           .intField('heap_used', ram.heapUsed)
           .intField('external', ram.external)
-          .intField('array_buffers', ram.arrayBuffers)
+          .intField('array_buffers', ram.arrayBuffers),
       );
 
       resetBotStats();
@@ -55,12 +62,7 @@ export async function configureInfluxDB() {
 
       writeIntPoint('metrics', 'time_ms', performance.now() - startTime);
     }, 1000);
-
-    process.on('exit', () => {
-      writeApi.close();
-    });
   } else {
     log.info('InfluxDB not configured');
   }
 }
-

@@ -8,8 +8,6 @@
     "type": "git",
     "url": "https://github.com/tippf3hlr/activity-roles.git"
   },
-  "module": "src/index.ts",
-  "type": "module",
   "dependencies": {
     "@influxdata/influxdb-client": "^1.33.2",
     "better-sqlite3": "^9.4.3",
@@ -29,8 +27,5 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.2"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
   }
 }

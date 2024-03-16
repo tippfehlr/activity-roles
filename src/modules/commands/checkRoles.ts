@@ -22,55 +22,62 @@ export default {
 
   execute: async interaction => {
     if (!interaction.guild) return;
-    if (checkrolesCurrentGuilds.has(interaction.guild.id)) {
-      log.debug(
-        `checkroles already running on ${interaction.guild.name} (${interaction.guild.id})`,
-      );
-      await interaction.reply({
-        content: 'A `/checkroles` request is already running for this guild.',
-        ephemeral: true,
-      });
-      return;
-    }
-    checkrolesCurrentGuilds.add(interaction.guild.id);
 
-    log.debug(
-      `started checkroles on ${interaction.guild.name} (${interaction.guild.id}): requested by ${interaction.user.username} (${interaction.user.id})`,
-    );
-    await interaction.deferReply({ ephemeral: true });
-    const locale = getLang(interaction);
-    if (!interaction.guild) return;
-
-    console.time('database fetch');
-    const activityRoles = prepare('SELECT * from activityRoles WHERE guildID = ?').all(
-      interaction.guild.id,
-    ) as DBActivityRole[];
-    const statusRoles = prepare('SELECT * from statusRoles WHERE guildID = ?').all(
-      interaction.guild.id,
-    ) as DBStatusRole[];
-    const activeTemporaryRoles = prepare(
-      'SELECT * from activeTemporaryRoles WHERE guildID = ?',
-    ).all(interaction.guild.id) as DBActiveTemporaryRoles[];
-    console.timeEnd('database fetch');
-
-    interaction.guild.presences.cache.forEach(presence => {
-      if (!interaction.guild) return;
-      if (!presence.member) return;
-      processRoles({
-        memberStatus: presence.status,
-        statusRoles,
-        activities: presence.activities,
-        activityRoles,
-        activeTemporaryRoles,
-        guild: interaction.guild,
-        member: presence.member,
-      });
+    await interaction.reply({
+      content: 'this command is not ready to be used yet, sorry.',
+      ephemeral: true,
     });
+    return;
 
-    for (const activeTemporaryRole of activeTemporaryRoles) {
-      if (!userHashes.includes(activeTemporaryRole.userIDHash)) {
-      }
-    }
+    // if (checkrolesCurrentGuilds.has(interaction.guild.id)) {
+    //   log.debug(
+    //     `checkroles already running on ${interaction.guild.name} (${interaction.guild.id})`,
+    //   );
+    //   await interaction.reply({
+    //     content: 'A `/checkroles` request is already running for this guild.',
+    //     ephemeral: true,
+    //   });
+    //   return;
+    // }
+    // checkrolesCurrentGuilds.add(interaction.guild.id);
+    //
+    // log.debug(
+    //   `started checkroles on ${interaction.guild.name} (${interaction.guild.id}): requested by ${interaction.user.username} (${interaction.user.id})`,
+    // );
+    // await interaction.deferReply({ ephemeral: true });
+    // const locale = getLang(interaction);
+    // if (!interaction.guild) return;
+    //
+    // console.time('database fetch');
+    // const activityRoles = prepare('SELECT * from activityRoles WHERE guildID = ?').all(
+    //   interaction.guild.id,
+    // ) as DBActivityRole[];
+    // const statusRoles = prepare('SELECT * from statusRoles WHERE guildID = ?').all(
+    //   interaction.guild.id,
+    // ) as DBStatusRole[];
+    // const activeTemporaryRoles = prepare(
+    //   'SELECT * from activeTemporaryRoles WHERE guildID = ?',
+    // ).all(interaction.guild.id) as DBActiveTemporaryRoles[];
+    // console.timeEnd('database fetch');
+    //
+    // interaction.guild.presences.cache.forEach(presence => {
+    //   if (!interaction.guild) return;
+    //   if (!presence.member) return;
+    //   processRoles({
+    //     memberStatus: presence.status,
+    //     statusRoles,
+    //     activities: presence.activities,
+    //     activityRoles,
+    //     activeTemporaryRoles,
+    //     guild: interaction.guild,
+    //     member: presence.member,
+    //   });
+    // });
+
+    // for (const activeTemporaryRole of activeTemporaryRoles) {
+    //   if (!userHashes.includes(activeTemporaryRole.userIDHash)) {
+    //   }
+    // }
 
     // fetching all members is waaaaay too slow (a couple members per second, and it blocks the bot for that server)
     // log.debug(`before fetch: ${interaction.guild.members.cache.size} members`);
@@ -109,9 +116,9 @@ export default {
     //   console.log(`${++i} / ${total}`);
     // });
     // console.timeEnd('re-checking roles');
-    await interaction.editReply({
-      content: '✅ ' + __({ phrase: 're-checked all users/roles', locale }),
-    });
-    checkrolesCurrentGuilds.delete(interaction.guild.id);
+    // await interaction.editReply({
+    //   content: '✅ ' + __({ phrase: 're-checked all users/roles', locale }),
+    // });
+    // checkrolesCurrentGuilds.delete(interaction.guild.id);
   },
 } as Command;
