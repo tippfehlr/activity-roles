@@ -1,5 +1,5 @@
 import fs from 'fs';
-import sqlite3 from 'better-sqlite3';
+import { Database } from 'bun:sqlite';
 import { createHash } from 'crypto';
 import { ActivityType, CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
 import { Locale, log } from './messages';
@@ -54,11 +54,11 @@ export interface DBVersion {
   enforcer: 0;
 }
 
-let db: sqlite3.Database;
+let db: Database;
 
 export const stats = {
   dbCalls: 0,
-}
+};
 
 export function resetStats() {
   stats.dbCalls = 0;
@@ -66,39 +66,38 @@ export function resetStats() {
 
 export function prepare(query: string) {
   stats.dbCalls++;
-  return db.prepare(query);
+  return db.query(query);
 }
-
 
 export function prepareDB() {
   if (!fs.existsSync('db')) fs.mkdirSync('db');
-  db = new sqlite3('db/activity-roles.db');
+  db = new Database('db/activity-roles.db');
 
   // `v1.9.1` live -> permanent: the database was not updated on purpose.
   // enforcer: see https://stackoverflow.com/a/3010975/16292720 (comment 4)
   prepare(
-    'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))'
+    'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)'
+    'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT, requiredRoleID TEXT)'
+    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT, requiredRoleID TEXT)',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))'
+    'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS statusRoles (guildID TEXT, type INTEGER, roleID TEXT, PRIMARY KEY (guildID, type, roleID))'
+    'CREATE TABLE IF NOT EXISTS statusRoles (guildID TEXT, type INTEGER, roleID TEXT, PRIMARY KEY (guildID, type, roleID))',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userIDHash TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userIDHash, guildID, activityName))'
+    'CREATE TABLE IF NOT EXISTS currentlyActiveActivities (userIDHash TEXT, guildID TEXT, activityName TEXT, PRIMARY KEY (userIDHash, guildID, activityName))',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS activeTemporaryRoles (userIDHash, guildID TEXT, roleID TEXT, PRIMARY KEY (userIDHash, guildID, roleID))'
+    'CREATE TABLE IF NOT EXISTS activeTemporaryRoles (userIDHash, guildID TEXT, roleID TEXT, PRIMARY KEY (userIDHash, guildID, roleID))',
   ).run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))'
+    'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))',
   ).run();
 
   const latestDBVersion = 3;
@@ -126,7 +125,7 @@ export function prepareDB() {
   //TODO: add bot version?
   if (dbVersion > latestDBVersion) {
     log.warn(
-      `Database version: ${dbVersion}. The latest known database version is ${latestDBVersion}! Are you opening a database created with a newer version?`
+      `Database version: ${dbVersion}. The latest known database version is ${latestDBVersion}! Are you opening a database created with a newer version?`,
     );
   } else {
     log.info(`Database version: ${dbVersion}`);
@@ -169,7 +168,7 @@ export function getLang(interaction: CommandInteraction | StringSelectMenuIntera
 
 export async function addActivity(guildID: string, activityName: string) {
   prepare(
-    'INSERT INTO activityStats VALUES (?, ?, ?) ON CONFLICT(guildID, activityName) DO UPDATE SET count = count + 1'
+    'INSERT INTO activityStats VALUES (?, ?, ?) ON CONFLICT(guildID, activityName) DO UPDATE SET count = count + 1',
   ).run(guildID, activityName, 1);
 }
 
@@ -178,7 +177,9 @@ export function getUserCount(): number {
 }
 
 export function getActivityRoleCount(): number {
-  return (prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number })[
+    'COUNT(*)'
+  ];
 }
 
 export function getStatusRoleCount(): number {
@@ -186,17 +187,23 @@ export function getStatusRoleCount(): number {
 }
 
 export function getCurrentlyActiveActivityCount(): number {
-  return (prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number })['COUNT(*)'];
+  return (
+    prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as { 'COUNT(*)': number }
+  )['COUNT(*)'];
 }
 
 export function getTempRoleCount(): number {
-  return (prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 1').get() as { 'COUNT(*)': number; })['COUNT(*)'];
+  return (
+    prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 1').get() as { 'COUNT(*)': number }
+  )['COUNT(*)'];
 }
 
 export function getPermRoleCount(): number {
-  return (prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 0').get() as { 'COUNT(*)': number; })['COUNT(*)'];
+  return (
+    prepare('SELECT COUNT(*) FROM activityRoles WHERE live = 0').get() as { 'COUNT(*)': number }
+  )['COUNT(*)'];
 }
 
 export function getRolesCount(): number {
-  return getActivityRoleCount() + getStatusRoleCount()
+  return getActivityRoleCount() + getStatusRoleCount();
 }
