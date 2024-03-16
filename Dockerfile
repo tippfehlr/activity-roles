@@ -1,30 +1,29 @@
 # https://stackoverflow.com/a/58487433
 # To prevent cache invalidation from changes in fields other than dependencies
 
-FROM --platform=$BUILDPLATFORM endeveit/docker-jq AS deps
+FROM endeveit/docker-jq AS jq
 COPY package.json /tmp
 RUN jq '{ dependencies, devDependencies }' < /tmp/package.json > /tmp/deps.json
 
-FROM --platform=$BUILDPLATFORM node:current-alpine AS build
-WORKDIR /activity-roles/
-RUN apk add python3 make g++
-RUN npm i -g pnpm
-COPY tsconfig.json pnpm-lock.yaml .
-COPY --from=deps /tmp/deps.json ./package.json
-RUN pnpm i
-COPY src src
-RUN ./node_modules/typescript/bin/tsc --outDir out/
+FROM oven/bun AS base
+WORKDIR /activity-roles
 
-FROM node:current-alpine AS release
-WORKDIR /activity-roles/
-RUN apk add python3 make g++
-RUN npm i -g pnpm
+FROM base AS build
+# RUN mkdir -p /temp/dev
+# COPY --from=jq /tmp/deps.json /temp/dev/package.json
+# COPY bun.lockb /temp/dev/bun.lockb
+# RUN /temp/dev && bun install --frozen-lockfile
+
+COPY --from=jq /tmp/deps.json ./package.json
+COPY bun.lockb bun.lockb
+RUN bun install --frozen-lockfile --production
+
+FROM base AS release
+COPY --from=build /activity-roles/node_modules node_modules
 COPY img/discord-header.png img/discord-header.png
 COPY locales locales
-COPY pnpm-lock.yaml .
-COPY --from=deps /tmp/deps.json ./package.json
-RUN pnpm i -P
-COPY --from=build /activity-roles/out src
+COPY src src
 
+ENV NODE_ENV=production
 VOLUME ["/activity-roles/db"]
-ENTRYPOINT ["node", "src/index.js"]
+ENTRYPOINT ["bun", "run", "src/index.ts"]
