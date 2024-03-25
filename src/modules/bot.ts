@@ -160,7 +160,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   stats.presenceUpdates++;
 
   let debug = false;
-
   if (newMember.userId === '712702707986595880' && newMember.guild?.id === '226115726509998090') {
     debug = true;
   }
@@ -182,7 +181,6 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   const userConfig = getUserConfig(newMember.userId);
   if (!userConfig.autoRole) return;
 
-  const highestBotRolePosition = newMember.guild.members.me?.roles.highest.position;
   const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
   const guildConfig = getGuildConfig(guildID);
   // if (debug) console.time('fetch member');
@@ -249,6 +247,69 @@ export async function processRoles({
   const tempRoleIDsToBeAdded: Set<string> = new Set();
   const userIDHash = hashUserID(member.id);
 
+  const highestBotRolePosition = guild.members.me?.roles.highest.position;
+  const addDiscordRoleToMember = async ({
+    add,
+    roleID,
+    permanent,
+    userIDHash,
+  }: {
+    add: boolean;
+    roleID: string;
+    permanent?: boolean;
+    userIDHash: string;
+  }) => {
+    const role = guild.roles.cache.get(roleID);
+    if (!role) {
+      prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
+      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
+      prepare('DELETE FROM activeTemporaryRoles WHERE guildID = ? AND roleID = ?').run(
+        guild.id,
+        roleID,
+      );
+      log.warn(`Role ${roleID} not found in guild ${guild.id} and was deleted from the database`);
+      return;
+    }
+    if (!highestBotRolePosition || highestBotRolePosition <= role.position) {
+      log.warn(
+        `Role ${role.name} is higher than the bot’s highest role and was skipped (in guild ${guild.name})`,
+      );
+      return;
+    }
+
+    if (add) {
+      // does the cache need to be checked?
+      if (member.roles.cache.has(role.id)) {
+        log.warn(`the user already has the role ${role.name} in guild ${guild.name} (${guild.id})`);
+        return;
+      }
+      if (permanent) {
+        writeIntPoint('roles_added', 'permanent_roles_added', 1);
+      } else {
+        writeIntPoint('roles_added', 'temporary_roles_added', 1);
+        prepare(
+          'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)',
+        ).run(userIDHash, guild.id, roleID);
+      }
+      await member.roles.add(role);
+      stats.rolesAdded++;
+    } else {
+      // does the cache need to be checked?
+      if (!member.roles.cache.has(role.id)) {
+        log.warn(
+          `can’t remove the role: the user doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
+        );
+        return;
+      }
+      await member.roles.remove(role);
+      stats.rolesRemoved++;
+
+      prepare(
+        'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?',
+      ).run(guild.id, userIDHash, roleID);
+    }
+  };
+
   // if user is offline, skip checking for added activities
   if (memberStatus !== 'offline') {
     const addRole = ({ roleID, permanent }: { roleID: string; permanent: boolean }) => {
@@ -286,80 +347,33 @@ export async function processRoles({
     });
 
     // ------------ “apply changes” ------------
-    const addDiscordRoleToMember = ({
-      roleID,
-      permanent,
-    }: {
-      roleID: string;
-      permanent: boolean;
-    }) => {
-      const role = guild.roles.cache.get(roleID);
-      if (!role) {
-        prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
-        prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
-        prepare('DELETE FROM activeTemporaryRoles WHERE guildID = ? AND roleID = ?').run(
-          guild.id,
-          roleID,
-        );
-        return;
-      }
-      const highestBotRolePosition = guild.members.me?.roles.highest.position;
-      if (!highestBotRolePosition || highestBotRolePosition <= role.position) return;
-      if (member.roles.cache.has(role.id)) return;
-      if (permanent) {
-        writeIntPoint('roles_added', 'permanent_roles_added', 1);
-      } else {
-        writeIntPoint('roles_added', 'temporary_roles_added', 1);
-        prepare(
-          'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)',
-        ).run(userIDHash, guild.id, roleID);
-      }
-      member.roles.add(role);
-      stats.rolesAdded++;
-    };
-    permanentRoleIDsToBeAdded.forEach(roleID => {
-      addDiscordRoleToMember({ roleID, permanent: true });
-    });
-    tempRoleIDsToBeAdded.forEach(roleID => {
-      addDiscordRoleToMember({ roleID, permanent: false });
-    });
+
+    for (const roleID of permanentRoleIDsToBeAdded) {
+      await addDiscordRoleToMember({ roleID, permanent: true, add: true, userIDHash });
+    }
+    for (const roleID of tempRoleIDsToBeAdded) {
+      await addDiscordRoleToMember({ roleID, permanent: false, add: true, userIDHash });
+    }
   }
 
   // remove temporary roles --- new activeTemporaryRoles
-  activeTemporaryRoles.forEach(activeTemporaryRole => {
+  for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      const role = guild.roles.cache.get(activeTemporaryRole.roleID);
-      // this purposefully does not check if the user has the role:
-      // trying to remove it when the user doesn’t have it does nothing
-      // and the local role cache *could* be invalid resulting in roles getting stuck
-      if (role) member.roles.remove(role);
-      prepare(
-        'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?',
-      ).run(guild?.id, member.id, activeTemporaryRole.roleID);
-      stats.rolesRemoved++;
+      await addDiscordRoleToMember({ roleID: activeTemporaryRole.roleID, add: false, userIDHash });
     }
-  });
+  }
 
   // @deprecated remove all roles still in currentlyActiveActivities
-  (
-    prepare('SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?').all(
-      userIDHash,
-      guild.id,
-    ) as DBCurrentlyActiveActivity[]
-  ).forEach(activeActivity => {
-    activityRoles
-      .map(activityRole => activityRole.roleID)
-      .forEach(roleID => {
-        const role = guild?.roles.cache.get(roleID);
-        if (role && member?.roles.cache.has(role.id)) {
-          member?.roles.remove(role);
-        }
-        prepare(
-          'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?',
-        ).run(userIDHash, guild.id, activeActivity.activityName);
-        stats.rolesRemoved++;
-      });
-  });
+  for (const activeActivity of prepare(
+    'SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?',
+  ).all(userIDHash, guild.id) as DBCurrentlyActiveActivity[]) {
+    for (const roleID of activityRoles.map(activityRole => activityRole.roleID)) {
+      await addDiscordRoleToMember({ roleID, add: false, userIDHash });
+      prepare(
+        'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?',
+      ).run(userIDHash, guild.id, activeActivity.activityName);
+    }
+  }
 }
 
 client.on(Events.GuildCreate, guild => {
