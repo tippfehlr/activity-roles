@@ -4,22 +4,22 @@ import fs from 'fs';
 
 import { prepare, DBActivityRole, DBStatusRole, getLang } from '../db';
 import { Command } from '../commandHandler';
-import { __, __h_dc, getEnumKey } from '../messages';
+import { __, discordTranslations, getEnumKey } from '../messages';
 import config from '../config';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('listroles')
     .setDescription('Lists all managed roles in your guild.')
-    .setDescriptionLocalizations(__h_dc('Lists all managed roles in your guild.'))
+    .setDescriptionLocalizations(discordTranslations('Lists all managed roles in your guild.'))
     .setDMPermission(false),
 
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const res: DBActivityRole[] =
-      prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-        .all(interaction.guild!.id) as DBActivityRole[];
+    const res: DBActivityRole[] = prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(
+      interaction.guild!.id,
+    ) as DBActivityRole[];
     let activityRolesTable = '';
     if (res.length === 0) {
       activityRolesTable = __({ phrase: 'There are no activity roles in this guild.', locale });
@@ -30,31 +30,32 @@ export default {
           __({ phrase: 'Role', locale }),
           __({ phrase: 'Activity', locale }),
           __({ phrase: 'Exact Activity Name', locale }),
-          __({ phrase: 'Permanent', locale })
-        ]
+          __({ phrase: 'Permanent', locale }),
+        ],
       ];
       for (const i in res) {
         array.push([
           String(Number(i) + 1),
           interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-          ` <@&${res[i].roleID}>`,
+            ` <@&${res[i].roleID}>`,
           res[i].activityName,
           String(Boolean(res[i].exactActivityName)),
-          String(!res[i].live)
+          String(!res[i].live),
         ]);
       }
       activityRolesTable = table(array, {
         drawHorizontalLine: (index: number) => {
           return index === 0 || index === 1 || index === array.length;
-        }
+        },
       });
     }
     // ------------ status roles ------------
 
     let statusRoles = '';
     (
-      prepare('SELECT * FROM statusRoles WHERE guildID = ?')
-        .all(interaction.guildId) as DBStatusRole[]
+      prepare('SELECT * FROM statusRoles WHERE guildID = ?').all(
+        interaction.guildId,
+      ) as DBStatusRole[]
     ).forEach(statusRole => {
       statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;
     });
@@ -68,10 +69,10 @@ export default {
         new EmbedBuilder()
           .setTitle(__({ phrase: 'Status Roles', locale }))
           .setDescription(statusRoles)
-          .setColor(config.COLOR)
+          .setColor(config.COLOR),
       ],
-      files: [filename]
+      files: [filename],
     });
     fs.unlinkSync(filename);
-  }
+  },
 } as Command;

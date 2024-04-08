@@ -3,32 +3,34 @@ import fs from 'fs';
 
 import { prepare, DBActivityRole, getLang } from '../db';
 import { Command } from '../commandHandler';
-import { __, __h_dc } from '../messages';
+import { __, discordTranslations } from '../messages';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('export')
     .setDescription('Exports all activity roles in your guild.')
-    .setDescriptionLocalizations(__h_dc('Lists all activity roles in your guild.'))
+    .setDescriptionLocalizations(discordTranslations('Lists all activity roles in your guild.'))
     .setDMPermission(false)
     .addBooleanOption(option =>
       option
         .setName('roleids')
         .setDescription('Show role IDs (can’t be imported in another guild)')
-        .setDescriptionLocalizations(__h_dc('Show role IDs (can’t be imported in another guild)'))
-        .setRequired(false)
+        .setDescriptionLocalizations(
+          discordTranslations('Show role IDs (can’t be imported in another guild)'),
+        )
+        .setRequired(false),
     ),
 
   execute: async interaction => {
     const locale = getLang(interaction);
     const roleIDs = (interaction.options.get('roleids') as boolean | null) ?? false;
 
-    const activityRoles: DBActivityRole[] =
-      prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-        .all(interaction.guild!.id) as any as DBActivityRole[];
+    const activityRoles: DBActivityRole[] = prepare(
+      'SELECT * FROM activityRoles WHERE guildID = ?',
+    ).all(interaction.guild!.id) as any as DBActivityRole[];
     if (activityRoles.length === 0) {
       interaction.reply({
-        content: __({ phrase: 'There are no activity roles in this guild.', locale })
+        content: __({ phrase: 'There are no activity roles in this guild.', locale }),
       });
       return;
     }
@@ -55,8 +57,8 @@ export default {
     const filename = `export-${interaction.id.substring(0, 7)}.txt`;
     fs.writeFileSync(filename, output);
     await interaction.reply({
-      files: [filename]
+      files: [filename],
     });
     fs.unlinkSync(filename);
-  }
+  },
 } as Command;

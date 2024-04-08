@@ -1,4 +1,4 @@
-import { __h_dc, locales, localesMap } from './../messages';
+import { discordTranslations, locales, localesMap } from './../messages';
 import { Locale, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../commandHandler';
 import { prepare, getGuildConfig, getLang, getUserConfig } from '../db';
@@ -10,12 +10,12 @@ export default {
   data: new SlashCommandBuilder()
     .setName('language')
     .setDescription('Sets the language of the bot')
-    .setDescriptionLocalizations(__h_dc('Sets the language of the bot'))
+    .setDescriptionLocalizations(discordTranslations('Sets the language of the bot'))
     .addSubcommand(subcommand =>
       subcommand
         .setName('guild')
         .setDescription('sets the language for the guild')
-        .setDescriptionLocalizations(__h_dc('sets the language for the guild'))
+        .setDescriptionLocalizations(discordTranslations('sets the language for the guild'))
         .addStringOption(option =>
           option
             .setName('language')
@@ -33,7 +33,7 @@ export default {
         .setName('user')
         .setDescription('sets the language for the user. Overwrites the guild language.')
         .setDescriptionLocalizations(
-          __h_dc('sets the language for the user. Overwrites the guild language.'),
+          discordTranslations('sets the language for the user. Overwrites the guild language.'),
         )
         .addStringOption(option =>
           option

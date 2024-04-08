@@ -1,4 +1,4 @@
-import { __h_dc } from './../messages';
+import { discordTranslations } from './../messages';
 import {
   Role,
   CommandInteraction,
@@ -24,14 +24,14 @@ export default {
   data: new SlashCommandBuilder()
     .setName('addactivityrole')
     .setDescription('Adds an activity role to your guild.')
-    .setDescriptionLocalizations(__h_dc('Adds an activity role to your guild.'))
+    .setDescriptionLocalizations(discordTranslations('Adds an activity role to your guild.'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(false)
     .addStringOption(option =>
       option
         .setName('activity')
         .setDescription('the name of the discord activity')
-        .setDescriptionLocalizations(__h_dc('the name of the discord activity'))
+        .setDescriptionLocalizations(discordTranslations('the name of the discord activity'))
         .setRequired(true),
     )
     .addRoleOption(option =>
@@ -41,7 +41,7 @@ export default {
           'If not provided, the bot will look for roles with the same name or create a new one',
         )
         .setDescriptionLocalizations(
-          __h_dc(
+          discordTranslations(
             'If not provided, the bot will look for roles with the same name or create a new one',
           ),
         )
@@ -54,7 +54,9 @@ export default {
           "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
         )
         .setDescriptionLocalizations(
-          __h_dc("If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"),
+          discordTranslations(
+            "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
+          ),
         )
         .setRequired(false),
     )
@@ -62,7 +64,9 @@ export default {
       option
         .setName('permanent')
         .setDescription('the role will not be removed again if set to true')
-        .setDescriptionLocalizations(__h_dc('the role will not be removed again if set to true'))
+        .setDescriptionLocalizations(
+          discordTranslations('the role will not be removed again if set to true'),
+        )
         .setRequired(false),
     ),
   execute: async interaction => {

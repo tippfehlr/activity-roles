@@ -4,13 +4,13 @@ import fs from 'fs';
 import { DBActivityStats, getLang, prepare } from '../db';
 import { Command } from '../commandHandler';
 import config from '../config';
-import { __, __h_dc } from '../messages';
+import { __, discordTranslations } from '../messages';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('activitystats')
     .setDescription('Shows a list of activities in this guild.')
-    .setDescriptionLocalizations(__h_dc('Shows a list of activities in this guild.'))
+    .setDescriptionLocalizations(discordTranslations('Shows a list of activities in this guild.'))
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
 

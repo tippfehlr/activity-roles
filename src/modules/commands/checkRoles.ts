@@ -1,7 +1,7 @@
 import { processRoles } from './../bot';
 import { Command } from '../commandHandler';
 
-import { __, __h_dc, log } from '../messages';
+import { __, discordTranslations, log } from '../messages';
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import {
   DBActiveTemporaryRoles,
@@ -16,7 +16,7 @@ export default {
   data: new SlashCommandBuilder()
     .setName('checkroles')
     .setDescription('re-check all users/roles')
-    .setDescriptionLocalizations(__h_dc('re-check all users/roles'))
+    .setDescriptionLocalizations(discordTranslations('re-check all users/roles'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(false),
 

@@ -1,5 +1,5 @@
 import { DBActivityRole, getLang, prepare } from '../db';
-import { __h_dc, log, __ } from '../messages';
+import { discordTranslations, log, __ } from '../messages';
 import config from '../config';
 import { Command } from '../commandHandler';
 
@@ -23,7 +23,7 @@ export default {
       'Deletes an activity role from your guild. Provide the activity or the role, or both.',
     )
     .setDescriptionLocalizations(
-      __h_dc(
+      discordTranslations(
         'Deletes an activity role from your guild. Provide the activity or the role, or both.',
       ),
     )
@@ -33,21 +33,25 @@ export default {
       option
         .setName('activity')
         .setDescription('the activity roles with this name will be deleted')
-        .setDescriptionLocalizations(__h_dc('the activity roles with this name will be deleted'))
+        .setDescriptionLocalizations(
+          discordTranslations('the activity roles with this name will be deleted'),
+        )
         .setRequired(false),
     )
     .addRoleOption(option =>
       option
         .setName('role')
         .setDescription('the activity roles of this role will be deleted')
-        .setDescriptionLocalizations(__h_dc('the activity roles of this role will be deleted'))
+        .setDescriptionLocalizations(
+          discordTranslations('the activity roles of this role will be deleted'),
+        )
         .setRequired(false),
     )
     .addBooleanOption(option =>
       option
         .setName('all')
         .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
-        .setDescriptionLocalizations(__h_dc('ATTENTION: DELETES ALL ACTIVITY ROLES'))
+        .setDescriptionLocalizations(discordTranslations('ATTENTION: DELETES ALL ACTIVITY ROLES'))
         .setRequired(false),
     ),
 

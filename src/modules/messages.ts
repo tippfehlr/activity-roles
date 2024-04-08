@@ -27,7 +27,7 @@ export const i18n = new I18n({
 });
 export const __ = i18n.__;
 
-export function __h_dc(s: string) {
+export function discordTranslations(s: string) {
   let dcTranslations: { [key: string]: string } = {};
 
   i18n.__h(s).forEach(language => {

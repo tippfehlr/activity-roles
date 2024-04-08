@@ -2,11 +2,11 @@ import {
   SlashCommandBuilder,
   PermissionsBitField,
   CommandInteraction,
-  EmbedBuilder
+  EmbedBuilder,
 } from 'discord.js';
 import { prepare, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
-import { __, __h_dc } from '../messages';
+import { __, discordTranslations } from '../messages';
 import config from '../config';
 
 export default {
@@ -14,7 +14,7 @@ export default {
     .setName('requirerole')
     .setDescription('Require users to have this role in order to receive Activity Roles.')
     .setDescriptionLocalizations(
-      __h_dc('Require users to have this role in order to receive Activity Roles.')
+      discordTranslations('Require users to have this role in order to receive Activity Roles.'),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(false)
@@ -22,13 +22,13 @@ export default {
       option
         .setName('role')
         .setDescription(
-          'The role to require. To get the current role, omit this. To reset, enter @everyone.'
+          'The role to require. To get the current role, omit this. To reset, enter @everyone.',
         )
         .setDescriptionLocalizations(
-          __h_dc(
-            'The role to require. To get the current role, omit this. To reset, enter @everyone.'
-          )
-        )
+          discordTranslations(
+            'The role to require. To get the current role, omit this. To reset, enter @everyone.',
+          ),
+        ),
     ),
   execute: async (interaction: CommandInteraction) => {
     const locale = getLang(interaction);
@@ -48,16 +48,16 @@ export default {
                   { phrase: '%s is already set as the required role.', locale },
                   role.id === interaction.guild?.roles.everyone.id
                     ? '@everyone'
-                    : `<@&${guildConfig.requiredRoleID}>`
-                )
+                    : `<@&${guildConfig.requiredRoleID}>`,
+                ),
               )
-              .setColor(config.COLOR)
-          ]
+              .setColor(config.COLOR),
+          ],
         });
       } else {
         prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
           role.id === interaction.guild?.roles.everyone.id ? null : role.id,
-          interaction.guildId!
+          interaction.guildId!,
         );
         interaction.reply({
           embeds: [
@@ -66,13 +66,13 @@ export default {
                 __(
                   {
                     phrase: 'Users now need to have %s in order to receive Activity Roles.',
-                    locale
+                    locale,
                   },
-                  role.id === interaction.guild?.roles.everyone.id ? '@everyone' : `<@&${role.id}>`
-                )
+                  role.id === interaction.guild?.roles.everyone.id ? '@everyone' : `<@&${role.id}>`,
+                ),
               )
-              .setColor(config.COLOR)
-          ]
+              .setColor(config.COLOR),
+          ],
         });
       }
     } else {
@@ -84,12 +84,12 @@ export default {
                 { phrase: 'Users need to have %s in order to receive Activity Roles.', locale },
                 guildConfig.requiredRoleID === null
                   ? '@everyone'
-                  : `<@&${guildConfig.requiredRoleID}>`
-              )
+                  : `<@&${guildConfig.requiredRoleID}>`,
+              ),
             )
-            .setColor(config.COLOR)
-        ]
+            .setColor(config.COLOR),
+        ],
       });
     }
-  }
+  },
 } as Command;
