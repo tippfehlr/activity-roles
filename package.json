@@ -1,7 +1,7 @@
 {
   "name": "activity-roles",
   "description": "A Discord bot that gives roles to users based on their Discord presence",
-  "version": "1.9.5",
+  "version": "1.10.0",
   "license": "AGPL-3.0",
   "author": "tippfehlr",
   "repository": {
