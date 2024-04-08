@@ -1,15 +1,10 @@
 import { pino } from 'pino';
-
 import { I18n } from 'i18n';
 
-enum locale { 'en-US', 'cs', 'nl', 'pt-BR', 'de', 'ru', 'uk', 'et-EE' }
-export type Locale = keyof typeof locale;
-export const locales: Locale[] = Object.keys(locale).filter(item => isNaN(Number(item))) as unknown as Locale[];
+export const locales = ['en-US', 'cs', 'nl', 'pt-BR', 'de', 'ru', 'uk', 'et-EE', 'fr'];
 
 // Estonian is not supported by discord and therefore can’t be used for command descriptions.
-enum discordLocale { 'en-US', 'cs', 'nl', 'pt-BR', 'de', 'ru', 'uk' }
-export type DiscordLocale = keyof typeof discordLocale;
-export const discordLocales: DiscordLocale[] = Object.keys(discordLocale).filter(item => isNaN(Number(item))) as unknown as DiscordLocale[];
+const discordNotSupported = ['et-EE'];
 
 // as long as all locales from const locales are defined here, this is safe.
 export const localesMap: { [locale: string]: string } = {
@@ -20,31 +15,32 @@ export const localesMap: { [locale: string]: string } = {
   de: 'Deutsch (German)',
   ru: 'Русский (Russian)',
   uk: 'Укра (Ukrainian)',
-  'et-EE': 'Eesti (Estonian)'
-}
+  'et-EE': 'Eesti (Estonian)',
+  fr: 'Français (French)',
+};
 
 export const i18n = new I18n({
   locales,
   directory: __dirname + '/../../locales',
   defaultLocale: 'en-US',
-  indent: '  '
+  indent: '  ',
 });
 export const __ = i18n.__;
 
-export const __h_dc = (s: string) => {
-  let dcTranslations: { [locale in DiscordLocale]?: string } = {};
+export function __h_dc(s: string) {
+  let dcTranslations: { [key: string]: string } = {};
+
   i18n.__h(s).forEach(language => {
-    // language: { [locale: string]: string}
-    if (discordLocales.includes(Object.keys(language)[0] as DiscordLocale)) {
+    if (!discordNotSupported.includes(Object.keys(language)[0])) {
       dcTranslations = { ...dcTranslations, ...language };
     }
   });
   return dcTranslations;
-};
+}
 
 export function getEnumKey<TEnumKey extends string, TEnumVal>(
   myEnum: { [key in TEnumKey]: TEnumVal },
-  enumValue: TEnumVal
+  enumValue: TEnumVal,
 ): string {
   return Object.keys(myEnum)[Object.values(myEnum).indexOf(enumValue as unknown as TEnumVal)];
 }
@@ -54,8 +50,8 @@ export const log = pino({
     target: 'pino-pretty',
     options: {
       colorize: true,
-      translateTime: 'HH:MM:ss.l'
-    }
+      translateTime: 'YYYY-mm-dd HH:MM:ss.l',
+    },
   },
-  level: process.env.LOG_LEVEL || 'info'
+  level: process.env.LOG_LEVEL || 'info',
 });

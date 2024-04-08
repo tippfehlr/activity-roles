@@ -12,12 +12,12 @@ import {
   SlashCommandBuilder,
   ComponentType,
   Colors,
-  ChannelType
+  ChannelType,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
 import config from '../config';
-import { Locale, log, __ } from '../messages';
+import { log, __ } from '../messages';
 import { prepare, getLang } from '../db';
 
 export default {
@@ -32,46 +32,46 @@ export default {
         .setName('activity')
         .setDescription('the name of the discord activity')
         .setDescriptionLocalizations(__h_dc('the name of the discord activity'))
-        .setRequired(true)
+        .setRequired(true),
     )
     .addRoleOption(option =>
       option
         .setName('role')
         .setDescription(
-          'If not provided, the bot will look for roles with the same name or create a new one'
+          'If not provided, the bot will look for roles with the same name or create a new one',
         )
         .setDescriptionLocalizations(
           __h_dc(
-            'If not provided, the bot will look for roles with the same name or create a new one'
-          )
+            'If not provided, the bot will look for roles with the same name or create a new one',
+          ),
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .addBooleanOption(option =>
       option
         .setName('exact_activity_name')
         .setDescription(
-          "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"
+          "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
         )
         .setDescriptionLocalizations(
-          __h_dc("If false, the activity name 'Chrome' would also trigger for 'Google Chrome'")
+          __h_dc("If false, the activity name 'Chrome' would also trigger for 'Google Chrome'"),
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .addBooleanOption(option =>
       option
         .setName('permanent')
         .setDescription('the role will not be removed again if set to true')
-        .setDescriptionLocalizations(
-          __h_dc('the role will not be removed again if set to true')
-        )
-        .setRequired(false)
+        .setDescriptionLocalizations(__h_dc('the role will not be removed again if set to true'))
+        .setRequired(false),
     ),
   execute: async interaction => {
     const locale = getLang(interaction);
     if (!interaction.channel) return;
     if (interaction.channel.type !== ChannelType.GuildText) {
-      await interaction.reply(__({ phrase: 'This command can only be used in text channels.', locale }));
+      await interaction.reply(
+        __({ phrase: 'This command can only be used in text channels.', locale }),
+      );
       return;
     }
 
@@ -80,15 +80,18 @@ export default {
       await interaction.reply({
         content: __({
           phrase: 'The activity name is too long! Maximum is 1024 characters.',
-          locale
+          locale,
         }),
-        ephemeral: true
+        ephemeral: true,
       });
       return;
     }
 
-    const exactActivityName = (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ?? false;
-    const permanent = (interaction.options.get('permanent', false)?.value as boolean | undefined) ?? false;
+    const exactActivityName =
+      (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
+      false;
+    const permanent =
+      (interaction.options.get('permanent', false)?.value as boolean | undefined) ?? false;
 
     let role = interaction.options.get('role', false)?.role;
     if (!role) {
@@ -115,18 +118,18 @@ export default {
                 return {
                   label: role.name,
                   description: role.id,
-                  value: role.id
+                  value: role.id,
                 };
               }),
               {
                 label: __({ phrase: 'Create %s', locale }, activityName),
                 description: __(
                   { phrase: "Create a new role with the name '%s'", locale },
-                  activityName
+                  activityName,
                 ),
-                value: 'create'
-              }
-            ])
+                value: 'create',
+              },
+            ]),
         );
         interaction.channel
           .createMessageComponentCollector({
@@ -134,7 +137,7 @@ export default {
             filter: componentInteraction =>
               componentInteraction.customId === 'addactivityrole:roleSelector',
             time: 60000,
-            max: 1
+            max: 1,
           })
           .once('collect', async selectMenuInteraction => {
             if (selectMenuInteraction.user.id !== interaction.user.id) return;
@@ -148,32 +151,39 @@ export default {
                 null;
             }
             if (role) {
-              process(selectMenuInteraction, role, activityName, exactActivityName, permanent, locale);
+              process(
+                selectMenuInteraction,
+                role,
+                activityName,
+                exactActivityName,
+                permanent,
+                locale,
+              );
             }
           });
         interaction.reply({
           components: [row],
-          ephemeral: true
+          ephemeral: true,
         });
       }
     } else {
       process(interaction, role, activityName, exactActivityName, permanent, locale);
     }
-  }
+  },
 } as Command;
 
 async function createRole(interaction: CommandInteraction, activityName: string) {
   return await interaction.guild!.roles.create({
     name: activityName,
     color: config.COLOR,
-    mentionable: true
+    mentionable: true,
   });
 }
 
 function reply(
   interaction: CommandInteraction | StringSelectMenuInteraction,
   content?: string,
-  embeds?: EmbedBuilder[]
+  embeds?: EmbedBuilder[],
 ) {
   if (interaction.type === InteractionType.ApplicationCommand) {
     interaction.reply({ content, embeds, ephemeral: true });
@@ -188,7 +198,7 @@ function process(
   activityName: string,
   exactActivityName: boolean,
   permanent: boolean,
-  locale: Locale
+  locale: string,
 ) {
   if (!role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
   if (role.name === '@everyone') {
@@ -212,8 +222,8 @@ function process(
           __({
             phrase:
               'To assign roles, my highest role needs to be higher than the role I am assigning.\nMove any of my roles higher than the role I should manage.',
-            locale
-          })
+            locale,
+          }),
         )
         .addFields(
           {
@@ -222,25 +232,27 @@ function process(
               `<@&${interaction.guild.members.me.roles.highest.id}> ` +
               __(
                 { phrase: '(position #%s)', locale },
-                interaction.guild.members.me.roles.highest.position.toString()
-              )
+                interaction.guild.members.me.roles.highest.position.toString(),
+              ),
           },
           {
             name: __({ phrase: 'the activity role:', locale }),
             value:
-              `<@&${role.id}> ` + __({ phrase: '(position #%s)', locale }, role.position.toString())
-          }
-        )
+              `<@&${role.id}> ` +
+              __({ phrase: '(position #%s)', locale }, role.position.toString()),
+          },
+        ),
     ]);
     return;
   }
   if (
-    prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?')
-      .get(interaction.guild!.id, role.id, activityName)
+    prepare(
+      'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
+    ).get(interaction.guild!.id, role.id, activityName)
   ) {
     reply(
       interaction,
-      __({ phrase: ':x: That activity role already exists in this guild! :x:', locale })
+      __({ phrase: ':x: That activity role already exists in this guild! :x:', locale }),
     );
     return;
   } else {
@@ -249,10 +261,10 @@ function process(
       activityName,
       role.id,
       Number(exactActivityName),
-      Number(!permanent)
+      Number(!permanent),
     );
     log.info(
-      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}`
+      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}`,
     );
     reply(interaction, undefined, [
       new EmbedBuilder()
@@ -263,13 +275,13 @@ function process(
           { name: __({ phrase: 'Role', locale }), value: `<@&${role.id}>` },
           {
             name: __({ phrase: 'Exact Activity Name', locale }),
-            value: exactActivityName ? __('Yes') : __('No')
+            value: exactActivityName ? __('Yes') : __('No'),
           },
           {
             name: __({ phrase: 'Permanent', locale }),
-            value: permanent ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale })
-          }
-        )
+            value: permanent ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale }),
+          },
+        ),
     ]);
   }
 }

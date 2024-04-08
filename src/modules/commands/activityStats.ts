@@ -17,17 +17,17 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const activityStats =
-      prepare('SELECT * FROM activityStats WHERE guildID = ?')
-        .all(interaction.guildId!) as DBActivityStats[];
+    const activityStats = prepare('SELECT * FROM activityStats WHERE guildID = ?').all(
+      interaction.guildId!,
+    ) as DBActivityStats[];
 
     if (activityStats.length === 0) {
       interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(__({ phrase: 'No activity stats found.', locale }))
-            .setColor(config.COLOR)
-        ]
+            .setColor(config.COLOR),
+        ],
       });
     } else {
       activityStats.sort((a, b) => {
@@ -41,9 +41,9 @@ export default {
       fs.writeFileSync(filename, activities);
       await interaction.reply({
         content: __({ phrase: 'Activities (sorted by frequency):', locale }),
-        files: [filename]
+        files: [filename],
       });
       fs.unlinkSync(filename);
     }
-  }
+  },
 } as Command;

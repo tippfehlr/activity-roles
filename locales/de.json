@@ -2,7 +2,7 @@
   "Adds an activity role to your guild.": "Fügt deiner Gilde eine Aktivitätsrolle hinzu.",
   "the name of the discord activity": "der Name der Discord-Aktivität",
   "If not provided, the bot will look for roles with the same name or create a new one": "Wenn nicht gegeben, wird der Bot Rollen mit dem gleichen Namen suchen oder eine neue erstellen",
-  "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Wenn falsch, wird der Bot für die Aktivität 'Chrome' auch eine Rolle für die Aktivität 'Google Chrome' vergeben",
+  "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Wenn falsch, gilt die Aktivität 'Chrome' auch für die Rolle 'Google Chrome'",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Löscht eine Aktivitätsrolle. Gib die Aktivität, die Rolle oder beides an.",
   "the activity roles with this name will be deleted": "die Aktivitätsrollen mit diesem Namen werden gelöscht",
   "the activity roles of this role will be deleted": "die Aktivitätsrollen dieser Rolle werden gelöscht",
@@ -102,5 +102,6 @@
   "Yes": "Ja",
   ":x: That activity role already exists in this guild! :x:": ":x: Diese Aktivitätsrolle existiert bereits in dieser Gilde! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Ich benutze den Bot nicht selbst. Wenn Sie die Entwicklung beschleunigen möchten oder mir helfen wollen, die Server zu bezahlen, sollten Sie in Erwägung ziehen mich zu unterstützen.",
-  "the role will not be removed again if set to true": "die Rolle wird nicht wieder entfernt, wenn sie auf true gesetzt wird"
+  "the role will not be removed again if set to true": "die Rolle wird nicht wieder entfernt, wenn sie auf true gesetzt wird",
+  "re-check all users/roles": "re-check all users/roles"
 }

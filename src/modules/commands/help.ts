@@ -1,9 +1,8 @@
-import { commandHandler } from './../bot';
 import { Command } from '../commandHandler';
 
 import config from '.././config';
-import { DiscordLocale, __, __h_dc, discordLocales } from '../messages';
-import { EmbedBuilder, SlashCommandBuilder, Locale as DiscordsLocale } from 'discord.js';
+import { __, __h_dc } from '../messages';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { getLang } from '../db';
 
 export default {

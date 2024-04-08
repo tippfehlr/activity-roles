@@ -102,5 +102,6 @@
   "Yes": "Так",
   ":x: That activity role already exists in this guild! :x:": ":x: Ця роль активності вже є на цьому сервері :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Якщо ви хочете пришвидшити розробку або допомогти мені з оплатою сервера, будь ласка, підтримайте мене.",
-  "the role will not be removed again if set to true": "роль не буде видалена знову, якщо встановлено значення true"
+  "the role will not be removed again if set to true": "роль не буде видалена знову, якщо встановлено значення true",
+  "re-check all users/roles": "re-check all users/roles"
 }

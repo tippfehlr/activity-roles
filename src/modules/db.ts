@@ -2,17 +2,17 @@ import fs from 'fs';
 import sqlite from 'better-sqlite3';
 import { createHash } from 'crypto';
 import { ActivityType, CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
-import { Locale, log } from './messages';
+import { log } from './messages';
 
 export interface DBUser {
   userIDHash: string;
   autoRole: 1 | 0;
-  language: Locale | 'none';
+  language: string | 'none';
 }
 
 export interface DBGuild {
   guildID: string;
-  language: Locale;
+  language: string;
   requiredRoleID: string | null;
 }
 
@@ -150,7 +150,7 @@ export function getGuildConfig(guildID: string): DBGuild {
   const guild = prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
   if (guild) return guild;
   prepare('INSERT INTO guilds VALUES (?, ?, NULL)').run(guildID, 'en-US');
-  return { guildID: guildID, language: 'en-US' as Locale, requiredRoleID: null };
+  return { guildID: guildID, language: 'en-US', requiredRoleID: null };
 }
 
 export function getActivityRoles(guildID: string): DBActivityRole[] {
@@ -163,11 +163,11 @@ export function getStatusRoles(guildID: string): DBStatusRole[] {
   return prepare('SELECT * FROM statusRoles WHERE guildID = ?').all(guildID) as DBStatusRole[];
 }
 
-export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): Locale {
+export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): string {
   const userLang = getUserConfig(interaction.user.id).language;
   if (userLang !== 'none') return userLang;
 
-  if (!interaction.guild) return 'en-US' as Locale;
+  if (!interaction.guild) return 'en-US';
 
   return getGuildConfig(interaction.guild.id).language;
 }

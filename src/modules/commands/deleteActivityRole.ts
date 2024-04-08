@@ -1,5 +1,5 @@
 import { DBActivityRole, getLang, prepare } from '../db';
-import { __h_dc, Locale, log, __ } from '../messages';
+import { __h_dc, log, __ } from '../messages';
 import config from '../config';
 import { Command } from '../commandHandler';
 
@@ -13,18 +13,19 @@ import {
   ComponentType,
   EmbedBuilder,
   PermissionsBitField,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
-
 
 export default {
   data: new SlashCommandBuilder()
     .setName('deleteactivityrole')
     .setDescription(
-      'Deletes an activity role from your guild. Provide the activity or the role, or both.'
+      'Deletes an activity role from your guild. Provide the activity or the role, or both.',
     )
     .setDescriptionLocalizations(
-      __h_dc('Deletes an activity role from your guild. Provide the activity or the role, or both.')
+      __h_dc(
+        'Deletes an activity role from your guild. Provide the activity or the role, or both.',
+      ),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(true)
@@ -33,28 +34,30 @@ export default {
         .setName('activity')
         .setDescription('the activity roles with this name will be deleted')
         .setDescriptionLocalizations(__h_dc('the activity roles with this name will be deleted'))
-        .setRequired(false)
+        .setRequired(false),
     )
     .addRoleOption(option =>
       option
         .setName('role')
         .setDescription('the activity roles of this role will be deleted')
         .setDescriptionLocalizations(__h_dc('the activity roles of this role will be deleted'))
-        .setRequired(false)
+        .setRequired(false),
     )
     .addBooleanOption(option =>
       option
         .setName('all')
         .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
         .setDescriptionLocalizations(__h_dc('ATTENTION: DELETES ALL ACTIVITY ROLES'))
-        .setRequired(false)
+        .setRequired(false),
     ),
 
   execute: async interaction => {
     const locale = getLang(interaction);
     if (!interaction.channel) return;
     if (interaction.channel.type !== ChannelType.GuildText) {
-      await interaction.reply(__({ phrase: 'This command can only be used in text channels.', locale }));
+      await interaction.reply(
+        __({ phrase: 'This command can only be used in text channels.', locale }),
+      );
       return;
     }
 
@@ -74,26 +77,27 @@ export default {
             new ButtonBuilder()
               .setCustomId('deleteactivityrole:cancel')
               .setLabel(__({ phrase: 'No', locale }))
-              .setStyle(ButtonStyle.Secondary)
-          )
+              .setStyle(ButtonStyle.Secondary),
+          ),
         ],
-        ephemeral: true
+        ephemeral: true,
       });
       interaction.channel
         .createMessageComponentCollector({
           componentType: ComponentType.StringSelect,
           filter: btnInt => interaction.user.id === btnInt.user.id,
           max: 1,
-          time: 1000 * 60
+          time: 1000 * 60,
         })
         .on('collect', async (int: ButtonInteraction) => {
           switch (int.customId) {
             case 'deleteactivityrole:confirm':
               process(
                 int,
-                prepare('SELECT * FROM activityRoles WHERE guildID = ?')
-                  .all(interaction.guildId) as DBActivityRole[],
-                locale
+                prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(
+                  interaction.guildId,
+                ) as DBActivityRole[],
+                locale,
               );
               prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
               break;
@@ -107,52 +111,55 @@ export default {
         content: __({
           phrase:
             'You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.',
-          locale
+          locale,
         }),
-        ephemeral: true
+        ephemeral: true,
       });
     } else if (role && !activity) {
       process(
         interaction,
-        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?')
-          .all(interaction.guildId, role.id) as DBActivityRole[],
-        locale
+        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?').all(
+          interaction.guildId,
+          role.id,
+        ) as DBActivityRole[],
+        locale,
       );
       prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
         interaction.guildId,
-        role.id
+        role.id,
       );
     } else if (!role && activity) {
       process(
         interaction,
-        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?')
-          .all(interaction.guildId, activity) as DBActivityRole[],
-        locale
+        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?').all(
+          interaction.guildId,
+          activity,
+        ) as DBActivityRole[],
+        locale,
       );
       prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
         interaction.guildId,
-        activity
+        activity,
       );
     } else if (role && activity) {
       process(
         interaction,
         prepare(
-          'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
-        )
-          .all(interaction.guildId, role.id, activity) as DBActivityRole[],
-        locale
+          'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
+        ).all(interaction.guildId, role.id, activity) as DBActivityRole[],
+        locale,
       );
       prepare(
-        'DELETE FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?'
+        'DELETE FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
       ).run(interaction.guildId, role.id, activity);
     }
-  }
+  },
 } as Command;
 
 function process(
   interaction: CommandInteraction | ButtonInteraction,
   deleted: DBActivityRole[],
-  locale: Locale
+  locale: string,
 ) {
   if (deleted.length > 0) {
     const embeds = [
@@ -165,58 +172,58 @@ function process(
             {
               name: __({ phrase: 'Activity', locale }),
               value: activityRole.activityName,
-              inline: true
+              inline: true,
             },
             {
               name: __({ phrase: 'Role', locale }),
               value: `<@&${activityRole.roleID}>`,
-              inline: true
+              inline: true,
             },
             {
               name: __({ phrase: 'Exact Activity Name', locale }),
               value: activityRole.exactActivityName
                 ? __({ phrase: 'Yes', locale })
                 : __({ phrase: 'No', locale }),
-              inline: true
+              inline: true,
             },
             {
               name: __({ phrase: 'Live', locale }),
               value: activityRole.live
                 ? __({ phrase: 'Yes', locale })
                 : __({ phrase: 'No', locale }),
-              inline: true
-            }
+              inline: true,
+            },
           )
           .setColor(config.COLOR);
-      })
+      }),
     );
     if (interaction instanceof CommandInteraction)
       interaction.reply({
         content: __({ phrase: 'Deleted Activity Roles:', locale }),
         embeds: embeds,
-        ephemeral: true
+        ephemeral: true,
       });
     else
       interaction.update({
         content: __({ phrase: 'Deleted Activity Roles:', locale }),
         embeds: embeds,
-        components: []
+        components: [],
       });
     deleted.forEach(activityRole => {
       log.info(
-        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, live mode: ${activityRole.live}`
+        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, live mode: ${activityRole.live}`,
       );
     });
   } else {
     if (interaction instanceof CommandInteraction)
       interaction.reply({
         content: __({ phrase: 'No activity roles were deleted.', locale }),
-        ephemeral: true
+        ephemeral: true,
       });
     else
       interaction.update({
         content: __({ phrase: 'No activity roles were deleted.', locale }),
-        components: []
+        components: [],
       });
   }
 }
