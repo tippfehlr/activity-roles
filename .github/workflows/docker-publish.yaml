@@ -7,7 +7,7 @@ name: Docker build & push to ghcr.io
 
 on:
   push:
-    branches: ['**']
+    branches: ['main']
     # Publish semver tags as releases.
     tags: ['v*.*.*']
   pull_request:
