@@ -5,6 +5,7 @@
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
 ---
+
 A Discord bot for automatic role assignment based on activities. \
 Please join the [support guild](https://discord.gg/3K9Yx4ufN7) for the latest updates and infos. \
 Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
@@ -46,6 +47,7 @@ User IDs are stored as sha256 hash. \
 No activity data is stored.
 
 ## Contribution
+
 Contribution is highly appreciated. Feel free to join the support
 guild or open an issue or pull request.
 
@@ -60,7 +62,8 @@ Available translations:
 [![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)
 [![Russian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Russian&style=for-the-badge&logo=crowdin&query=%24.progress.4.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085-update.json)](https://crowdin.com/project/activity-roles/ru)
 [![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Ukranian&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk)
-[![Estonian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Estonian&style=for-the-badge&logo=crowdin&query=%24.progress[?(@.data.languageId==%27et%27)].data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/et) \
+[![Estonian translation](<https://img.shields.io/badge/dynamic/json?color=blue&label=Estonian&style=for-the-badge&logo=crowdin&query=%24.progress[?(@.data.languageId==%27et%27)].data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json>)](https://crowdin.com/project/activity-roles/et)
+[![French translation](<https://img.shields.io/badge/dynamic/json?color=blue&label=French&style=for-the-badge&logo=crowdin&query=%24.progress[?(@.data.languageId==%27fr%27)].data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json>)](https://crowdin.com/project/activity-roles/fr) \
 Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
@@ -77,6 +80,7 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 - @.onepunch. **[Ukrainian]**
 - @deflanko
 - @itshendrik **[Estonian]**
+- arceus (@blurwind) **[French]**
 
 If I forgot you, please let me know!
 
