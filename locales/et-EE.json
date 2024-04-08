@@ -102,8 +102,5 @@
   "Yes": "Jah",
   ":x: That activity role already exists in this guild! :x:": ":x: Selline activity roll juba on loodud! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Mina ise ei kasuta seda robotit kuid kui soovid kiirendada selle edasiarengut või toetada majutuse kohapealt siis kaaluge seda.",
-  "the role will not be removed again if set to true": "rolli ei võeta ära kui selle väärtuseks on määratud tõene",
-  "User language set to **`%s`**.%s": "User language set to **`%s`**.%s",
-  "The language of the command names and description is managed by your Discord language.": "The language of the command names and description is managed by your Discord language.",
-  "re-check all users/roles": "re-check all users/roles"
+  "the role will not be removed again if set to true": "rolli ei võeta ära kui selle väärtuseks on määratud tõene"
 }
