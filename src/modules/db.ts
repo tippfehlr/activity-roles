@@ -80,11 +80,9 @@ export function prepareDB() {
   prepare(
     'CREATE TABLE IF NOT EXISTS dbversion (version INT NOT NULL, enforcer INT DEFAULT 0 NOT NULL CHECK(enforcer == 0), UNIQUE (enforcer))',
   ).run();
+  prepare('CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER)').run();
   prepare(
-    'CREATE TABLE IF NOT EXISTS users (userIDHash TEXT PRIMARY KEY, autoRole INTEGER, language TEXT)',
-  ).run();
-  prepare(
-    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, language TEXT, requiredRoleID TEXT)',
+    'CREATE TABLE IF NOT EXISTS guilds (guildID TEXT PRIMARY KEY, requiredRoleID TEXT)',
   ).run();
   prepare(
     'CREATE TABLE IF NOT EXISTS activityRoles (guildID TEXT, activityName TEXT, roleID TEXT, exactActivityName INTEGER, live INTEGER, PRIMARY KEY (guildID, activityName, roleID))',
@@ -102,7 +100,7 @@ export function prepareDB() {
     'CREATE TABLE IF NOT EXISTS activityStats (guildID TEXT, activityName TEXT, count INTEGER, PRIMARY KEY (guildID, activityName))',
   ).run();
 
-  const latestDBVersion = 3;
+  const latestDBVersion = 4;
   let dbVersion = latestDBVersion;
 
   if (!prepare('SELECT * FROM dbversion').get()) {
@@ -122,6 +120,14 @@ export function prepareDB() {
     prepare("DELETE FROM activityStats WHERE activityName = 'Custom Status'").run();
     prepare('UPDATE dbversion SET version = 3').run();
     dbVersion = 3;
+  }
+
+  if (dbVersion === 3) {
+    prepare('ALTER TABLE users DROP COLUMN language').run();
+    prepare('ALTER TABLE guilds DROP COLUMN language').run();
+    prepare('UPDATE dbversion SET version = 4').run();
+    dbVersion = 4;
+    log.info('Database updated to version 4: Removed language column from users and guilds');
   }
 
   //TODO: add bot version?
