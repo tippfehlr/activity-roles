@@ -170,7 +170,7 @@ export function getStatusRoles(guildID: string): DBStatusRole[] {
 }
 
 export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): string {
-  if (interaction.locale in locales) return interaction.locale;
+  if (locales.includes(interaction.locale)) return interaction.locale;
   else return 'en-US';
 }
 
