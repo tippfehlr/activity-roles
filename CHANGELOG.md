@@ -1,6 +1,5 @@
 # Changelog
 
----
 ## [unreleased]
 
 ### Changed
@@ -12,7 +11,6 @@
 - remove Estonian ([ee891f0](https://github.com/tippfehlr/activity-roles/commit/ee891f054cc57ee9e8d8d7b5f27da904ea1a3df5))
 - remove /language and DROP language colums (db version 4) ([bafe74b](https://github.com/tippfehlr/activity-roles/commit/bafe74bad95897e031f38a0978e23b2a426e6068))
 
----
 ## [1.10.0](https://github.com/tippfehlr/activity-roles/compare/v1.9.5..v1.10.0) - 2024-04-08
 
 ### Added
@@ -54,7 +52,6 @@
 - set github pages site ([8d3912d](https://github.com/tippfehlr/activity-roles/commit/8d3912d38567e5ebace82817a6f4bc8c5834c688))
 - add arceus to thanks ([a97f360](https://github.com/tippfehlr/activity-roles/commit/a97f360b004a5dd8ff7ab3803675bc2d2b7f0be4))
 
----
 ## [1.9.5](https://github.com/tippfehlr/activity-roles/compare/v1.9.4..v1.9.5) - 2024-03-09
 
 ### Fixed
@@ -62,7 +59,6 @@
 - **(commands/help)** remove embed for commands ([fa4fd52](https://github.com/tippfehlr/activity-roles/commit/fa4fd524f0fd753b0194d11f9ef30fe5fdaea7ef))
 - fix docker image in compose.yaml ([5dfaee8](https://github.com/tippfehlr/activity-roles/commit/5dfaee897810ccb1ec8a548fe7e2c205fe5eec8c))
 
----
 ## [1.9.4](https://github.com/tippfehlr/activity-roles/compare/v1.9.3..v1.9.4) - 2024-03-09
 
 ### Added
@@ -73,7 +69,6 @@
 
 - **(readme)** fix eianlee’s name ([f52e74f](https://github.com/tippfehlr/activity-roles/commit/f52e74ffd5c06b1e271c13d5ef64b63c5f6143a9))
 
----
 ## [1.9.3](https://github.com/tippfehlr/activity-roles/compare/v1.9.2..v1.9.3) - 2024-03-09
 
 ### Added
@@ -92,7 +87,6 @@
 - remove star notice ([70f81cd](https://github.com/tippfehlr/activity-roles/commit/70f81cd8342b6aac894b5dd75a3fb0c93a7d5733))
 - rename compose file to compose.yaml, add new variables ([92381f9](https://github.com/tippfehlr/activity-roles/commit/92381f9a5f5b0c9b87530d564f2ae656dc105e11))
 
----
 ## [1.9.2](https://github.com/tippfehlr/activity-roles/compare/v1.9.1..v1.9.2) - 2024-01-06
 
 ### Fixed
@@ -101,7 +95,6 @@
 - set status roles to permanent=false ([5bfd2bd](https://github.com/tippfehlr/activity-roles/commit/5bfd2bdff952f1a660e6bfd3fac21d938420e70f))
 - set the current dbversion in new databases ([0f6a907](https://github.com/tippfehlr/activity-roles/commit/0f6a907f6514bb54041dce8fd88354618295b42d))
 
----
 ## [1.9.1](https://github.com/tippfehlr/activity-roles/compare/v1.7.0..v1.9.1) - 2024-01-05
 
 ### Added
