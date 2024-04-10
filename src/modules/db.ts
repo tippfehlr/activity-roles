@@ -2,7 +2,7 @@ import fs from 'fs';
 import sqlite from 'better-sqlite3';
 import { createHash } from 'crypto';
 import { ActivityType, CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
-import { log } from './messages';
+import { locales, log } from './messages';
 
 export interface DBUser {
   userIDHash: string;
@@ -164,12 +164,8 @@ export function getStatusRoles(guildID: string): DBStatusRole[] {
 }
 
 export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): string {
-  const userLang = getUserConfig(interaction.user.id).language;
-  if (userLang !== 'none') return userLang;
-
-  if (!interaction.guild) return 'en-US';
-
-  return getGuildConfig(interaction.guild.id).language;
+  if (interaction.locale in locales) return interaction.locale;
+  else return 'en-US';
 }
 
 export async function addActivity(guildID: string, activityName: string) {
