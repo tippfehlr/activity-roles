@@ -280,7 +280,9 @@ export async function processRoles({
     if (add) {
       // does the cache need to be checked?
       if (member.roles.cache.has(role.id)) {
-        log.warn(`the user already has the role ${role.name} in guild ${guild.name} (${guild.id})`);
+        log.warn(
+          `${member.displayName} (${member.user.username}) already has the role ${role.name} in guild ${guild.name} (${guild.id})`,
+        );
         return;
       }
       if (permanent) {
@@ -297,7 +299,7 @@ export async function processRoles({
       // does the cache need to be checked?
       if (!member.roles.cache.has(role.id)) {
         log.warn(
-          `can’t remove the role: the user doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
+          `can’t remove the role: ${member.displayName} (${member.user.username}) doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
         );
         return;
       }
