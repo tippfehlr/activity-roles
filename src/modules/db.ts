@@ -7,12 +7,10 @@ import { locales, log } from './messages';
 export interface DBUser {
   userIDHash: string;
   autoRole: 1 | 0;
-  language: string | 'none';
 }
 
 export interface DBGuild {
   guildID: string;
-  language: string;
   requiredRoleID: string | null;
 }
 
@@ -148,15 +146,15 @@ export function getUserConfig(userID: string): DBUser {
   const userIDHash = createHash('sha256').update(userID).digest('base64');
   const user = prepare('SELECT * FROM users WHERE userIDHash = ?').get(userIDHash) as DBUser;
   if (user) return user;
-  prepare('INSERT INTO users VALUES (?, ?, ?)').run(userIDHash, 1, 'none');
-  return { userIDHash: userIDHash, autoRole: 1, language: 'none' };
+  prepare('INSERT INTO users VALUES (?, ?)').run(userIDHash, 1);
+  return { userIDHash: userIDHash, autoRole: 1 };
 }
 
 export function getGuildConfig(guildID: string): DBGuild {
   const guild = prepare('SELECT * FROM guilds WHERE guildID = ?').get(guildID) as DBGuild;
   if (guild) return guild;
-  prepare('INSERT INTO guilds VALUES (?, ?, NULL)').run(guildID, 'en-US');
-  return { guildID: guildID, language: 'en-US', requiredRoleID: null };
+  prepare('INSERT INTO guilds VALUES (?, NULL)').run(guildID);
+  return { guildID: guildID, requiredRoleID: null };
 }
 
 export function getActivityRoles(guildID: string): DBActivityRole[] {
