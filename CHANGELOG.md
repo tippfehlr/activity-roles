@@ -1,6 +1,21 @@
 # Changelog
 
-## [unreleased]
+## [1.10.2](https://github.com/tippfehlr/activity-roles/compare/v1.10.1..v1.10.2) - 2024-04-10
+
+### Added
+
+- add username to logs for not adding/removing logs ([efbcef0](https://github.com/tippfehlr/activity-roles/commit/efbcef0cd9e3026b32a0500c8224d47180a5048c))
+
+### Fixed
+
+- use `locales.includes()` instead of `... in locales` ([35a5ee6](https://github.com/tippfehlr/activity-roles/commit/35a5ee644ffcf3adf505ffe9f3e7ec8cb1f0f974))
+- remove language completely ([0ad6d81](https://github.com/tippfehlr/activity-roles/commit/0ad6d81c7be3176d22699a9677e1518f5dca5b5f))
+
+### Documentation
+
+- **(changelog)** remove line between versions ([1af3bf8](https://github.com/tippfehlr/activity-roles/commit/1af3bf88ed71a43d7761c36f4b9c165591ff17aa))
+
+## [1.10.1](https://github.com/tippfehlr/activity-roles/compare/v1.10.0..v1.10.1) - 2024-04-10
 
 ### Changed
 
