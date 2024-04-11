@@ -9,7 +9,7 @@ export default {
   data: new SlashCommandBuilder()
     .setName('help')
     .setDescription('Shows the help menu')
-    .setDescriptionLocalizations(discordTranslations('Shows the help menu')),
+    .setDescriptionLocalizations(discordTranslations('help->description:Shows the help menu')),
 
   execute: async interaction => {
     const locale = getLang(interaction);
@@ -50,46 +50,37 @@ export default {
       embeds: [
         new EmbedBuilder()
           .setColor(config.COLOR)
-          .setFooter({
-            // = Made and hosted by <author>.
-            // or
-            // = Made by <author> and hosted by <host>
-            text:
-              config.AUTHOR === config.HOSTER_NAME
-                ? __({ phrase: 'Made and hosted by %s', locale }, config.AUTHOR)
-                : __(
-                    { phrase: 'Made by %s and hosted by %s', locale },
-                    config.AUTHOR,
-                    config.HOSTER_NAME,
-                  ),
-            iconURL: config.AUTHOR_LOGO_LINK,
-          })
           .setDescription(
-            __({
-              phrase: 'A Discord bot for automatic role assignment based on activities.\n',
-              locale,
-            }) +
-              __({ phrase: 'Support/Suggestions: %s\n', locale }, 'https://discord.gg/3K9Yx4ufN7') +
-              __(
-                { phrase: 'GitHub: %s\n', locale },
-                'https://github.com/tippf3hlr/activity-roles/',
-              ) +
-              __({ phrase: 'Contact: %s\n\n', locale }, '@tippfehlr | tippfehlr@gmail.com') +
-              __({ phrase: 'help-description-1', locale }) +
-              __({ phrase: 'Set a status role with /setstatusrole!\n', locale }) +
-              __({
-                phrase: '**The bot will not remove any roles that were added manually.**',
+            __(
+              {
+                phrase: `help->reply-description:A Discord bot for automatic role assignment based on activities.
+Support/Suggestions: {{{support}}}
+GitHub: {{{github}}}
+Contact: {{{contact}}}
+
+Add an activity role with \`/addactivityrole\`. By default, the bot will remove the role again when the activity ends.
+If \`permanent\` is set to true, the bot will not remove the role.
+If \`exact_activity_name\` is true, the bot will only accept exact matches.
+Set a status role with \`/setstatusrole\`!
+**The bot will not remove any roles that were added manually.**
+
+I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.
+{{{sponsor_links}}}
+`,
                 locale,
-              }) +
-              '\n\n' +
-              __({
-                phrase:
-                  'I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.',
-                locale,
-              }) +
-              '\n' +
-              'https://github.com/sponsors/tippfehlr\nhttps://ko-fi.com/Z8Z7SYDDJ',
-          ),
+              },
+              {
+                support: 'https://discord.gg/3K9Yx4ufN7',
+                github: 'https://github.com/tippfehlr/activity-roles/',
+                contact: '@tippfehlr | tippfehlr@gmail.com',
+                sponsor_links: 'https://github.com/sponsors/tippfehlr\nhttps://ko-fi.com/Z8Z7SYDDJ',
+              },
+            ),
+          )
+          .setFooter({
+            text: __({ phrase: 'help->reply-footer:Made by tippfehlr', locale }),
+            iconURL: config.AUTHOR_LOGO_LINK,
+          }),
         // commandEmbed
       ],
     });

@@ -51,7 +51,11 @@ export default {
       option
         .setName('all')
         .setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
-        .setDescriptionLocalizations(discordTranslations('ATTENTION: DELETES ALL ACTIVITY ROLES'))
+        .setDescriptionLocalizations(
+          discordTranslations(
+            'deleteactivityrole->description->all:ATTENTION: DELETES ALL ACTIVITY ROLES',
+          ),
+        )
         .setRequired(false),
     ),
 
