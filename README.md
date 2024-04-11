@@ -4,6 +4,7 @@
 [![LICENSE](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
+
 ---
 
 A Discord bot for automatic role assignment based on activities. \
@@ -32,7 +33,7 @@ To list all roles, use `/listroles`.
 ### Activity Roles
 
 Add an activity role with `/addactivityrole`.
-By default, the bot will be removed when the user stops the activity. \
+By default, the bot will remove the role again when the activity ends. \
 If you set `permanent` to true, the bot will not remove the role.
 
 `exact_activity_name` can be set to true if you get false-positives.

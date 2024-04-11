@@ -83,7 +83,6 @@
   },
   "There are no status roles in this guild": "На цьому сервері немає ролей статусу",
   "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
-  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
   "Set a status role with /setstatusrole!\n": "Встановити роль статусу за допомогою /setstatusrole\n",
   "Permanent": "Назавжди",
   "Yes": "Так",
@@ -92,5 +91,6 @@
   "the role will not be removed again if set to true": "роль не буде видалена знову, якщо встановлено значення true",
   "Live": "Live",
   "re-check all users/roles": "re-check all users/roles",
-  "re-checked all users/roles": "re-checked all users/roles"
+  "re-checked all users/roles": "re-checked all users/roles",
+  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
 }

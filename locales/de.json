@@ -83,7 +83,6 @@
   },
   "There are no status roles in this guild": "Es gibt keine Statusrollen in dieser Gilde",
   "Set a status role with /setstatusrole!": "Setze eine Statusrolle mit /setstatusrole!",
-  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Fügen Sie eine Aktivitätsrolle mit `/addactivityrole` hinzu. Standardmäßig wird der Bot entfernt, wenn der Benutzer die Aktivität beendet.\nWenn du `permanent` auf true setzt, wird der Bot die Rolle nicht entfernen.\nExact_act_activity_name\" kann auf true gesetzt werden, wenn man falsch-positive Ergebnisse erhält.\n",
   "Set a status role with /setstatusrole!\n": "Setze eine Statusrolle mit /setstatusrole!\n",
   "Permanent": "Dauerhaft",
   "Yes": "Ja",
@@ -92,5 +91,6 @@
   "the role will not be removed again if set to true": "die Rolle wird nicht wieder entfernt, wenn sie auf true gesetzt wird",
   "Live": "Live",
   "re-check all users/roles": "re-check all users/roles",
-  "re-checked all users/roles": "re-checked all users/roles"
+  "re-checked all users/roles": "re-checked all users/roles",
+  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
 }

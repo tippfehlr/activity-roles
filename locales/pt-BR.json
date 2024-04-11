@@ -83,7 +83,6 @@
   },
   "There are no status roles in this guild": "Não há nenhum cargo de estado nesse servidor",
   "Set a status role with /setstatusrole!": "Defina um cargo de estado com /setstatusrole!",
-  "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n": "Add an activity role with `/addactivityrole`. By default, the bot will be removed when the user stops the activity.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n",
   "Set a status role with /setstatusrole!\n": "Defina um cargo de estado com /setstatusrole!\n",
   "Permanent": "Permanente",
   "Yes": "Sim",
@@ -92,5 +91,6 @@
   "the role will not be removed again if set to true": "o papel não será removido novamente se definido como 'True'",
   "Live": "Live",
   "re-check all users/roles": "re-check all users/roles",
-  "re-checked all users/roles": "re-checked all users/roles"
+  "re-checked all users/roles": "re-checked all users/roles",
+  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
 }

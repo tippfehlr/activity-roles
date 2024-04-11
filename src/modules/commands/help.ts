@@ -75,14 +75,7 @@ export default {
                 'https://github.com/tippf3hlr/activity-roles/',
               ) +
               __({ phrase: 'Contact: %s\n\n', locale }, '@tippfehlr | tippfehlr@gmail.com') +
-              __({
-                phrase:
-                  'Add an activity role with `/addactivityrole`. ' +
-                  'By default, the bot will be removed when the user stops the activity.\n' +
-                  'If you set `permanent` to true, the bot will not remove the role.\n' +
-                  '`exact_activity_name` can be set to true if you get false-positives.\n',
-                locale,
-              }) +
+              __({ phrase: 'help-description-1', locale }) +
               __({ phrase: 'Set a status role with /setstatusrole!\n', locale }) +
               __({
                 phrase: '**The bot will not remove any roles that were added manually.**',
