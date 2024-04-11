@@ -8,8 +8,8 @@ import { getLang } from '../db';
 export default {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Shows the help menu')
-    .setDescriptionLocalizations(discordTranslations('help->description:Shows the help menu')),
+    .setDescriptionLocalizations(discordTranslations('help->description:Shows the help page'))
+    .setDescription(__({ phrase: 'help->description', locale: 'en-US' })),
 
   execute: async interaction => {
     const locale = getLang(interaction);
