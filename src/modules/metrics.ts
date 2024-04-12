@@ -12,6 +12,11 @@ import {
   getTempRoleCount,
   getPermRoleCount,
   getStatusRoleCount,
+  getOldUserCount,
+  getNewUserCount,
+  getOldActiveTemporaryRolesCount,
+  getNewActiveTemporaryRolesCount,
+  getActiveTemporaryRolesCount,
 } from './db';
 
 export let client: InfluxDB;
@@ -42,8 +47,17 @@ export async function configureInfluxDB() {
       writeApi.writePoint(
         new Point('users')
           .intField('users_cache_total', discordClient.users.cache.size)
+          .intField('old_users_count', await getOldUserCount())
+          .intField('new_users_count', await getNewUserCount())
           .intField('users_db_total', await getUserCount()),
       );
+      writeApi.writePoint(
+        new Point('activeTemporaryRoles')
+          .intField('old', await getOldActiveTemporaryRolesCount())
+          .intField('new', await getNewActiveTemporaryRolesCount())
+          .intField('total', await getActiveTemporaryRolesCount()),
+      );
+
       const ram = process.memoryUsage();
       writeApi.writePoint(
         new Point('memory')
