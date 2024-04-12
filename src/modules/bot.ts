@@ -173,7 +173,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   if (
     guildConfig.requiredRoleID !== null &&
-    newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
+    !newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
   ) {
     return;
   }
