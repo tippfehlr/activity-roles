@@ -1,4 +1,4 @@
-import { DBStatusRole, prepare, getLang } from './../db';
+import { db, getLang } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, getEnumKey } from '../messages';
@@ -35,13 +35,17 @@ export default {
     ),
 
   execute: async interaction => {
+    if (!interaction.guildId) return;
     const locale = getLang(interaction);
     const type = Number(interaction.options.get('event')?.value) as number;
     const typeString = getEnumKey(ActivityType, type);
     const role = interaction.options.get('role')?.role;
-    const currentStatusRole = prepare(
-      'SELECT * FROM statusRoles WHERE guildID = ? and type = ?',
-    ).get(interaction.guildId, type) as DBStatusRole | undefined;
+    const currentStatusRole = await db
+      .selectFrom('statusRoles')
+      .selectAll()
+      .where('guildID', '=', interaction.guildId)
+      .where('type', '=', type)
+      .executeTakeFirst();
 
     if (role) {
       if (currentStatusRole && role.id === currentStatusRole.roleID) {
@@ -64,17 +68,20 @@ export default {
         });
       } else {
         if (currentStatusRole) {
-          prepare('UPDATE statusRoles SET roleID = ? WHERE guildID = ? AND type = ? ').run(
-            role.id,
-            interaction.guildId,
-            type,
-          );
+          await db
+            .updateTable('statusRoles')
+            .set({ roleID: role.id })
+            .where('guildID', '=', interaction.guildId)
+            .where('type', '=', type)
+            .execute();
         } else {
-          prepare('INSERT INTO statusRoles (guildID, type, roleID) VALUES (?, ?, ?)').run(
-            interaction.guildId,
-            type,
-            role.id,
-          );
+          db.insertInto('statusRoles')
+            .values({
+              guildID: interaction.guildId,
+              type,
+              roleID: role.id,
+            })
+            .execute();
         }
         interaction.reply({
           embeds: [
@@ -96,10 +103,10 @@ export default {
       }
     } else {
       if (currentStatusRole) {
-        prepare('DELETE FROM statusRoles WHERE guildID = ? AND type = ?').run(
-          interaction.guildId,
-          type,
-        );
+        db.deleteFrom('statusRoles')
+          .where('guildID', '=', interaction.guildId)
+          .where('type', '=', type)
+          .execute();
         interaction.reply({
           embeds: [
             new EmbedBuilder()

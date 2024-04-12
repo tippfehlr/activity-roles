@@ -3,14 +3,7 @@ import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
-import {
-  DBActiveTemporaryRoles,
-  DBActivityRole,
-  DBStatusRole,
-  checkrolesCurrentGuilds,
-  getLang,
-  prepare,
-} from '../db';
+import { db, getLang } from '../db';
 
 export default {
   data: new SlashCommandBuilder()

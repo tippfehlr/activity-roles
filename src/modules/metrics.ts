@@ -9,8 +9,6 @@ import { stats as botStats, resetStats as resetBotStats } from './bot';
 import {
   getUserCount,
   getRolesCount,
-  stats as dbStats,
-  resetStats as resetDBStats,
   getTempRoleCount,
   getPermRoleCount,
   getStatusRoleCount,
@@ -29,7 +27,7 @@ export async function configureInfluxDB() {
     writeApi = client.getWriteApi(config.INFLUX_ORG, config.INFLUX_BUCKET);
 
     writeIntPoint('process', 'started', 1);
-    setInterval(() => {
+    setInterval(async () => {
       const startTime = performance.now();
 
       writeIntPoint('presence_updates', 'presence_updates', botStats.presenceUpdates);
@@ -37,16 +35,15 @@ export async function configureInfluxDB() {
       writeIntPoint('roles_removed', 'roles_removed', botStats.rolesRemoved);
       writeIntPoint('web_socket_errors', 'web_socket_errors', botStats.webSocketErrors);
       writeIntPoint('guilds', 'guilds_total', discordClient.guilds.cache.size);
-      writeIntPoint('roles', 'roles_count', getRolesCount());
-      writeIntPoint('roles', 'temporary_roles_count', getTempRoleCount());
-      writeIntPoint('roles', 'permanent_roles_count', getPermRoleCount());
-      writeIntPoint('roles', 'status_roles_count', getStatusRoleCount());
+      writeIntPoint('roles', 'roles_count', await getRolesCount());
+      writeIntPoint('roles', 'temporary_roles_count', await getTempRoleCount());
+      writeIntPoint('roles', 'permanent_roles_count', await getPermRoleCount());
+      writeIntPoint('roles', 'status_roles_count', await getStatusRoleCount());
       writeApi.writePoint(
         new Point('users')
           .intField('users_cache_total', discordClient.users.cache.size)
-          .intField('users_db_total', getUserCount()),
+          .intField('users_db_total', await getUserCount()),
       );
-      writeIntPoint('db', 'calls', dbStats.dbCalls);
       const ram = process.memoryUsage();
       writeApi.writePoint(
         new Point('memory')
@@ -58,7 +55,6 @@ export async function configureInfluxDB() {
       );
 
       resetBotStats();
-      resetDBStats();
 
       writeIntPoint('metrics', 'time_ms', performance.now() - startTime);
     }, 1000);

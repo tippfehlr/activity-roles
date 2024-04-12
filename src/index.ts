@@ -1,16 +1,19 @@
-import { db, prepareDB } from './modules/db';
+import { db, migrateToLatest } from './modules/db';
 import { connect } from './modules/bot';
 import { writeApi } from './modules/metrics';
 
-prepareDB();
-connect();
+async function main() {
+  const close = async () => {
+    console.log('quitting ...');
+    if (writeApi) await writeApi.close();
+    await db.destroy();
+    process.exit(0);
+  };
+  process.on('SIGINT', close);
+  process.on('SIGTERM', close);
 
-function close() {
-  console.log('quitting ...');
-  if (writeApi) writeApi.close();
-  db.close();
-  process.exit(0);
+  await migrateToLatest();
+  await connect();
 }
 
-process.on('SIGINT', close);
-process.on('SIGTERM', close);
+main();

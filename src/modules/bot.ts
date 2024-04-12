@@ -1,4 +1,3 @@
-import { createHash } from 'crypto';
 import Discord, {
   ActivityType,
   Events,
@@ -6,10 +5,9 @@ import Discord, {
   Options,
   PermissionsBitField,
 } from 'discord.js';
+import { Selectable } from 'kysely';
 
 import {
-  DBActiveTemporaryRoles,
-  DBCurrentlyActiveActivity,
   addActivity,
   getActivityRoles,
   getUserCount,
@@ -17,15 +15,14 @@ import {
   getRolesCount,
   getStatusRoles,
   getUserConfig,
-  prepare,
-  DBStatusRole,
-  DBActivityRole,
+  db,
   hashUserID,
 } from './db';
 import config from './config';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
 import { configureInfluxDB, writeIntPoint } from './metrics';
+import { ActiveTemporaryRoles, ActivityRoles, StatusRoles } from './db.types';
 
 export const client = new Discord.Client({
   intents: [
@@ -78,7 +75,7 @@ export function resetStats() {
   stats.webSocketErrors = 0;
 }
 
-client.on(Events.ClientReady, () => {
+client.on(Events.ClientReady, async () => {
   configureInfluxDB();
   commandHandler = new CommandHandler(client);
   const setActivityGuilds = () => {
@@ -99,7 +96,7 @@ client.on(Events.ClientReady, () => {
     });
     setTimeout(setActivityUsers, 10 * 1000);
   };
-  const setActivityUsers = () => {
+  const setActivityUsers = async () => {
     client.user?.setPresence({
       activities: [
         {
@@ -107,7 +104,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s user',
             plural: '%s users',
             locale: 'en-US',
-            count: getUserCount(),
+            count: await getUserCount(),
           }),
           type: ActivityType.Watching,
         },
@@ -115,7 +112,7 @@ client.on(Events.ClientReady, () => {
     });
     setTimeout(setActivityActivityRoles, 10 * 1000);
   };
-  const setActivityActivityRoles = () => {
+  const setActivityActivityRoles = async () => {
     client.user?.setPresence({
       activities: [
         {
@@ -123,7 +120,7 @@ client.on(Events.ClientReady, () => {
             singular: '%s role',
             plural: '%s roles',
             locale: 'en-US',
-            count: getRolesCount(),
+            count: await getRolesCount(),
           }),
           type: ActivityType.Watching,
         },
@@ -137,21 +134,8 @@ client.on(Events.ClientReady, () => {
     `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`,
   );
   log.info(
-    `The bot is currently on ${client.guilds.cache.size} guilds with ${getUserCount()} users and manages ${getRolesCount()} roles`,
+    `The bot is currently on ${client.guilds.cache.size} guilds with ${await getUserCount()} users and manages ${await getRolesCount()} roles`,
   );
-
-  const activityCountInCurrentlyActiveActivities = (
-    prepare('SELECT COUNT(*) FROM currentlyActiveActivities').get() as any
-  )['COUNT(*)'];
-  if (activityCountInCurrentlyActiveActivities > 0) {
-    log.info(
-      `There are still ${activityCountInCurrentlyActiveActivities} activites in currentlyActiveActivites left.`,
-    );
-  } else {
-    log.info(
-      'There are no activites in currentlyActiveActivites left and it can safely be deleted :)',
-    );
-  }
 });
 
 // PresenceUpdate fires once for every guild the bot shares with the user
@@ -178,11 +162,11 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   }
   if (!newMember.user || !newMember.guild || newMember.member?.user.bot) return;
 
-  const userConfig = getUserConfig(newMember.userId);
-  if (!userConfig.autoRole) return;
+  const userConfig = await getUserConfig(newMember.userId);
+  if (!userConfig.autorole) return;
 
-  const userIDHash = createHash('sha256').update(newMember.user.id).digest('base64');
-  const guildConfig = getGuildConfig(guildID);
+  const userIDHash = hashUserID(newMember.userId);
+  const guildConfig = await getGuildConfig(guildID);
   // if (debug) console.time('fetch member');
   // await newMember.member?.fetch(true);
   // if (debug) console.timeEnd('fetch member');
@@ -202,11 +186,33 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     if (activity.name !== 'Custom Status') addActivity(guildID, activity.name);
   }
 
-  const statusRoles = getStatusRoles(guildID);
-  const activityRoles = getActivityRoles(guildID);
-  const activeTemporaryRoles = prepare(
-    'SELECT * FROM activeTemporaryRoles WHERE userIDHash = ? AND guildID = ?',
-  ).all(userIDHash, guildID) as DBActiveTemporaryRoles[];
+  const statusRoles = await getStatusRoles(guildID);
+  const activityRoles = await getActivityRoles(guildID);
+
+  const activeTemporaryRoles = await db
+    .selectFrom('activeTemporaryRoles')
+    .selectAll()
+    .where('userID', '=', newMember.userId)
+    .where('guildID', '=', guildID)
+    .execute();
+  if (activeTemporaryRoles.length === 0) {
+    const activeTemporaryRolesHashed = await db
+      .selectFrom('activeTemporaryRolesHashed')
+      .selectAll()
+      .where('userIDHash', '=', userIDHash)
+      .where('guildID', '=', guildID)
+      .execute();
+
+    for (const role of activeTemporaryRolesHashed) {
+      activeTemporaryRoles.push({ userID: newMember.userId, ...role });
+      await db
+        .insertInto('activeTemporaryRoles')
+        .values({ userID: newMember.userId, ...role })
+        .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
+        .execute();
+    }
+    db.deleteFrom('activeTemporaryRolesHashed').where('userIDHash', '=', userIDHash).execute();
+  }
 
   // return if guild doesn’t have any roles
   if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
@@ -236,37 +242,40 @@ export async function processRoles({
   member,
 }: {
   memberStatus: Discord.PresenceStatus;
-  statusRoles: DBStatusRole[];
+  statusRoles: Selectable<StatusRoles>[];
   activities: Discord.Activity[];
-  activityRoles: DBActivityRole[];
+  activityRoles: Selectable<ActivityRoles>[];
   guild: Discord.Guild;
   member: Discord.GuildMember;
-  activeTemporaryRoles: DBActiveTemporaryRoles[];
+  activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
 }) {
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
-  const userIDHash = hashUserID(member.id);
 
   const highestBotRolePosition = guild.members.me?.roles.highest.position;
   const addDiscordRoleToMember = async ({
     add,
     roleID,
     permanent,
-    userIDHash,
   }: {
     add: boolean;
     roleID: string;
     permanent?: boolean;
-    userIDHash: string;
   }) => {
     const role = guild.roles.cache.get(roleID);
     if (!role) {
-      prepare('DELETE FROM statusRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
-      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(guild.id, roleID);
-      prepare('DELETE FROM activeTemporaryRoles WHERE guildID = ? AND roleID = ?').run(
-        guild.id,
-        roleID,
-      );
+      db.deleteFrom('activityRoles')
+        .where('guildID', '=', guild.id)
+        .where('roleID', '=', roleID)
+        .execute();
+      db.deleteFrom('statusRoles')
+        .where('guildID', '=', guild.id)
+        .where('roleID', '=', roleID)
+        .execute();
+      db.deleteFrom('activeTemporaryRoles')
+        .where('guildID', '=', guild.id)
+        .where('roleID', '=', roleID)
+        .execute();
       log.warn(`Role ${roleID} not found in guild ${guild.id} and was deleted from the database`);
       return;
     }
@@ -289,9 +298,9 @@ export async function processRoles({
         writeIntPoint('roles_added', 'permanent_roles_added', 1);
       } else {
         writeIntPoint('roles_added', 'temporary_roles_added', 1);
-        prepare(
-          'INSERT OR IGNORE INTO activeTemporaryRoles (userIDHash, guildID, roleID) VALUES (?, ?, ?)',
-        ).run(userIDHash, guild.id, roleID);
+        db.insertInto('activeTemporaryRoles')
+          .values({ userID: member.user.id, guildID: guild.id, roleID })
+          .execute();
       }
       await member.roles.add(role);
       stats.rolesAdded++;
@@ -306,9 +315,11 @@ export async function processRoles({
       await member.roles.remove(role);
       stats.rolesRemoved++;
 
-      prepare(
-        'DELETE FROM activeTemporaryRoles WHERE guildID = ? AND userIDHash = ? AND roleID = ?',
-      ).run(guild.id, userIDHash, roleID);
+      db.deleteFrom('activeTemporaryRoles')
+        .where('guildID', '=', guild.id)
+        .where('roleID', '=', roleID)
+        .where('userID', '=', member.user.id)
+        .execute();
     }
   };
 
@@ -344,36 +355,24 @@ export async function processRoles({
             userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase()),
           ))
       ) {
-        addRole({ roleID: activityRole.roleID, permanent: !activityRole.live });
+        addRole({ ...activityRole });
       }
     });
 
     // ------------ “apply changes” ------------
 
     for (const roleID of permanentRoleIDsToBeAdded) {
-      await addDiscordRoleToMember({ roleID, permanent: true, add: true, userIDHash });
+      await addDiscordRoleToMember({ roleID, permanent: true, add: true });
     }
     for (const roleID of tempRoleIDsToBeAdded) {
-      await addDiscordRoleToMember({ roleID, permanent: false, add: true, userIDHash });
+      await addDiscordRoleToMember({ roleID, permanent: false, add: true });
     }
   }
 
   // remove temporary roles --- new activeTemporaryRoles
   for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      await addDiscordRoleToMember({ roleID: activeTemporaryRole.roleID, add: false, userIDHash });
-    }
-  }
-
-  // @deprecated remove all roles still in currentlyActiveActivities
-  for (const activeActivity of prepare(
-    'SELECT * FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ?',
-  ).all(userIDHash, guild.id) as DBCurrentlyActiveActivity[]) {
-    for (const roleID of activityRoles.map(activityRole => activityRole.roleID)) {
-      await addDiscordRoleToMember({ roleID, add: false, userIDHash });
-      prepare(
-        'DELETE FROM currentlyActiveActivities WHERE userIDHash = ? AND guildID = ? AND activityName = ?',
-      ).run(userIDHash, guild.id, activeActivity.activityName);
+      await addDiscordRoleToMember({ roleID: activeTemporaryRole.roleID, add: false });
     }
   }
 }
@@ -391,7 +390,7 @@ client.on(Events.Error, error => {
 });
 
 client.on(Events.GuildRoleDelete, async role => {
-  prepare('DELETE FROM activityRoles WHERE roleID = ? AND guildID = ?').run(role.id, role.guild.id);
+  await db.deleteFrom('statusRoles').where('roleID', '=', role.id).execute();
 });
 
 export function connect() {

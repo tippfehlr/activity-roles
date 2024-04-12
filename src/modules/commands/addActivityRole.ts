@@ -12,13 +12,12 @@ import {
   SlashCommandBuilder,
   ComponentType,
   Colors,
-  ChannelType,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
 import config from '../config';
 import { log, __ } from '../messages';
-import { prepare, getLang } from '../db';
+import { db, getLang } from '../db';
 
 export default {
   data: new SlashCommandBuilder()
@@ -72,12 +71,6 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
     if (!interaction.channel) return;
-    if (interaction.channel.type !== ChannelType.GuildText) {
-      await interaction.reply(
-        __({ phrase: 'This command can only be used in text channels.', locale }),
-      );
-      return;
-    }
 
     const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 1024) {
@@ -196,7 +189,7 @@ function reply(
   }
 }
 
-function process(
+async function process(
   interaction: CommandInteraction | StringSelectMenuInteraction,
   role: Role | APIRole,
   activityName: string,
@@ -250,9 +243,12 @@ function process(
     return;
   }
   if (
-    prepare(
-      'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
-    ).get(interaction.guild!.id, role.id, activityName)
+    await db
+      .selectFrom('activityRoles')
+      .selectAll()
+      .where('guildID', '=', interaction.guildId)
+      .where('activityName', '=', activityName)
+      .executeTakeFirst()
   ) {
     reply(
       interaction,
@@ -260,13 +256,15 @@ function process(
     );
     return;
   } else {
-    prepare('INSERT INTO activityRoles VALUES (?, ?, ?, ?, ?)').run(
-      interaction.guild!.id,
-      activityName,
-      role.id,
-      Number(exactActivityName),
-      Number(!permanent),
-    );
+    db.insertInto('activityRoles')
+      .values({
+        guildID: interaction.guildId!,
+        activityName,
+        roleID: role.id,
+        exactActivityName,
+        permanent,
+      })
+      .execute();
     log.info(
       `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}`,
     );

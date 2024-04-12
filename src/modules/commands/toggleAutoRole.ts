@@ -1,4 +1,4 @@
-import { prepare, getLang, getUserConfig } from './../db';
+import { db, getLang, getUserConfig } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations } from '../messages';
@@ -21,9 +21,9 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const autoRole = interaction.options.get('enabled', false)?.value as boolean | undefined;
-    const userAutoRole = getUserConfig(interaction.user.id).autoRole;
-    if (autoRole === undefined) {
+    const autorole = interaction.options.get('enabled', false)?.value as boolean | undefined;
+    const userAutorole = (await getUserConfig(interaction.user.id)).autorole;
+    if (autorole === undefined) {
       interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -35,32 +35,29 @@ export default {
                     'The bot is currently **%s** for this user.\n\nYou can change this with the command `/toggleAutoRole`.',
                   locale,
                 },
-                userAutoRole
+                userAutorole
                   ? __({ phrase: 'enabled', locale })
                   : __({ phrase: 'disabled', locale }),
               ),
             )
-            .setColor(userAutoRole ? Colors.Green : Colors.Red),
+            .setColor(userAutorole ? Colors.Green : Colors.Red),
         ],
       });
     } else {
-      prepare('UPDATE users SET autoRole = ? WHERE userIDHash = ?').run(
-        Number(autoRole),
-        interaction.user.id,
-      );
+      db.updateTable('users').set({ autorole }).where('userID', '=', interaction.user.id).execute();
       interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(
               __(
                 { phrase: 'Automatic role assignment for your user is now **%s**.', locale },
-                autoRole ? __({ phrase: 'enabled', locale }) : __({ phrase: 'disabled', locale }),
+                autorole ? __({ phrase: 'enabled', locale }) : __({ phrase: 'disabled', locale }),
               ),
             )
             .setDescription(
               __({ phrase: 'You can change this with the command `/toggleAutoRole`.', locale }),
             )
-            .setColor(autoRole ? Colors.Green : Colors.Red),
+            .setColor(autorole ? Colors.Green : Colors.Red),
         ],
       });
     }

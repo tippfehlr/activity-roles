@@ -10,21 +10,24 @@
   },
   "dependencies": {
     "@influxdata/influxdb-client": "^1.33.2",
-    "better-sqlite3": "^9.4.3",
     "discord.js": "^14.14.1",
     "i18n": "^0.15.1",
+    "kysely": "^0.27.3",
+    "pg": "^8.11.5",
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.1",
     "table": "^6.8.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.9",
+    "@prisma/client": "^5.12.1",
     "@types/i18n": "^0.13.10",
     "@types/node": "^20.11.27",
+    "@types/pg": "^8.11.5",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "kysely-codegen": "^0.14.2",
     "prettier": "^3.2.5",
     "typescript": "^5.4.2"
   }

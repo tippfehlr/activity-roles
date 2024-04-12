@@ -1,7 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import config from '../config';
 import { Command } from '../commandHandler';
-import { getLang, prepare } from '../db';
+import { getLang, getActivityRoleCount, getStatusRoleCount, getUserCount } from '../db';
 import { i18n, __, discordTranslations } from '../messages';
 
 export default {
@@ -30,25 +30,19 @@ export default {
               singular: '%s activity role',
               plural: '%s activity roles',
               locale,
-              count: (
-                prepare('SELECT COUNT(*) FROM activityRoles').get() as { 'COUNT(*)': number }
-              )['COUNT(*)'],
+              count: await getActivityRoleCount(),
             }),
             i18n.__n({
               singular: '%s status role',
               plural: '%s status roles',
               locale,
-              count: (prepare('SELECT COUNT(*) FROM statusRoles').get() as { 'COUNT(*)': number })[
-                'COUNT(*)'
-              ],
+              count: await getStatusRoleCount(),
             }),
             i18n.__n({
               singular: '%s user',
               plural: '%s users',
               locale,
-              count: (prepare('SELECT COUNT(*) FROM users').get() as { 'COUNT(*)': number })[
-                'COUNT(*)'
-              ],
+              count: await getUserCount(),
             }),
           ),
         ),

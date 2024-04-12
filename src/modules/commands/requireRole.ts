@@ -4,7 +4,7 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from 'discord.js';
-import { prepare, getGuildConfig, getLang } from './../db';
+import { db, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations } from '../messages';
 import config from '../config';
@@ -33,7 +33,7 @@ export default {
   execute: async (interaction: CommandInteraction) => {
     const locale = getLang(interaction);
     const role = interaction.options.get('role')?.role;
-    const guildConfig = getGuildConfig(interaction.guildId!);
+    const guildConfig = await getGuildConfig(interaction.guildId!);
 
     if (role) {
       if (
@@ -55,10 +55,12 @@ export default {
           ],
         });
       } else {
-        prepare('UPDATE guilds SET requiredRoleID = ? WHERE guildID = ?').run(
-          role.id === interaction.guild?.roles.everyone.id ? null : role.id,
-          interaction.guildId!,
-        );
+        db.updateTable('guilds')
+          .set({
+            requiredRoleID: role.id === interaction.guild?.roles.everyone.id ? null : role.id,
+          })
+          .where('guildID', '=', interaction.guildId!)
+          .execute();
         interaction.reply({
           embeds: [
             new EmbedBuilder()

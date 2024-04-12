@@ -2,7 +2,7 @@ import { ActivityType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { table } from 'table';
 import fs from 'fs';
 
-import { prepare, DBActivityRole, DBStatusRole, getLang } from '../db';
+import { db, getLang } from '../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations, getEnumKey } from '../messages';
 import config from '../config';
@@ -17,11 +17,14 @@ export default {
   execute: async interaction => {
     const locale = getLang(interaction);
 
-    const res: DBActivityRole[] = prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(
-      interaction.guild!.id,
-    ) as DBActivityRole[];
+    const activityRoles = await db
+      .selectFrom('activityRoles')
+      .selectAll()
+      .where('guildID', '=', interaction.guildId)
+      .execute();
+
     let activityRolesTable = '';
-    if (res.length === 0) {
+    if (activityRoles.length === 0) {
       activityRolesTable = __({ phrase: 'There are no activity roles in this guild.', locale });
     } else {
       const array = [
@@ -33,14 +36,14 @@ export default {
           __({ phrase: 'Permanent', locale }),
         ],
       ];
-      for (const i in res) {
+      for (const i in activityRoles) {
         array.push([
           String(Number(i) + 1),
-          interaction.guild!.roles.cache.find(role => role.id === res[i].roleID)?.name +
-            ` <@&${res[i].roleID}>`,
-          res[i].activityName,
-          String(Boolean(res[i].exactActivityName)),
-          String(!res[i].live),
+          interaction.guild!.roles.cache.find(role => role.id === activityRoles[i].roleID)?.name +
+            ` <@&${activityRoles[i].roleID}>`,
+          activityRoles[i].activityName,
+          String(activityRoles[i].exactActivityName),
+          String(activityRoles[i].permanent),
         ]);
       }
       activityRolesTable = table(array, {
@@ -53,9 +56,11 @@ export default {
 
     let statusRoles = '';
     (
-      prepare('SELECT * FROM statusRoles WHERE guildID = ?').all(
-        interaction.guildId,
-      ) as DBStatusRole[]
+      await db
+        .selectFrom('statusRoles')
+        .selectAll()
+        .where('guildID', '=', interaction.guildId)
+        .execute()
     ).forEach(statusRole => {
       statusRoles += `**${getEnumKey(ActivityType, statusRole.type)}:** <@&${statusRole.roleID}>\n`;
     });

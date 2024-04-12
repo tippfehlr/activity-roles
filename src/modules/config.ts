@@ -15,6 +15,9 @@ if (!APPLICATION_ID) missingEnv('APPLICATION_ID');
 const HOSTER_NAME = process.env.HOSTER_NAME;
 if (!HOSTER_NAME) missingEnv('HOSTER_NAME');
 
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) missingEnv('DATABASE_URL');
+
 const INVITE_LINK = `https://discord.com/api/oauth2/authorize?client_id=${APPLICATION_ID}&permissions=268435456&scope=bot%20applications.commands`;
 const COLOR = (process.env.COLOR || '#3695d3') as ColorResolvable;
 const SUPPORT_GUILD_LINK = 'https://discord.gg/3K9Yx4ufN7';
@@ -31,6 +34,7 @@ export default {
   TOKEN: TOKEN as string,
   APPLICATION_ID: APPLICATION_ID as string,
   HOSTER_NAME: HOSTER_NAME as string,
+  DATABASE_URL: DATABASE_URL as string,
   INVITE_LINK,
   COLOR,
   SUPPORT_GUILD_LINK,

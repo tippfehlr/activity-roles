@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import fs from 'fs';
 
-import { prepare, DBActivityRole, getLang } from '../db';
+import { db, getLang } from '../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations } from '../messages';
 
@@ -25,9 +25,11 @@ export default {
     const locale = getLang(interaction);
     const roleIDs = (interaction.options.get('roleids') as boolean | null) ?? false;
 
-    const activityRoles: DBActivityRole[] = prepare(
-      'SELECT * FROM activityRoles WHERE guildID = ?',
-    ).all(interaction.guild!.id) as any as DBActivityRole[];
+    const activityRoles = await db
+      .selectFrom('activityRoles')
+      .selectAll()
+      .where('guildID', '=', interaction.guildId)
+      .execute();
     if (activityRoles.length === 0) {
       interaction.reply({
         content: __({ phrase: 'There are no activity roles in this guild.', locale }),
@@ -47,7 +49,7 @@ export default {
       output +=
         activityRole.activityName +
         `,\t${activityRole.exactActivityName}` +
-        `,\t${Number(!activityRole.live)}` +
+        `,\t${activityRole.permanent}` +
         `,\t\t${role?.name}` +
         `,\t${role?.hexColor}`;
       if (roleIDs) output += `  \t# ${activityRole.roleID}`;

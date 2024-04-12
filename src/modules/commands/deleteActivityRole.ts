@@ -1,4 +1,4 @@
-import { DBActivityRole, getLang, prepare } from '../db';
+import { db, getLang } from '../db';
 import { discordTranslations, log, __ } from '../messages';
 import config from '../config';
 import { Command } from '../commandHandler';
@@ -15,6 +15,8 @@ import {
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
+import { Selectable } from 'kysely';
+import { ActivityRoles } from '../db.types';
 
 export default {
   data: new SlashCommandBuilder()
@@ -102,12 +104,14 @@ export default {
             case 'deleteactivityrole:confirm':
               process(
                 int,
-                prepare('SELECT * FROM activityRoles WHERE guildID = ?').all(
-                  interaction.guildId,
-                ) as DBActivityRole[],
+                await db
+                  .selectFrom('activityRoles')
+                  .selectAll()
+                  .where('guildID', '=', interaction.guildId)
+                  .execute(),
                 locale,
               );
-              prepare('DELETE FROM activityRoles WHERE guildID = ?').run(interaction.guildId);
+              db.deleteFrom('activityRoles').where('guildID', '=', interaction.guildId).execute();
               break;
             case 'deleteactivityrole:cancel':
               int.update({ content: __({ phrase: 'Cancelled', locale }), components: [] });
@@ -126,47 +130,57 @@ export default {
     } else if (role && !activity) {
       process(
         interaction,
-        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ?').all(
-          interaction.guildId,
-          role.id,
-        ) as DBActivityRole[],
+        await db
+          .selectFrom('activityRoles')
+          .selectAll()
+          .where('guildID', '=', interaction.guildId)
+          .where('roleID', '=', role.id)
+          .execute(),
         locale,
       );
-      prepare('DELETE FROM activityRoles WHERE guildID = ? AND roleID = ?').run(
-        interaction.guildId,
-        role.id,
-      );
+      db.deleteFrom('activityRoles')
+        .where('roleID', '=', interaction.guildId)
+        .where('roleID', '=', role.id)
+        .execute();
     } else if (!role && activity) {
       process(
         interaction,
-        prepare('SELECT * FROM activityRoles WHERE guildID = ? AND activityName = ?').all(
-          interaction.guildId,
-          activity,
-        ) as DBActivityRole[],
+        await db
+          .selectFrom('activityRoles')
+          .selectAll()
+          .where('guildID', '=', interaction.guildId)
+          .where('activityName', '=', activity)
+          .execute(),
         locale,
       );
-      prepare('DELETE FROM activityRoles WHERE guildID = ? AND activityName = ?').run(
-        interaction.guildId,
-        activity,
-      );
+      db.deleteFrom('activityRoles')
+        .where('guildID', '=', interaction.guildId)
+        .where('activityName', '=', activity)
+        .execute();
     } else if (role && activity) {
       process(
         interaction,
-        prepare(
-          'SELECT * FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
-        ).all(interaction.guildId, role.id, activity) as DBActivityRole[],
+        await db
+          .selectFrom('activityRoles')
+          .selectAll()
+          .where('guildID', '=', interaction.guildId)
+          .where('roleID', '=', role.id)
+          .where('activityName', '=', activity)
+          .execute(),
         locale,
       );
-      prepare(
-        'DELETE FROM activityRoles WHERE guildID = ? AND roleID = ? AND activityName = ?',
-      ).run(interaction.guildId, role.id, activity);
+      db.deleteFrom('activityRoles')
+        .where('guildID', '=', interaction.guildId)
+        .where('roleID', '=', role.id)
+        .where('activityName', '=', activity)
+        .execute();
     }
   },
 } as Command;
 
 function process(
   interaction: CommandInteraction | ButtonInteraction,
-  deleted: DBActivityRole[],
+  deleted: Selectable<ActivityRoles>[],
   locale: string,
 ) {
   if (deleted.length > 0) {
@@ -195,8 +209,8 @@ function process(
               inline: true,
             },
             {
-              name: __({ phrase: 'Live', locale }),
-              value: activityRole.live
+              name: __({ phrase: 'Permanent', locale }),
+              value: activityRole.permanent
                 ? __({ phrase: 'Yes', locale })
                 : __({ phrase: 'No', locale }),
               inline: true,
@@ -219,7 +233,7 @@ function process(
       });
     deleted.forEach(activityRole => {
       log.info(
-        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, live mode: ${activityRole.live}`,
+        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, permanent: ${activityRole.permanent}`,
       );
     });
   } else {
