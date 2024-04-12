@@ -6,7 +6,6 @@
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Löscht eine Aktivitätsrolle. Gib die Aktivität, die Rolle oder beides an.",
   "the activity roles with this name will be deleted": "die Aktivitätsrollen mit diesem Namen werden gelöscht",
   "the activity roles of this role will be deleted": "die Aktivitätsrollen dieser Rolle werden gelöscht",
-  "ATTENTION: DELETES ALL ACTIVITY ROLES": "ACHTUNG: LÖSCHT ALLE AKTIVITÄTSROLLEN",
   "Shows the help menu": "Zeigt das Hilfe-Menü",
   "Lists all activity roles in your guild.": "Listet alle Aktivitätsrollen in deiner Gilde auf.",
   "Shows some stats about the bot.": "Zeigt Statistiken über den Bot.",
@@ -92,5 +91,14 @@
   "Live": "Live",
   "re-check all users/roles": "re-check all users/roles",
   "re-checked all users/roles": "re-checked all users/roles",
-  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
+  "help": {
+    "description": "Zeigt das Hilfe-Menü",
+    "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Made by tippfehlr"
+  },
+  "deleteactivityrole": {
+    "description": {
+      "all": "ACHTUNG: LÖSCHT ALLE AKTIVITÄTSROLLEN"
+    }
+  }
 }

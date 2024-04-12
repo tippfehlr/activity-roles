@@ -6,7 +6,6 @@
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Supprime un rôle d'activité de votre serveur. Indiquez l'activité ou le rôle, ou les deux.",
   "the activity roles with this name will be deleted": "les rôles d'activité avec ce nom seront supprimés",
   "the activity roles of this role will be deleted": "les rôles d'activité de ce rôle seront supprimés",
-  "ATTENTION: DELETES ALL ACTIVITY ROLES": "ATTENTION : SUPPRIME TOUS LES RÔLES D'ACTIVITÉ",
   "Shows the help menu": "Affiche le menu d'aide",
   "Lists all activity roles in your guild.": "Liste tous les rôles d'activités dans votre serveur.",
   "Shows some stats about the bot.": "Affiche quelques statistiques à propos du robot.",
@@ -89,8 +88,17 @@
   ":x: That activity role already exists in this guild! :x:": ":x: Ce rôle d'activité existe déjà dans ce serveur ! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Je n'utilise pas le robot moi-même. Si vous voulez accélérer le développement ou m'aider à payer pour l'hébergement, s'il vous plaît envisager de me soutenir.",
   "the role will not be removed again if set to true": "le rôle ne sera plus supprimé si défini sur vrai",
-  "Live": "Live",
-  "re-check all users/roles": "re-check all users/roles",
-  "re-checked all users/roles": "re-checked all users/roles",
-  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
+  "Live": "En direct",
+  "re-check all users/roles": "re-vérifie tous les utilisateurs/rôles",
+  "re-checked all users/roles": "re-vérifié tous les utilisateurs/rôles",
+  "help": {
+    "description": "Affiche le menu d'aide",
+    "reply-description": "Un robot Discord pour l'ajout automatique de rôles basé sur des activités.\nSupport / Suggestions : {{{support}}}\nGitHub : {{{github}}}\nContact : {{{contact}}}\n\nAjoutez un rôle d'activité avec `/addactivityrole`. Par défaut, le robot supprimera le rôle à la fin de l'activité.\nSi `permanent` est défini sur vrai, le robot ne supprimera pas le rôle.\nSi `exact_activity_name` est défini sur vrai, le robot n'acceptera que les correspondances exactes.\nDéfinissez un rôle de statut avec `/setstatusrole` !\n**Le robot ne supprimera aucun rôle qui a été ajouté manuellement. *\n\nJe n'utilise pas le robot moi-même. Si vous voulez accélérer le développement ou m'aider à payer pour le serveur, pensez à me soutenir.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Créé par tippfehlr"
+  },
+  "deleteactivityrole": {
+    "description": {
+      "all": "ATTENTION : SUPPRIME TOUS LES RÔLES D'ACTIVITÉ"
+    }
+  }
 }

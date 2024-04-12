@@ -6,7 +6,6 @@
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Verwijdert een activiteitsrol uit je guild. Geef de activiteit of de rol op, of beide.",
   "the activity roles with this name will be deleted": "de activiteitsrollen met deze naam zullen verwijderd worden",
   "the activity roles of this role will be deleted": "de activiteit rollen van deze rol worden verwijderd",
-  "ATTENTION: DELETES ALL ACTIVITY ROLES": "LET OP: VERWIJDERD ALLE ACTIVITEIT ROLES",
   "Shows the help menu": "Geeft het help menu weer",
   "Lists all activity roles in your guild.": "Geef alle activiteits rollen weer in jouw guild.",
   "Shows some stats about the bot.": "Toont enkele statistieken over de bot.",
@@ -92,5 +91,14 @@
   "Live": "Live",
   "re-check all users/roles": "re-check all users/roles",
   "re-checked all users/roles": "re-checked all users/roles",
-  "help-description-1": "Add an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf you set `permanent` to true, the bot will not remove the role.\n`exact_activity_name` can be set to true if you get false-positives.\n"
+  "help": {
+    "description": "Shows the help menu",
+    "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Made by tippfehlr"
+  },
+  "deleteactivityrole": {
+    "description": {
+      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+    }
+  }
 }
