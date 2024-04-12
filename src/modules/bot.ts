@@ -300,6 +300,7 @@ export async function processRoles({
         writeIntPoint('roles_added', 'temporary_roles_added', 1);
         db.insertInto('activeTemporaryRoles')
           .values({ userID: member.user.id, guildID: guild.id, roleID })
+          .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
           .execute();
       }
       await member.roles.add(role);
