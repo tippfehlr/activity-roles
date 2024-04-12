@@ -44,7 +44,7 @@ export const log = pino({
     target: 'pino-pretty',
     options: {
       colorize: true,
-      translateTime: 'YYYY-mm-dd HH:MM:ss.l',
+      translateTime: 'SYS:standard',
     },
   },
   level: process.env.LOG_LEVEL || 'info',
