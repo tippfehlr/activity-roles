@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.11.0](https://github.com/tippfehlr/activity-roles/compare/v1.10.2..v1.11.0) - 2024-04-13
+
+### Added
+
+- **(metrics)** add metrics for {old,new} users and activeTemporaryRoles ([3742d56](https://github.com/tippfehlr/activity-roles/commit/3742d569caa01bcd41e331dfc3aec31978802cd2))
+- **(metrics)** add metric for locales ([9bdb0dd](https://github.com/tippfehlr/activity-roles/commit/9bdb0dd0c66e0eb74aba28eb064c672cdc33bdd3))
+- automatically migrate database from sqlite ([8b22ea3](https://github.com/tippfehlr/activity-roles/commit/8b22ea382344508ea27b8afdf2d8992773a075a4))
+- explicitely connect to postgres and exit if no connection ([952424c](https://github.com/tippfehlr/activity-roles/commit/952424c96f0f71507432249ab6bd2a83919cdc6f))
+
+### Fixed
+
+- **(/help)** 'the bot will be removed' -> 'the bot will remove the role' ([a243b31](https://github.com/tippfehlr/activity-roles/commit/a243b3198d12d6aef77b31ed24231021c8fd206b))
+- **(presenceUpdate)** add onConflict to insert into activeTemporaryRoles ([95a1e5c](https://github.com/tippfehlr/activity-roles/commit/95a1e5ca3651769ab1816aaee18ba13910442f1b))
+- reverse logic for /requirerole ([ba61603](https://github.com/tippfehlr/activity-roles/commit/ba616031727a6ea433ddbd5d925882375d778250))
+
+### Changed
+
+- merge /help description into one translation string, use nested keys ([2c72fe5](https://github.com/tippfehlr/activity-roles/commit/2c72fe598768051b9e1b4752d997d85231f474b8))
+- rename help menu to help page ([a191403](https://github.com/tippfehlr/activity-roles/commit/a1914034cca5f289fa718a07035cfda1e4800af4))
+- move database from sqlite to postgres (kysely) ([063ce1b](https://github.com/tippfehlr/activity-roles/commit/063ce1b1a84e8fb8948e6af8a31c76ef78a3aca0))
+- set time in logs to system timezone ([bcb4380](https://github.com/tippfehlr/activity-roles/commit/bcb43802738d74042440c4643c141b5d2877f66b))
+- update tranlations ([036a330](https://github.com/tippfehlr/activity-roles/commit/036a33001cfbc80cb4adebd27ae53ad8a64e731e))
+
+### Removed
+
+- remove Estonian from README ([f9d3bf3](https://github.com/tippfehlr/activity-roles/commit/f9d3bf3239132f1d006956e9d4881ca98194aa94))
+
+### Documentation
+
+- **(readme)** remove privacy notice about hashes user IDs. ([653f774](https://github.com/tippfehlr/activity-roles/commit/653f7749aa3859244d74669fb34fd57f178a55c0))
+- **(readme)** remove the _new_ notice for /statusrole ([2f304f7](https://github.com/tippfehlr/activity-roles/commit/2f304f7b8a92199b4d7fb20ccfb5b391708d125c))
+
 ## [1.10.2](https://github.com/tippfehlr/activity-roles/compare/v1.10.1..v1.10.2) - 2024-04-10
 
 ### Added
