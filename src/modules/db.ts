@@ -10,7 +10,7 @@ import { DB, ActivityRoles, Guilds, StatusRoles, Users } from './db.types';
 import config from './config';
 import { writeIntPoint } from './metrics';
 
-export const pool = new Pool({ connectionString: config.DATABASE_URL, max: 10 });
+const pool = new Pool({ connectionString: config.DATABASE_URL, max: 10 });
 const dialect = new PostgresDialect({ pool });
 export const db = new Kysely<DB>({ dialect });
 const migrator = new Migrator({
@@ -22,7 +22,12 @@ const migrator = new Migrator({
   }),
 });
 
-export async function migrateToLatest() {
+export async function initDB() {
+  await pool.connect().catch(err => {
+    log.error('Couldn’t connect to the database: ' + err.code);
+    process.exit(1);
+  });
+
   const { error, results } = await migrator.migrateToLatest();
 
   results?.forEach(it => {

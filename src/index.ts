@@ -1,4 +1,4 @@
-import { db, migrateToLatest } from './modules/db';
+import { db, initDB } from './modules/db';
 import { connect } from './modules/bot';
 import { writeApi } from './modules/metrics';
 
@@ -12,7 +12,7 @@ async function main() {
   process.on('SIGINT', close);
   process.on('SIGTERM', close);
 
-  await migrateToLatest();
+  await initDB();
   await connect();
 }
 
