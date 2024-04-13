@@ -128,13 +128,15 @@ export async function addActivity(guildID: string, activityName: string) {
     .execute();
 }
 
-export async function getRowCount(table: TableExpression<DB, keyof DB>): Promise<number> {
-  return (
-    await db
-      .selectFrom(table)
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
+export async function getRowCount(table: TableExpression<DB, keyof DB>) {
+  return Number(
+    (
+      await db
+        .selectFrom(table)
+        .select(eb => eb.fn.countAll().as('count'))
+        .executeTakeFirstOrThrow()
+    ).count,
+  );
 }
 
 export async function getUserCount(): Promise<number> {
