@@ -1,7 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import config from '../config';
 import { Command } from '../commandHandler';
-import { getLang, getActivityRoleCount, getStatusRoleCount, getUserCount } from '../db';
+import { getLang, getRowCount, getUserCount } from '../db';
 import { i18n, __, discordTranslations } from '../messages';
 
 export default {
@@ -30,13 +30,13 @@ export default {
               singular: '%s activity role',
               plural: '%s activity roles',
               locale,
-              count: await getActivityRoleCount(),
+              count: await getRowCount('activityRoles'),
             }),
             i18n.__n({
               singular: '%s status role',
               plural: '%s status roles',
               locale,
-              count: await getStatusRoleCount(),
+              count: await getRowCount('statusRoles'),
             }),
             i18n.__n({
               singular: '%s user',

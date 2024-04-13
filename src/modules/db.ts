@@ -2,7 +2,14 @@ import fs from 'fs';
 import { createHash } from 'crypto';
 import { CommandInteraction, StringSelectMenuInteraction } from 'discord.js';
 import { Pool } from 'pg';
-import { FileMigrationProvider, Kysely, Migrator, PostgresDialect, Selectable } from 'kysely';
+import {
+  FileMigrationProvider,
+  Kysely,
+  Migrator,
+  PostgresDialect,
+  Selectable,
+  TableExpression,
+} from 'kysely';
 import path from 'path';
 
 import { locales, log } from './messages';
@@ -121,44 +128,17 @@ export async function addActivity(guildID: string, activityName: string) {
     .execute();
 }
 
-export async function getOldUserCount(): Promise<number> {
+export async function getRowCount(table: TableExpression<DB, keyof DB>): Promise<number> {
   return (
     await db
-      .selectFrom('usersHashed')
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
-}
-
-export async function getNewUserCount(): Promise<number> {
-  return (
-    await db
-      .selectFrom('users')
+      .selectFrom(table)
       .select(eb => eb.fn.countAll().as('count'))
       .executeTakeFirstOrThrow()
   ).count as number;
 }
 
 export async function getUserCount(): Promise<number> {
-  return (await getOldUserCount()) + (await getNewUserCount());
-}
-
-export async function getActivityRoleCount(): Promise<number> {
-  return (
-    await db
-      .selectFrom('activityRoles')
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
-}
-
-export async function getStatusRoleCount(): Promise<number> {
-  return (
-    await db
-      .selectFrom('statusRoles')
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
+  return (await getRowCount('users')) + (await getRowCount('usersHashed'));
 }
 
 export async function getTempRoleCount(): Promise<number> {
@@ -182,27 +162,11 @@ export async function getPermRoleCount(): Promise<number> {
 }
 
 export async function getRolesCount(): Promise<number> {
-  return (await getActivityRoleCount()) + (await getStatusRoleCount());
-}
-
-export async function getOldActiveTemporaryRolesCount(): Promise<number> {
-  return (
-    await db
-      .selectFrom('activeTemporaryRolesHashed')
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
-}
-
-export async function getNewActiveTemporaryRolesCount(): Promise<number> {
-  return (
-    await db
-      .selectFrom('activeTemporaryRoles')
-      .select(eb => eb.fn.countAll().as('count'))
-      .executeTakeFirstOrThrow()
-  ).count as number;
+  return (await getRowCount('activityRoles')) + (await getRowCount('statusRoles'));
 }
 
 export async function getActiveTemporaryRolesCount(): Promise<number> {
-  return (await getOldActiveTemporaryRolesCount()) + (await getNewActiveTemporaryRolesCount());
+  return (
+    (await getRowCount('activeTemporaryRolesHashed')) + (await getRowCount('activeTemporaryRoles'))
+  );
 }

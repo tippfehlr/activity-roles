@@ -9,21 +9,24 @@ import { stats as botStats, resetStats as resetBotStats } from './bot';
 import {
   getUserCount,
   getRolesCount,
+  getActiveTemporaryRolesCount,
   getTempRoleCount,
   getPermRoleCount,
-  getStatusRoleCount,
-  getOldUserCount,
-  getNewUserCount,
-  getOldActiveTemporaryRolesCount,
-  getNewActiveTemporaryRolesCount,
-  getActiveTemporaryRolesCount,
+  getRowCount,
 } from './db';
 
-export let client: InfluxDB;
+let client: InfluxDB;
 export let writeApi: WriteApi;
 
 export function writeIntPoint(name: string, fieldName: string, value: number) {
-  if (writeApi) writeApi.writePoint(new Point(name).intField(fieldName, value));
+  if (writeApi)
+    try {
+      writeApi.writePoint(new Point(name).intField(fieldName, value));
+    } catch (err: any) {
+      if (err.message !== 'writeApi: already closed!') {
+        log.error(err);
+      }
+    }
 }
 
 export async function configureInfluxDB() {
@@ -43,18 +46,18 @@ export async function configureInfluxDB() {
       writeIntPoint('roles', 'roles_count', await getRolesCount());
       writeIntPoint('roles', 'temporary_roles_count', await getTempRoleCount());
       writeIntPoint('roles', 'permanent_roles_count', await getPermRoleCount());
-      writeIntPoint('roles', 'status_roles_count', await getStatusRoleCount());
+      writeIntPoint('roles', 'status_roles_count', await getRowCount('statusRoles'));
       writeApi.writePoint(
         new Point('users')
           .intField('users_cache_total', discordClient.users.cache.size)
-          .intField('old_users_count', await getOldUserCount())
-          .intField('new_users_count', await getNewUserCount())
+          .intField('old_users_count', await getRowCount('usersHashed'))
+          .intField('new_users_count', await getRowCount('users'))
           .intField('users_db_total', await getUserCount()),
       );
       writeApi.writePoint(
         new Point('activeTemporaryRoles')
-          .intField('old', await getOldActiveTemporaryRolesCount())
-          .intField('new', await getNewActiveTemporaryRolesCount())
+          .intField('old', await getRowCount('activeTemporaryRolesHashed'))
+          .intField('new', await getRowCount('activeTemporaryRoles'))
           .intField('total', await getActiveTemporaryRolesCount()),
       );
 
