@@ -8,6 +8,7 @@ import path from 'path';
 import { locales, log } from './messages';
 import { DB, ActivityRoles, Guilds, StatusRoles, Users } from './db.types';
 import config from './config';
+import { writeIntPoint } from './metrics';
 
 export const pool = new Pool({ connectionString: config.DATABASE_URL, max: 10 });
 const dialect = new PostgresDialect({ pool });
@@ -99,6 +100,7 @@ export async function getStatusRoles(guildID: string): Promise<Selectable<Status
 }
 
 export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): string {
+  writeIntPoint('locale', interaction.locale, 1);
   if (locales.includes(interaction.locale)) return interaction.locale;
   else return 'en-US';
 }
