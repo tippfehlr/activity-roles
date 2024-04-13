@@ -42,11 +42,6 @@ If you set `permanent` to true, the bot will not remove the role.
 
 Set a status role with `/setstatusrole`.
 
-## Privacy
-
-User IDs are stored as sha256 hash. \
-No activity data is stored.
-
 ## Contribution
 
 Contribution is highly appreciated. Feel free to join the support
