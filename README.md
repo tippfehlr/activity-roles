@@ -4,7 +4,6 @@
 [![LICENSE](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
-
 ---
 
 A Discord bot for automatic role assignment based on activities. \
@@ -15,14 +14,6 @@ Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
 I don’t use the bot myself. If you want to speed up development or help
 me pay for the server, please consider supporting me ([GitHub Sponsors](https://github.com/sponsors/tippfehlr) or [Ko-fi](https://ko-fi.com/Z8Z7SYDDJ)).
-
----
-
-**Now with `/statusrole`!** \
-Assign roles based only on the status.
-Every person playing could have the role `@playing`, for example.
-
----
 
 ## Configuration
 
