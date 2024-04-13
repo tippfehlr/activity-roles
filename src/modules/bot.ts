@@ -204,10 +204,14 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
       .execute();
 
     for (const role of activeTemporaryRolesHashed) {
-      activeTemporaryRoles.push({ userID: newMember.userId, ...role });
+      activeTemporaryRoles.push({
+        userID: newMember.userId,
+        roleID: role.roleID,
+        guildID: role.guildID,
+      });
       await db
         .insertInto('activeTemporaryRoles')
-        .values({ userID: newMember.userId, ...role })
+        .values({ userID: newMember.userId, roleID: role.roleID, guildID: role.guildID })
         .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
         .execute();
     }
@@ -356,7 +360,7 @@ export async function processRoles({
             userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase()),
           ))
       ) {
-        addRole({ ...activityRole });
+        addRole({ roleID: activityRole.roleID, permanent: activityRole.permanent });
       }
     });
 
