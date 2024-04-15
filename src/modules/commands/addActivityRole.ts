@@ -73,12 +73,16 @@ export default {
     if (!interaction.channel) return;
 
     const activityName = interaction.options.get('activity', true)?.value as string;
-    if (activityName.length > 1024) {
+    if (activityName.length > 100) {
       await interaction.reply({
-        content: __({
-          phrase: 'The activity name is too long! Maximum is 1024 characters.',
-          locale,
-        }),
+        content: __(
+          {
+            phrase:
+              'addActivityRole->activityNameTooLong:The maximum length for activity names is %s characters.',
+            locale,
+          },
+          '100',
+        ),
         ephemeral: true,
       });
       return;
