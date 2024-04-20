@@ -99,7 +99,7 @@ export default {
           },
         ),
       });
-    }, 20);
+    }, 2000);
 
     // check all active presences
     await interaction.guild.members.fetch({ withPresences: true });
