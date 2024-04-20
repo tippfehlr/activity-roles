@@ -26,6 +26,7 @@ import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
 import { configureInfluxDB, writeIntPoint } from './metrics';
 import { ActiveTemporaryRoles, ActivityRoles, StatusRoles } from './db.types';
+import { close } from '../index';
 
 export const client = new Discord.Client({
   intents: [
@@ -426,6 +427,9 @@ client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name}(${guil
 client.on(Events.Error, error => {
   log.error(error, 'The Discord WebSocket has encountered an error');
   stats.webSocketErrors++;
+  if (error.message === 'driver has already been destroyed') {
+    close();
+  }
 });
 
 client.on(Events.GuildRoleDelete, role => {
