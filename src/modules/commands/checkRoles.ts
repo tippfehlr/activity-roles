@@ -199,4 +199,8 @@ export async function checkRoles({
         .intField('roles_added', rolesAdded)
         .intField('roles_removed', rolesRemoved),
     );
+  db.updateTable('guilds')
+    .set('lastCheckRoles', new Date())
+    .where('guildID', '=', guild.id)
+    .execute();
 }

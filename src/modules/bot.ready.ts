@@ -1,9 +1,10 @@
 import { ActivityType, Events } from 'discord.js';
-import { getUserCount, getRolesCount } from './db';
+import { getUserCount, getRolesCount, db } from './db';
 import { i18n, log } from './messages';
 import CommandHandler from './commandHandler';
 import { configureInfluxDB } from './metrics';
 import { client } from './bot';
+import { checkRoles } from './commands/checkRoles';
 
 export let commandHandler: CommandHandler;
 
@@ -69,5 +70,25 @@ export function initClientReady() {
     log.info(
       `The bot is currently on ${client.guilds.cache.size} guilds with ${await getUserCount()} users and manages ${await getRolesCount()} roles`,
     );
+
+    checkGuilds();
+    setInterval(checkGuilds, 30 * 60 * 1000);
   });
+}
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function checkGuilds() {
+  const guildsToCheck = await db
+    .selectFrom('guilds')
+    .select('guildID')
+    .where('lastCheckRoles', '<', new Date(Date.now() - 20 * 60 * 60 * 1000))
+    .orderBy('lastCheckRoles asc')
+    .execute();
+  await client.guilds.fetch();
+  for (const { guildID } of guildsToCheck) {
+    await delay(30 * 1000);
+    const guild = client.guilds.cache.get(guildID);
+    if (guild) await checkRoles({ guild });
+  }
 }

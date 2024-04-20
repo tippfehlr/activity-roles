@@ -100,7 +100,7 @@ export async function getGuildConfig(guildID: string): Promise<Selectable<Guilds
     .values({ guildID })
     .onConflict(oc => oc.column('guildID').doNothing())
     .execute();
-  return { guildID: guildID, requiredRoleID: null };
+  return { guildID: guildID, requiredRoleID: null, lastCheckRoles: null };
 }
 
 export async function getActivityRoles(guildID: string): Promise<Selectable<ActivityRoles>[]> {
