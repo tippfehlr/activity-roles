@@ -99,10 +99,10 @@
       "all": "ATTENTION : SUPPRIME TOUS LES RÔLES D'ACTIVITÉ"
     }
   },
-  "Activities (sorted by frequency)": "Activities (sorted by frequency)",
+  "Activities (sorted by frequency)": "Activités (classées par fréquence)",
   "checkRoles": {
-    "description": "re-check all users/roles",
-    "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
-    "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles."
+    "description": "re-vérifie tous les utilisateurs/rôles",
+    "success": "vérifié {{{usersChecked}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles",
+    "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles."
   }
 }
