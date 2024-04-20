@@ -1,4 +1,4 @@
-import { addDiscordRoleToMember, processRoles, processRolesStatus } from './../bot';
+import { addDiscordRoleToMember, processRoles, processRolesStatus } from './../bot.presenceUpdate';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
