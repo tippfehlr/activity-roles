@@ -2,6 +2,8 @@ import Discord, {
   ActivityType,
   Events,
   GatewayIntentBits,
+  Guild,
+  GuildMember,
   Options,
   PermissionsBitField,
 } from 'discord.js';
@@ -17,6 +19,7 @@ import {
   getUserConfig,
   db,
   hashUserID,
+  roleRemoved,
 } from './db';
 import config from './config';
 import { i18n, log } from './messages';
@@ -236,6 +239,100 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
   writeIntPoint('presence_updates', 'took_time', Date.now() - startTime);
 });
 
+export function checkActivityName({
+  activityRole,
+  userActivities,
+}: {
+  activityRole: Selectable<ActivityRoles>;
+  userActivities: string[];
+}) {
+  if (activityRole.exactActivityName) {
+    if (userActivities.includes(activityRole.activityName)) {
+      return true;
+    }
+  } else {
+    if (
+      userActivities.find(userActivity =>
+        userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase()),
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export enum processRolesStatus {
+  RoleAdded,
+  RoleRemoved,
+}
+
+export async function addDiscordRoleToMember({
+  change,
+  roleID,
+  permanent,
+  guild,
+  member,
+}: {
+  change: 'add' | 'remove';
+  roleID: string;
+  permanent?: boolean;
+  guild: Guild;
+  member: GuildMember;
+}): Promise<processRolesStatus | undefined> {
+  const role = guild.roles.cache.get(roleID);
+  if (!role) {
+    roleRemoved(roleID, guild.id);
+    return;
+  }
+  const highestBotRolePosition = guild.members.me?.roles.highest.position;
+  if (!highestBotRolePosition || highestBotRolePosition <= role.position) {
+    log.warn(
+      `Role ${role.name} is higher than the bot’s highest role and was skipped (in guild ${guild.name})`,
+    );
+    return;
+  }
+
+  if (change === 'add') {
+    // does the cache need to be checked?
+    if (member.roles.cache.has(role.id)) {
+      // log.warn(
+      //   `${member.displayName} (${member.user.username}) already has the role ${role.name} in guild ${guild.name} (${guild.id})`,
+      // );
+      return;
+    }
+    if (permanent) {
+      writeIntPoint('roles_added', 'permanent_roles_added', 1);
+    } else {
+      writeIntPoint('roles_added', 'temporary_roles_added', 1);
+      db.insertInto('activeTemporaryRoles')
+        .values({ userID: member.user.id, guildID: guild.id, roleID })
+        .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
+        .execute();
+    }
+    await member.roles.add(role);
+    stats.rolesAdded++;
+    return processRolesStatus.RoleAdded;
+  } else if (change === 'remove') {
+    // does the cache need to be checked?
+    if (!member.roles.cache.has(role.id)) {
+      // log.warn(
+      //   `can’t remove the role: ${member.displayName} (${member.user.username}) doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
+      // );
+      return;
+    }
+    await member.roles.remove(role);
+    db.deleteFrom('activeTemporaryRoles')
+      .where('guildID', '=', guild.id)
+      .where('roleID', '=', roleID)
+      .where('userID', '=', member.user.id)
+      .execute();
+    stats.rolesRemoved++;
+
+    return processRolesStatus.RoleRemoved;
+  }
+}
+
 export async function processRoles({
   memberStatus,
   statusRoles,
@@ -252,81 +349,9 @@ export async function processRoles({
   guild: Discord.Guild;
   member: Discord.GuildMember;
   activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
-}) {
+}): Promise<processRolesStatus | undefined> {
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
-
-  const highestBotRolePosition = guild.members.me?.roles.highest.position;
-  const addDiscordRoleToMember = async ({
-    add,
-    roleID,
-    permanent,
-  }: {
-    add: boolean;
-    roleID: string;
-    permanent?: boolean;
-  }) => {
-    const role = guild.roles.cache.get(roleID);
-    if (!role) {
-      db.deleteFrom('activityRoles')
-        .where('guildID', '=', guild.id)
-        .where('roleID', '=', roleID)
-        .execute();
-      db.deleteFrom('statusRoles')
-        .where('guildID', '=', guild.id)
-        .where('roleID', '=', roleID)
-        .execute();
-      db.deleteFrom('activeTemporaryRoles')
-        .where('guildID', '=', guild.id)
-        .where('roleID', '=', roleID)
-        .execute();
-      log.warn(`Role ${roleID} not found in guild ${guild.id} and was deleted from the database`);
-      return;
-    }
-    if (!highestBotRolePosition || highestBotRolePosition <= role.position) {
-      log.warn(
-        `Role ${role.name} is higher than the bot’s highest role and was skipped (in guild ${guild.name})`,
-      );
-      return;
-    }
-
-    if (add) {
-      // does the cache need to be checked?
-      if (member.roles.cache.has(role.id)) {
-        // log.warn(
-        //   `${member.displayName} (${member.user.username}) already has the role ${role.name} in guild ${guild.name} (${guild.id})`,
-        // );
-        return;
-      }
-      if (permanent) {
-        writeIntPoint('roles_added', 'permanent_roles_added', 1);
-      } else {
-        writeIntPoint('roles_added', 'temporary_roles_added', 1);
-        db.insertInto('activeTemporaryRoles')
-          .values({ userID: member.user.id, guildID: guild.id, roleID })
-          .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
-          .execute();
-      }
-      await member.roles.add(role);
-      stats.rolesAdded++;
-    } else {
-      // does the cache need to be checked?
-      if (!member.roles.cache.has(role.id)) {
-        // log.warn(
-        //   `can’t remove the role: ${member.displayName} (${member.user.username}) doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
-        // );
-        return;
-      }
-      await member.roles.remove(role);
-      stats.rolesRemoved++;
-
-      db.deleteFrom('activeTemporaryRoles')
-        .where('guildID', '=', guild.id)
-        .where('roleID', '=', roleID)
-        .where('userID', '=', member.user.id)
-        .execute();
-    }
-  };
 
   // if user is offline, skip checking for added activities
   if (memberStatus !== 'offline') {
@@ -351,15 +376,7 @@ export async function processRoles({
     const userActivities = activities.map(activity => activity.name);
 
     activityRoles.forEach(activityRole => {
-      if (
-        // exactActivityName
-        (activityRole.exactActivityName && userActivities.includes(activityRole.activityName)) ||
-        // not exactActivityName
-        (!activityRole.exactActivityName &&
-          userActivities.find(userActivity =>
-            userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase()),
-          ))
-      ) {
+      if (checkActivityName({ userActivities, activityRole })) {
         addRole({ roleID: activityRole.roleID, permanent: activityRole.permanent });
       }
     });
@@ -367,17 +384,34 @@ export async function processRoles({
     // ------------ “apply changes” ------------
 
     for (const roleID of permanentRoleIDsToBeAdded) {
-      await addDiscordRoleToMember({ roleID, permanent: true, add: true });
+      return await addDiscordRoleToMember({
+        roleID,
+        permanent: true,
+        change: 'add',
+        guild,
+        member,
+      });
     }
     for (const roleID of tempRoleIDsToBeAdded) {
-      await addDiscordRoleToMember({ roleID, permanent: false, add: true });
+      return await addDiscordRoleToMember({
+        roleID,
+        permanent: false,
+        change: 'add',
+        guild,
+        member,
+      });
     }
   }
 
   // remove temporary roles --- new activeTemporaryRoles
   for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      await addDiscordRoleToMember({ roleID: activeTemporaryRole.roleID, add: false });
+      return await addDiscordRoleToMember({
+        roleID: activeTemporaryRole.roleID,
+        change: 'remove',
+        guild,
+        member,
+      });
     }
   }
 }
@@ -394,8 +428,8 @@ client.on(Events.Error, error => {
   stats.webSocketErrors++;
 });
 
-client.on(Events.GuildRoleDelete, async role => {
-  await db.deleteFrom('statusRoles').where('roleID', '=', role.id).execute();
+client.on(Events.GuildRoleDelete, role => {
+  roleRemoved(role.id, role.guild.id);
 });
 
 export function connect() {

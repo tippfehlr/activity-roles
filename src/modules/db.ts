@@ -107,6 +107,25 @@ export async function getActivityRoles(guildID: string): Promise<Selectable<Acti
   return await db.selectFrom('activityRoles').selectAll().where('guildID', '=', guildID).execute();
 }
 
+export async function roleRemoved(roleID: string, guildID: string) {
+  log.warn(`Role ${roleID} not found in guild ${guildID} and was deleted from the database`);
+  await db
+    .deleteFrom('activityRoles')
+    .where('guildID', '=', guildID)
+    .where('roleID', '=', roleID)
+    .execute();
+  await db
+    .deleteFrom('statusRoles')
+    .where('guildID', '=', guildID)
+    .where('roleID', '=', roleID)
+    .execute();
+  await db
+    .deleteFrom('activeTemporaryRoles')
+    .where('guildID', '=', guildID)
+    .where('roleID', '=', roleID)
+    .execute();
+}
+
 export async function getStatusRoles(guildID: string): Promise<Selectable<StatusRoles>[]> {
   return await db.selectFrom('statusRoles').selectAll().where('guildID', '=', guildID).execute();
 }

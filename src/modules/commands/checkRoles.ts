@@ -1,117 +1,188 @@
-import { processRoles } from './../bot';
+import { addDiscordRoleToMember, processRoles, processRolesStatus } from './../bot';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
-import { db, getLang } from '../db';
+import { checkrolesCurrentGuilds, db, getActivityRoles, getLang, getStatusRoles } from '../db';
+import { Point, writeApi, writeIntPoint } from '../metrics';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('checkroles')
     .setDescription('re-check all users/roles')
-    .setDescriptionLocalizations(discordTranslations('re-check all users/roles'))
+    .setDescriptionLocalizations(
+      discordTranslations('checkRoles->description:re-check all users/roles'),
+    )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .setDMPermission(false),
 
   execute: async interaction => {
     if (!interaction.guild) return;
+    const locale = getLang(interaction);
 
-    await interaction.reply({
-      content: 'this command is not ready to be used yet, sorry.',
-      ephemeral: true,
+    if (checkrolesCurrentGuilds.has(interaction.guild.id)) {
+      log.debug(
+        `checkroles already running on ${interaction.guild.name} (${interaction.guild.id})`,
+      );
+      await interaction.reply({
+        content: __({
+          phrase:
+            'checkRoles->alreadyRunning:A `/checkroles` request is already running for this guild.',
+          locale,
+        }),
+        ephemeral: true,
+      });
+      return;
+    }
+    checkrolesCurrentGuilds.add(interaction.guild.id);
+
+    log.debug(
+      `started checkroles on ${interaction.guild.name} (${interaction.guild.id}): requested by ${interaction.user.username} (${interaction.user.id})`,
+    );
+    writeIntPoint('checkroles_guilds', `${interaction.guild.name} (${interaction.guild.id})`, 1);
+
+    await interaction.deferReply({ ephemeral: true });
+
+    const activityRoles = await getActivityRoles(interaction.guild.id);
+    const statusRoles = await getStatusRoles(interaction.guild.id);
+    const activeTemporaryRoles = await db
+      .selectFrom('activeTemporaryRoles')
+      .selectAll()
+      .where('guildID', '=', interaction.guild.id)
+      .execute();
+
+    let totalUsersToCheck = 0;
+    let usersChecked = 0;
+    let rolesAdded = 0;
+    let rolesRemoved = 0;
+
+    // check all members that currently have temproles
+    // for (const activityRole of activityRoles) {
+    //   if (activityRole.permanent) break;
+    //   log.debug('checking role ' + activityRole.activityName);
+    //
+    //   await interaction.guild.members.fetch();
+    //   const members = interaction.guild.roles.cache.get(activityRole.roleID)?.members;
+    //   if (!members) {
+    //     log.warn('members == undefined');
+    //     continue;
+    //   }
+    //   log.debug(`${members.size} members: ${members.map(m => m.user.username)}`);
+    //   for (const [, member] of members) {
+    //     log.debug(member.user.username);
+    //     await interaction.guild.members.fetch({
+    //       user: member.id,
+    //       withPresences: true,
+    //       force: false,
+    //     });
+    //     log.debug(`presence of ${member.user.username}: ${member.presence}`);
+    //     const userActivities = member.presence?.activities.map(a => a.name);
+    //     log.debug(`useractivity of ${member.user.username}: ${userActivities}`);
+    //     if (!userActivities || !checkActivityName({ activityRole, userActivities })) {
+    //       await member.roles.remove(activityRole.roleID);
+    //     }
+    //   }
+    // }
+
+    const interval = setInterval(() => {
+      interaction.editReply({
+        content: __(
+          {
+            phrase: `checkRoles->in-progress:IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles.`,
+            locale,
+          },
+          {
+            usersChecked: usersChecked.toString(),
+            added: rolesAdded.toString(),
+            removed: rolesRemoved.toString(),
+            totalUsersToCheck: totalUsersToCheck.toString(),
+          },
+        ),
+      });
+    }, 20);
+
+    // check all active presences
+    await interaction.guild.members.fetch({ withPresences: true });
+    const checkedUsers: string[] = [];
+    totalUsersToCheck += interaction.guild.presences.cache.size;
+    totalUsersToCheck += activeTemporaryRoles.length;
+    for (const [, presence] of interaction.guild.presences.cache) {
+      if (!presence.member) {
+        log.error('member not available');
+        continue;
+      }
+      switch (
+        await processRoles({
+          memberStatus: presence.status,
+          statusRoles,
+          activities: presence.activities,
+          activityRoles,
+          activeTemporaryRoles,
+          guild: interaction.guild!,
+          member: presence.member,
+        })
+      ) {
+        case processRolesStatus.RoleAdded:
+          rolesAdded++;
+          break;
+        case processRolesStatus.RoleRemoved:
+          rolesRemoved++;
+          break;
+      }
+      checkedUsers.push(presence.member.id);
+      usersChecked++;
+    }
+
+    for (const activeTemporaryRole of activeTemporaryRoles) {
+      if (!checkedUsers.includes(activeTemporaryRole.userID)) {
+        checkedUsers.push(activeTemporaryRole.userID);
+        const member = interaction.guild.members.cache.get(activeTemporaryRole.userID);
+        if (!member) continue;
+
+        switch (
+          await addDiscordRoleToMember({
+            member,
+            guild: interaction.guild,
+            change: 'remove',
+            roleID: activeTemporaryRole.roleID,
+          })
+        ) {
+          case processRolesStatus.RoleAdded:
+            rolesAdded++;
+            break;
+          case processRolesStatus.RoleRemoved:
+            rolesRemoved++;
+            break;
+        }
+      }
+      usersChecked++;
+    }
+
+    log.debug(`finished checkroles on ${interaction.guild.name}`);
+    clearInterval(interval);
+    await interaction.editReply({
+      content:
+        '✅ ' +
+        __(
+          {
+            phrase:
+              'checkRoles->success:checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles',
+            locale,
+          },
+          {
+            usersChecked: usersChecked.toString(),
+            added: rolesAdded.toString(),
+            removed: rolesRemoved.toString(),
+          },
+        ),
     });
-    return;
-
-    // if (checkrolesCurrentGuilds.has(interaction.guild.id)) {
-    //   log.debug(
-    //     `checkroles already running on ${interaction.guild.name} (${interaction.guild.id})`,
-    //   );
-    //   await interaction.reply({
-    //     content: 'A `/checkroles` request is already running for this guild.',
-    //     ephemeral: true,
-    //   });
-    //   return;
-    // }
-    // checkrolesCurrentGuilds.add(interaction.guild.id);
-    //
-    // log.debug(
-    //   `started checkroles on ${interaction.guild.name} (${interaction.guild.id}): requested by ${interaction.user.username} (${interaction.user.id})`,
-    // );
-    // await interaction.deferReply({ ephemeral: true });
-    // const locale = getLang(interaction);
-    // if (!interaction.guild) return;
-    //
-    // console.time('database fetch');
-    // const activityRoles = prepare('SELECT * from activityRoles WHERE guildID = ?').all(
-    //   interaction.guild.id,
-    // ) as DBActivityRole[];
-    // const statusRoles = prepare('SELECT * from statusRoles WHERE guildID = ?').all(
-    //   interaction.guild.id,
-    // ) as DBStatusRole[];
-    // const activeTemporaryRoles = prepare(
-    //   'SELECT * from activeTemporaryRoles WHERE guildID = ?',
-    // ).all(interaction.guild.id) as DBActiveTemporaryRoles[];
-    // console.timeEnd('database fetch');
-    //
-    // interaction.guild.presences.cache.forEach(presence => {
-    //   if (!interaction.guild) return;
-    //   if (!presence.member) return;
-    //   processRoles({
-    //     memberStatus: presence.status,
-    //     statusRoles,
-    //     activities: presence.activities,
-    //     activityRoles,
-    //     activeTemporaryRoles,
-    //     guild: interaction.guild,
-    //     member: presence.member,
-    //   });
-    // });
-
-    // for (const activeTemporaryRole of activeTemporaryRoles) {
-    //   if (!userHashes.includes(activeTemporaryRole.userIDHash)) {
-    //   }
-    // }
-
-    // fetching all members is waaaaay too slow (a couple members per second, and it blocks the bot for that server)
-    // log.debug(`before fetch: ${interaction.guild.members.cache.size} members`);
-    // console.time('fetching members');
-    // await interaction.guild.members.fetch();
-    // console.timeEnd('fetching members');
-    // log.debug(`after fetch: ${interaction.guild.members.cache.size} members`);
-    //
-    // console.time('re-checking roles');
-    //
-    // let i = 0;
-    // const total = interaction.guild.members.cache.size;
-    // interaction.guild.members.cache.forEach(async member => {
-    //   await member.fetch(true);
-    //   if (member.user.bot) return;
-    //   if (!interaction.guild) return;
-    //   if (member.presence?.status) {
-    //     await processRoles({
-    //       memberStatus: member.presence?.status,
-    //       statusRoles,
-    //       activities: member.presence.activities,
-    //       activityRoles,
-    //       activeTemporaryRoles,
-    //       guild: interaction.guild,
-    //       member,
-    //     });
-    //   } else {
-    //     activityRoles.forEach(async role => {
-    //       if (role.live === 1) await member.roles.remove(role.roleID);
-    //     });
-    //     statusRoles.forEach(async role => {
-    //       await member.roles.remove(role.roleID);
-    //     });
-    //     console.log('no presences, removed all roles');
-    //   }
-    //   console.log(`${++i} / ${total}`);
-    // });
-    // console.timeEnd('re-checking roles');
-    // await interaction.editReply({
-    //   content: '✅ ' + __({ phrase: 're-checked all users/roles', locale }),
-    // });
-    // checkrolesCurrentGuilds.delete(interaction.guild.id);
+    checkrolesCurrentGuilds.delete(interaction.guild.id);
+    if (writeApi)
+      writeApi.writePoint(
+        new Point('checkroles')
+          .intField('exec_total', 1)
+          .intField('roles_added', rolesAdded)
+          .intField('roles_removed', rolesRemoved),
+      );
   },
 } as Command;

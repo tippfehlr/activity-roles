@@ -89,8 +89,6 @@
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.",
   "the role will not be removed again if set to true": "the role will not be removed again if set to true",
   "Live": "Live",
-  "re-check all users/roles": "re-check all users/roles",
-  "re-checked all users/roles": "re-checked all users/roles",
   "help": {
     "description": "Shows the help menu",
     "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
@@ -100,5 +98,11 @@
     "description": {
       "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
     }
+  },
+  "Activities (sorted by frequency)": "Activities (sorted by frequency)",
+  "checkRoles": {
+    "description": "re-check all users/roles",
+    "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
+    "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles."
   }
 }
