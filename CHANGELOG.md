@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.12.0](https://github.com/tippfehlr/activity-roles/compare/v1.11.0..v1.12.0) - 2024-04-20
+
+### Added
+
+- implement /checkroles ([f988234](https://github.com/tippfehlr/activity-roles/commit/f9882346a603f0fcd1705917ae43479515606b2e))
+
+### Fixed
+
+- don’t use ...role to fill values ([b9bf6ad](https://github.com/tippfehlr/activity-roles/commit/b9bf6ad8cb0f330d4f52efd91a6d2d938ff49510))
+- convert count(*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
+- set maximum length for activity names to 100 characters ([bfa3f2e](https://github.com/tippfehlr/activity-roles/commit/bfa3f2edb4aaa8a8653229b0cb8a5eba33fbebb5))
+
 ## [1.11.0](https://github.com/tippfehlr/activity-roles/compare/v1.10.2..v1.11.0) - 2024-04-13
 
 ### Added
