@@ -149,6 +149,7 @@ client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
 
   let debug = false;
   if (newMember.userId === '712702707986595880' && newMember.guild?.id === '226115726509998090') {
+    // eslint-disable-next-line
     debug = true;
   }
 
