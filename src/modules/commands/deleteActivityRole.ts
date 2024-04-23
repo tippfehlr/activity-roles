@@ -139,7 +139,7 @@ export default {
         locale,
       );
       db.deleteFrom('activityRoles')
-        .where('roleID', '=', interaction.guildId)
+        .where('guildID', '=', interaction.guildId)
         .where('roleID', '=', role.id)
         .execute();
     } else if (!role && activity) {
