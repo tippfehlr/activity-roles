@@ -1,4 +1,4 @@
-import { addDiscordRoleToMember, processRoles, processRolesStatus } from './../bot.presenceUpdate';
+import { addDiscordRoleToMember, processRoles, addRoleStatus } from './../bot.presenceUpdate';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
@@ -61,10 +61,12 @@ export async function checkRoles({
     .where('guildID', '=', guild.id)
     .execute();
 
-  let totalUsersToCheck = 0;
-  let usersChecked = 0;
-  let rolesAdded = 0;
-  let rolesRemoved = 0;
+  const status = {
+    totalUsers: 0,
+    usersChecked: 0,
+    rolesAdded: 0,
+    rolesRemoved: 0,
+  };
 
   // check all members that currently have temproles
   // for (const activityRole of activityRoles) {
@@ -104,10 +106,10 @@ export async function checkRoles({
             locale,
           },
           {
-            usersChecked: usersChecked.toString(),
-            added: rolesAdded.toString(),
-            removed: rolesRemoved.toString(),
-            totalUsersToCheck: totalUsersToCheck.toString(),
+            usersChecked: status.usersChecked.toString(),
+            added: status.rolesAdded.toString(),
+            removed: status.rolesRemoved.toString(),
+            totalUsersToCheck: status.totalUsers.toString(),
           },
         ),
       });
@@ -117,33 +119,27 @@ export async function checkRoles({
   // check all active presences
   await guild.members.fetch({ withPresences: true });
   const checkedUsers: string[] = [];
-  totalUsersToCheck += guild.presences.cache.size;
-  totalUsersToCheck += activeTemporaryRoles.length;
+  status.totalUsers += guild.presences.cache.size;
+  status.totalUsers += activeTemporaryRoles.length;
   for (const [, presence] of guild.presences.cache) {
     if (!presence.member) {
       log.error('member not available');
       continue;
     }
-    switch (
-      await processRoles({
-        memberStatus: presence.status,
-        statusRoles,
-        activities: presence.activities,
-        activityRoles,
-        activeTemporaryRoles,
-        guild: guild!,
-        member: presence.member,
-      })
-    ) {
-      case processRolesStatus.RoleAdded:
-        rolesAdded++;
-        break;
-      case processRolesStatus.RoleRemoved:
-        rolesRemoved++;
-        break;
-    }
+    const res = await processRoles({
+      memberStatus: presence.status,
+      statusRoles,
+      activities: presence.activities,
+      activityRoles,
+      activeTemporaryRoles,
+      guild,
+      member: presence.member,
+    });
+    status.rolesAdded += res.added;
+    status.rolesRemoved += res.removed;
+
     checkedUsers.push(presence.member.id);
-    usersChecked++;
+    status.usersChecked++;
   }
 
   for (const activeTemporaryRole of activeTemporaryRoles) {
@@ -155,20 +151,20 @@ export async function checkRoles({
       switch (
         await addDiscordRoleToMember({
           member,
-          guild: guild,
+          guild,
           change: 'remove',
           roleID: activeTemporaryRole.roleID,
         })
       ) {
-        case processRolesStatus.RoleAdded:
-          rolesAdded++;
+        case addRoleStatus.RoleAdded:
+          status.rolesAdded++;
           break;
-        case processRolesStatus.RoleRemoved:
-          rolesRemoved++;
+        case addRoleStatus.RoleRemoved:
+          status.rolesRemoved++;
           break;
       }
     }
-    usersChecked++;
+    status.usersChecked++;
   }
 
   log.debug(`finished checkroles on ${guild.name}`);
@@ -184,9 +180,9 @@ export async function checkRoles({
             locale,
           },
           {
-            usersChecked: usersChecked.toString(),
-            added: rolesAdded.toString(),
-            removed: rolesRemoved.toString(),
+            usersChecked: status.usersChecked.toString(),
+            added: status.rolesAdded.toString(),
+            removed: status.rolesRemoved.toString(),
           },
         ),
     });
@@ -196,8 +192,8 @@ export async function checkRoles({
     writeApi.writePoint(
       new Point('checkroles')
         .intField('exec_total', 1)
-        .intField('roles_added', rolesAdded)
-        .intField('roles_removed', rolesRemoved),
+        .intField('roles_added', status.rolesAdded)
+        .intField('roles_removed', status.rolesRemoved),
     );
   db.updateTable('guilds')
     .set('lastCheckRoles', new Date())

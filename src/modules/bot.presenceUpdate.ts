@@ -46,7 +46,7 @@ export function checkActivityName({
   return false;
 }
 
-export enum processRolesStatus {
+export enum addRoleStatus {
   RoleAdded,
   RoleRemoved,
 }
@@ -63,7 +63,7 @@ export async function addDiscordRoleToMember({
   permanent?: boolean;
   guild: Guild;
   member: GuildMember;
-}): Promise<processRolesStatus | undefined> {
+}): Promise<addRoleStatus | undefined> {
   const role = guild.roles.cache.get(roleID);
   if (!role) {
     roleRemoved(roleID, guild.id);
@@ -96,7 +96,7 @@ export async function addDiscordRoleToMember({
     }
     await member.roles.add(role);
     stats.rolesAdded++;
-    return processRolesStatus.RoleAdded;
+    return addRoleStatus.RoleAdded;
   } else if (change === 'remove') {
     // does the cache need to be checked?
     if (!member.roles.cache.has(role.id)) {
@@ -113,7 +113,7 @@ export async function addDiscordRoleToMember({
       .execute();
     stats.rolesRemoved++;
 
-    return processRolesStatus.RoleRemoved;
+    return addRoleStatus.RoleRemoved;
   }
 }
 
@@ -133,10 +133,29 @@ export async function processRoles({
   guild: Guild;
   member: GuildMember;
   activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
-}): Promise<processRolesStatus | undefined> {
+}): Promise<{ added: number; removed: number }> {
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
+  const status = { added: 0, removed: 0 };
 
+  const addRoleHelper = async (roleID: string, change: 'add' | 'remove', permanent: boolean) => {
+    switch (
+      await addDiscordRoleToMember({
+        roleID,
+        permanent,
+        change,
+        guild,
+        member,
+      })
+    ) {
+      case addRoleStatus.RoleAdded:
+        status.added++;
+        break;
+      case addRoleStatus.RoleRemoved:
+        status.removed++;
+        break;
+    }
+  };
   // if user is offline, skip checking for added activities
   if (memberStatus !== 'offline') {
     const addRole = ({ roleID, permanent }: { roleID: string; permanent: boolean }) => {
@@ -168,36 +187,20 @@ export async function processRoles({
     // ------------ “apply changes” ------------
 
     for (const roleID of permanentRoleIDsToBeAdded) {
-      return await addDiscordRoleToMember({
-        roleID,
-        permanent: true,
-        change: 'add',
-        guild,
-        member,
-      });
+      await addRoleHelper(roleID, 'add', true);
     }
     for (const roleID of tempRoleIDsToBeAdded) {
-      return await addDiscordRoleToMember({
-        roleID,
-        permanent: false,
-        change: 'add',
-        guild,
-        member,
-      });
+      await addRoleHelper(roleID, 'add', false);
     }
   }
 
   // remove temporary roles --- new activeTemporaryRoles
   for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      return await addDiscordRoleToMember({
-        roleID: activeTemporaryRole.roleID,
-        change: 'remove',
-        guild,
-        member,
-      });
+      await addRoleHelper(activeTemporaryRole.roleID, 'remove', false);
     }
   }
+  return status;
 }
 
 export function initPresenceUpdate() {
@@ -205,13 +208,6 @@ export function initPresenceUpdate() {
   client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
     const startTime = Date.now();
     stats.presenceUpdates++;
-
-    // eslint-disable-next-line
-    let debug = false;
-    if (newMember.userId === '712702707986595880' && newMember.guild?.id === '226115726509998090') {
-      // eslint-disable-next-line
-      debug = true;
-    }
 
     // no activities changed
     // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
@@ -231,9 +227,6 @@ export function initPresenceUpdate() {
 
     const userIDHash = hashUserID(newMember.userId);
     const guildConfig = await getGuildConfig(guildID);
-    // if (debug) console.time('fetch member');
-    // await newMember.member?.fetch(true);
-    // if (debug) console.timeEnd('fetch member');
     if (
       guildConfig.requiredRoleID !== null &&
       !newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
@@ -245,6 +238,7 @@ export function initPresenceUpdate() {
       return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
     });
 
+    // statistics for activityStats
     for (const activity of addedActivities) {
       if (activity.name !== 'Custom Status') addActivity(guildID, activity.name);
     }
