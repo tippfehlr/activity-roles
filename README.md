@@ -4,6 +4,7 @@
 [![LICENSE](https://img.shields.io/github/license/tippf3hlr/activity-roles?style=for-the-badge)](./LICENSE)
 ![](https://img.shields.io/github/package-json/v/tippf3hlr/activity-roles?style=for-the-badge)
 ![](https://img.shields.io/github/last-commit/tippf3hlr/activity-roles?style=for-the-badge)
+
 ---
 
 A Discord bot for automatic role assignment based on activities. \
@@ -67,7 +68,6 @@ Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 - @deflanko
 - @itshendrik **[Estonian]**
 - arceus (@blurwind) **[French]**
+- @kedone
 
 If I forgot you, please let me know!
-
-Made with ❤️ by tippfehlr.
