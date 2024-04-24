@@ -1,43 +1,59 @@
 # Changelog
 
+## [1.12.1](https://github.com/tippfehlr/activity-roles/compare/v1.12.0..v1.12.1) - 2024-04-24
+
+### Features
+
+- add automated checkRoles ([042c780](https://github.com/tippfehlr/activity-roles/commit/042c780a878db73a4e3da9ad038297837fd604dc))
+
+### Bug Fixes
+
+- update status every 2 seconds, not 20 ms ([8d5c6d8](https://github.com/tippfehlr/activity-roles/commit/8d5c6d8710a3ebed64b4b7a1730b7088f6a3e0db))
+- exit on error "driver has already been destroyed" ([c9173bd](https://github.com/tippfehlr/activity-roles/commit/c9173bd8e7ed6978fb6cfadb666e2991683ebbb1))
+- fix /deleteActivityRole <role>, roleID != guildID ([fa24c8f](https://github.com/tippfehlr/activity-roles/commit/fa24c8fbd92297e41965f2ff9b76010390660f60))
+- assign multiple roles ([648625f](https://github.com/tippfehlr/activity-roles/commit/648625fc594d53cc5e9d6d5c9872441ac100cfa3))
+- fix broken /deleteActivityRole all:true buttons ([ae18ab7](https://github.com/tippfehlr/activity-roles/commit/ae18ab72e2f45824872d514374bf9bb4a197c582))
+
+### Translation
+
+- **(i18n)** pull French tranlation ([16c4c2f](https://github.com/tippfehlr/activity-roles/commit/16c4c2f0152ec43a1ba620238b295ce6cc17f08e))
+- **(i18n)** add phrases for /deleteActivityRole ([c88ab4b](https://github.com/tippfehlr/activity-roles/commit/c88ab4baf08c6f9f980abe520804c0411f254447))
+
+### Documentation
+
+- **(README)** add @kedone to thanks ([67559f2](https://github.com/tippfehlr/activity-roles/commit/67559f20f07d3d76ce5f440003f5a2f41c33a643))
+
 ## [1.12.0](https://github.com/tippfehlr/activity-roles/compare/v1.11.0..v1.12.0) - 2024-04-20
 
-### Added
+### Features
 
 - implement /checkroles ([f988234](https://github.com/tippfehlr/activity-roles/commit/f9882346a603f0fcd1705917ae43479515606b2e))
 
-### Fixed
+### Bug Fixes
 
 - don’t use ...role to fill values ([b9bf6ad](https://github.com/tippfehlr/activity-roles/commit/b9bf6ad8cb0f330d4f52efd91a6d2d938ff49510))
-- convert count(*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
+- convert count(\*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
 - set maximum length for activity names to 100 characters ([bfa3f2e](https://github.com/tippfehlr/activity-roles/commit/bfa3f2edb4aaa8a8653229b0cb8a5eba33fbebb5))
 
 ## [1.11.0](https://github.com/tippfehlr/activity-roles/compare/v1.10.2..v1.11.0) - 2024-04-13
 
-### Added
+### Features
 
 - **(metrics)** add metrics for {old,new} users and activeTemporaryRoles ([3742d56](https://github.com/tippfehlr/activity-roles/commit/3742d569caa01bcd41e331dfc3aec31978802cd2))
 - **(metrics)** add metric for locales ([9bdb0dd](https://github.com/tippfehlr/activity-roles/commit/9bdb0dd0c66e0eb74aba28eb064c672cdc33bdd3))
 - automatically migrate database from sqlite ([8b22ea3](https://github.com/tippfehlr/activity-roles/commit/8b22ea382344508ea27b8afdf2d8992773a075a4))
 - explicitely connect to postgres and exit if no connection ([952424c](https://github.com/tippfehlr/activity-roles/commit/952424c96f0f71507432249ab6bd2a83919cdc6f))
 
-### Fixed
+### Bug Fixes
 
 - **(/help)** 'the bot will be removed' -> 'the bot will remove the role' ([a243b31](https://github.com/tippfehlr/activity-roles/commit/a243b3198d12d6aef77b31ed24231021c8fd206b))
 - **(presenceUpdate)** add onConflict to insert into activeTemporaryRoles ([95a1e5c](https://github.com/tippfehlr/activity-roles/commit/95a1e5ca3651769ab1816aaee18ba13910442f1b))
 - reverse logic for /requirerole ([ba61603](https://github.com/tippfehlr/activity-roles/commit/ba616031727a6ea433ddbd5d925882375d778250))
 
-### Changed
+### Translation
 
-- merge /help description into one translation string, use nested keys ([2c72fe5](https://github.com/tippfehlr/activity-roles/commit/2c72fe598768051b9e1b4752d997d85231f474b8))
-- rename help menu to help page ([a191403](https://github.com/tippfehlr/activity-roles/commit/a1914034cca5f289fa718a07035cfda1e4800af4))
-- move database from sqlite to postgres (kysely) ([063ce1b](https://github.com/tippfehlr/activity-roles/commit/063ce1b1a84e8fb8948e6af8a31c76ef78a3aca0))
-- set time in logs to system timezone ([bcb4380](https://github.com/tippfehlr/activity-roles/commit/bcb43802738d74042440c4643c141b5d2877f66b))
-- update tranlations ([036a330](https://github.com/tippfehlr/activity-roles/commit/036a33001cfbc80cb4adebd27ae53ad8a64e731e))
-
-### Removed
-
-- remove Estonian from README ([f9d3bf3](https://github.com/tippfehlr/activity-roles/commit/f9d3bf3239132f1d006956e9d4881ca98194aa94))
+- **(i18n)** remove strings used in /language from locales ([acff925](https://github.com/tippfehlr/activity-roles/commit/acff925ad3a096155e4fce43e76f3519ffc137a6))
+- **(i18n)** pull changes from crowdin ([db1d84f](https://github.com/tippfehlr/activity-roles/commit/db1d84fb7f113d379a514552997a7d07d448ec98))
 
 ### Documentation
 
@@ -46,11 +62,11 @@
 
 ## [1.10.2](https://github.com/tippfehlr/activity-roles/compare/v1.10.1..v1.10.2) - 2024-04-10
 
-### Added
+### Features
 
 - add username to logs for not adding/removing logs ([efbcef0](https://github.com/tippfehlr/activity-roles/commit/efbcef0cd9e3026b32a0500c8224d47180a5048c))
 
-### Fixed
+### Bug Fixes
 
 - use `locales.includes()` instead of `... in locales` ([35a5ee6](https://github.com/tippfehlr/activity-roles/commit/35a5ee644ffcf3adf505ffe9f3e7ec8cb1f0f974))
 - remove language completely ([0ad6d81](https://github.com/tippfehlr/activity-roles/commit/0ad6d81c7be3176d22699a9677e1518f5dca5b5f))
@@ -59,20 +75,9 @@
 
 - **(changelog)** remove line between versions ([1af3bf8](https://github.com/tippfehlr/activity-roles/commit/1af3bf88ed71a43d7761c36f4b9c165591ff17aa))
 
-## [1.10.1](https://github.com/tippfehlr/activity-roles/compare/v1.10.0..v1.10.1) - 2024-04-10
-
-### Changed
-
-- get user locale from interaction.locale ([1ad1b9a](https://github.com/tippfehlr/activity-roles/commit/1ad1b9abd2789ceaeeefa630218258517d9dfd58))
-
-### Removed
-
-- remove Estonian ([ee891f0](https://github.com/tippfehlr/activity-roles/commit/ee891f054cc57ee9e8d8d7b5f27da904ea1a3df5))
-- remove /language and DROP language colums (db version 4) ([bafe74b](https://github.com/tippfehlr/activity-roles/commit/bafe74bad95897e031f38a0978e23b2a426e6068))
-
 ## [1.10.0](https://github.com/tippfehlr/activity-roles/compare/v1.9.5..v1.10.0) - 2024-04-08
 
-### Added
+### Features
 
 - **(metrics)** add temporary/permanent/status roles count individually ([84fdc79](https://github.com/tippfehlr/activity-roles/commit/84fdc797c8c349840432989194166fcddcfb78ca))
 - **(metrics)** make influxdb organization and bucket customizable via env vars ([b300183](https://github.com/tippfehlr/activity-roles/commit/b300183d1ed656f2df92f741a899d9c349d258e4))
@@ -84,7 +89,7 @@
 - gracefully exit by listening for SIG{TERM,INT} ([cb7d703](https://github.com/tippfehlr/activity-roles/commit/cb7d703141d840e595b83c71b1bf1ce219f49479))
 - add French ([53f7dd7](https://github.com/tippfehlr/activity-roles/commit/53f7dd7afc61197de67594d660280910343b1018))
 
-### Fixed
+### Bug Fixes
 
 - **(perf)** don’t enable shards: 'auto': broke the whole bot ([2192919](https://github.com/tippfehlr/activity-roles/commit/2192919d048955a77748cada1df4777d1a51f603))
 - **(presenceUpdate)** don’t fetch() members ([0ded481](https://github.com/tippfehlr/activity-roles/commit/0ded48156fc5f4ffed5a5f7ec07d1c842131414c))
@@ -113,30 +118,30 @@
 
 ## [1.9.5](https://github.com/tippfehlr/activity-roles/compare/v1.9.4..v1.9.5) - 2024-03-09
 
-### Fixed
+### Bug Fixes
 
 - **(commands/help)** remove embed for commands ([fa4fd52](https://github.com/tippfehlr/activity-roles/commit/fa4fd524f0fd753b0194d11f9ef30fe5fdaea7ef))
 - fix docker image in compose.yaml ([5dfaee8](https://github.com/tippfehlr/activity-roles/commit/5dfaee897810ccb1ec8a548fe7e2c205fe5eec8c))
 
 ## [1.9.4](https://github.com/tippfehlr/activity-roles/compare/v1.9.3..v1.9.4) - 2024-03-09
 
-### Added
+### Features
 
 - **(i18n)** add Estonian (Thanks @itshendrik!) ([4f59614](https://github.com/tippfehlr/activity-roles/commit/4f596148bd94ed3bae60b5bddcaf2f136f36ba03))
 
-### Fixed
+### Bug Fixes
 
 - **(readme)** fix eianlee’s name ([f52e74f](https://github.com/tippfehlr/activity-roles/commit/f52e74ffd5c06b1e271c13d5ef64b63c5f6143a9))
 
 ## [1.9.3](https://github.com/tippfehlr/activity-roles/compare/v1.9.2..v1.9.3) - 2024-03-09
 
-### Added
+### Features
 
 - send metrics to influxdb ([1837135](https://github.com/tippfehlr/activity-roles/commit/1837135e02d88b9b160492b8bd78621978023a99))
 - metrics for database access ([6992972](https://github.com/tippfehlr/activity-roles/commit/69929724d6014cee7cf4057663aa670a4038249f))
 - send new metrics: memory and metric execution time ([8fff5ed](https://github.com/tippfehlr/activity-roles/commit/8fff5ede42b94f2bcdd10261b774081eb5c882b7))
 
-### Fixed
+### Bug Fixes
 
 - **(readme)** remove > from invite link (text) ([206b23a](https://github.com/tippfehlr/activity-roles/commit/206b23a16e281c2b84e0446e81bfd3ee7dfc8eec))
 - stats don’t reset ([1e58a46](https://github.com/tippfehlr/activity-roles/commit/1e58a46b240cf0d9467e54aaa70738c0d5658f0f))
@@ -148,7 +153,7 @@
 
 ## [1.9.2](https://github.com/tippfehlr/activity-roles/compare/v1.9.1..v1.9.2) - 2024-01-06
 
-### Fixed
+### Bug Fixes
 
 - **(commands/addactivityrole)** change description to match `permanent` ([d67a505](https://github.com/tippfehlr/activity-roles/commit/d67a505e48ae497f3e6a0eb3a658cf8c4dc5f055))
 - set status roles to permanent=false ([5bfd2bd](https://github.com/tippfehlr/activity-roles/commit/5bfd2bdff952f1a660e6bfd3fac21d938420e70f))
@@ -156,7 +161,7 @@
 
 ## [1.9.1](https://github.com/tippfehlr/activity-roles/compare/v1.7.0..v1.9.1) - 2024-01-05
 
-### Added
+### Features
 
 - **(commands)** add /setstatusrole ([7e7abe5](https://github.com/tippfehlr/activity-roles/commit/7e7abe524307abc1d7e15428020db9145d00f9c7))
 - **(commands/addactivityrole)** set live/temporary to true by default ([23ce948](https://github.com/tippfehlr/activity-roles/commit/23ce9484b10f0ff0bf107e2ef116184a59df23e5))
@@ -165,12 +170,16 @@
 - **(db/PresenceUpdate)** statusroles backend & refactor ([ab668f4](https://github.com/tippfehlr/activity-roles/commit/ab668f446845d8a7139766213ce247b803b330cf))
 - rename live to permanent and reverse the logic ([b46e6db](https://github.com/tippfehlr/activity-roles/commit/b46e6dba68e1ef0ad3b66095d58b55e8e5d35c8c))
 
-### Fixed
+### Bug Fixes
 
 - **(commands)** include interaction.id in filename for uploaded files ([e5900d9](https://github.com/tippfehlr/activity-roles/commit/e5900d9db3d09e6e4dfa3b55510f8dbaa10a3e1c))
 - **(config)** update invite link permissions ([9955be7](https://github.com/tippfehlr/activity-roles/commit/9955be72d790f36f351d5375cff2ed533e7eb710))
 - **(db)** log updated database version after upgrade ([1cbf6a4](https://github.com/tippfehlr/activity-roles/commit/1cbf6a4da9d0b041748561bdace579c9845f856e))
 - **(db/PresenceUpdate/activitystats)** don’t add 'Custom Status' to activityStats ([fc91024](https://github.com/tippfehlr/activity-roles/commit/fc910243f2b10b5f7a865fd08887ef20f93b942e))
+
+### Translation
+
+- **(i18n)** new strings ([a613117](https://github.com/tippfehlr/activity-roles/commit/a613117c420b57038979a5b26e538938ee7de890))
 
 ### Documentation
 
