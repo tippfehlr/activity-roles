@@ -104,5 +104,10 @@
     "description": "re-check all users/roles",
     "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
     "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles."
+  },
+  "Cancelled": "Cancelled",
+  "deleteActivityRole": {
+    "noRoleDeleted": "No activity roles were deleted.",
+    "deletedRoles": "Deleted Activity Roles:"
   }
 }

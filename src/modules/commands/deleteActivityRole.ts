@@ -114,7 +114,10 @@ export default {
               db.deleteFrom('activityRoles').where('guildID', '=', interaction.guildId).execute();
               break;
             case 'deleteactivityrole:cancel':
-              int.update({ content: __({ phrase: 'Cancelled', locale }), components: [] });
+              int.update({
+                content: __({ phrase: 'Cancelled', locale }),
+                components: [],
+              });
               break;
           }
         });
@@ -183,8 +186,23 @@ function process(
   deleted: Selectable<ActivityRoles>[],
   locale: string,
 ) {
+  const reply = (content: string, embeds?: EmbedBuilder[]) => {
+    if (interaction instanceof CommandInteraction)
+      interaction.reply({
+        content,
+        embeds,
+        ephemeral: true,
+      });
+    else
+      interaction.update({
+        content,
+        embeds,
+        components: [],
+      });
+  };
+
   if (deleted.length > 0) {
-    const embeds = [
+    const embeds: EmbedBuilder[] = [
       // new EmbedBuilder().setTitle('Deleted Activity Roles:').setColor(config.COLOR)
     ];
     embeds.push(
@@ -219,33 +237,26 @@ function process(
           .setColor(config.COLOR);
       }),
     );
-    if (interaction instanceof CommandInteraction)
-      interaction.reply({
-        content: __({ phrase: 'Deleted Activity Roles:', locale }),
-        embeds: embeds,
-        ephemeral: true,
-      });
-    else
-      interaction.update({
-        content: __({ phrase: 'Deleted Activity Roles:', locale }),
-        embeds: embeds,
-        components: [],
-      });
+
+    reply(
+      __({
+        phrase: 'deleteActivityRole->deletedRoles:Deleted Activity Roles:',
+        locale,
+      }),
+      embeds,
+    );
+
     deleted.forEach(activityRole => {
       log.info(
         `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, permanent: ${activityRole.permanent}`,
       );
     });
   } else {
-    if (interaction instanceof CommandInteraction)
-      interaction.reply({
-        content: __({ phrase: 'No activity roles were deleted.', locale }),
-        ephemeral: true,
-      });
-    else
-      interaction.update({
-        content: __({ phrase: 'No activity roles were deleted.', locale }),
-        components: [],
-      });
+    reply(
+      __({
+        phrase: 'deleteActivityRole->noRoleDeleted:No activity roles were deleted.',
+        locale,
+      }),
+    );
   }
 }
