@@ -94,7 +94,7 @@ export default {
       });
       interaction.channel
         .createMessageComponentCollector({
-          componentType: ComponentType.StringSelect,
+          componentType: ComponentType.Button,
           filter: btnInt => interaction.user.id === btnInt.user.id,
           max: 1,
           time: 1000 * 60,
