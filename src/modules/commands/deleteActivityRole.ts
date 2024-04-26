@@ -77,7 +77,11 @@ export default {
 
     if (all) {
       interaction.reply({
-        content: __({ phrase: 'Are you sure you want to delete all activity roles?', locale }),
+        content: __({
+          phrase:
+            'deleteActivityRoles->deleteAllConfirmation:Are you sure you want to delete all activity roles?',
+          locale,
+        }),
         components: [
           new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()

@@ -113,7 +113,12 @@ export default {
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
           new StringSelectMenuBuilder()
             .setCustomId('addactivityrole:roleSelector')
-            .setPlaceholder(__({ phrase: "Please select a role for '%s'", locale }, activityName))
+            .setPlaceholder(
+              __(
+                { phrase: "addActivityRole->roleselector:Please select a role for '%s'", locale },
+                activityName,
+              ),
+            )
             .addOptions([
               ...possibleRoles.map(role => {
                 return {
@@ -123,9 +128,16 @@ export default {
                 };
               }),
               {
-                label: __({ phrase: 'Create %s', locale }, activityName),
+                label: __(
+                  { phrase: 'addActivityRole->createRole:Create %s', locale },
+                  activityName,
+                ),
                 description: __(
-                  { phrase: "Create a new role with the name '%s'", locale },
+                  {
+                    phrase:
+                      "addActivityRole->createRoleDescription:Create a new role with the name '%s'",
+                    locale,
+                  },
                   activityName,
                 ),
                 value: 'create',
