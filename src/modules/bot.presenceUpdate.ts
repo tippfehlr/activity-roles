@@ -134,6 +134,8 @@ export async function processRoles({
   member: GuildMember;
   activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
 }): Promise<{ added: number; removed: number }> {
+  if (member.user.bot) return { added: 0, removed: 0 };
+
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
   const status = { added: 0, removed: 0 };
