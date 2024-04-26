@@ -30,7 +30,7 @@ export default {
       ),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
-    .setDMPermission(true)
+    .setDMPermission(false)
     .addStringOption(option =>
       option
         .setName('activity')

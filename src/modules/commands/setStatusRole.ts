@@ -8,6 +8,7 @@ export default {
     .setName('setstatusrole')
     .setDescription('role to assign on LISTENING/WATCHING/etc.')
     .setDescriptionLocalizations(discordTranslations('role to assign on LISTENING/WATCHING/etc.'))
+    .setDMPermission(false)
     .addStringOption(option =>
       option
         .setName('event')
