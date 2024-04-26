@@ -3,7 +3,6 @@ import Discord, { Events, GatewayIntentBits, Options } from 'discord.js';
 import { getGuildConfig, roleRemoved } from './db';
 import config from './config';
 import { log } from './messages';
-// import { close } from '../index';
 import { initClientReady } from './bot.ready';
 import { initPresenceUpdate } from './bot.presenceUpdate';
 
