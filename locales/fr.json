@@ -105,9 +105,17 @@
     "success": "vérifié {{{usersChecked}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles",
     "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles."
   },
-  "Cancelled": "Cancelled",
+  "Cancelled": "Annulé",
   "deleteActivityRole": {
-    "noRoleDeleted": "No activity roles were deleted.",
-    "deletedRoles": "Deleted Activity Roles:"
+    "noRoleDeleted": "Aucun rôle d'activité n'a été supprimé.",
+    "deletedRoles": "Rôles D'activité Supprimés :"
+  },
+  "addActivityRole": {
+    "roleselector": "Please select a role for '%s'",
+    "createRole": "Create %s",
+    "createRoleDescription": "Create a new role with the name '%s'"
+  },
+  "deleteActivityRoles": {
+    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
   }
 }

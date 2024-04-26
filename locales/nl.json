@@ -109,5 +109,13 @@
   "deleteActivityRole": {
     "noRoleDeleted": "No activity roles were deleted.",
     "deletedRoles": "Deleted Activity Roles:"
+  },
+  "addActivityRole": {
+    "roleselector": "Please select a role for '%s'",
+    "createRole": "Create %s",
+    "createRoleDescription": "Create a new role with the name '%s'"
+  },
+  "deleteActivityRoles": {
+    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
   }
 }
