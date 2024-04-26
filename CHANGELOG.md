@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.2](https://github.com/tippfehlr/activity-roles/compare/v1.12.1..v1.12.2) - 2024-04-26
+
+### Bug Fixes
+
+- **(deleteActivityRole)** send table like /listRoles instead of embeds ([03b12a2](https://github.com/tippfehlr/activity-roles/commit/03b12a257d7d040c0888137c37247401e7674cbf))
+- disable /deleteActivityRole and /setStatusRole in DMs ([9b08642](https://github.com/tippfehlr/activity-roles/commit/9b08642042a85d37a1ac9b8ab692c1bb40f94a29))
+- don’t add roles to bots on /checkroles ([6a1fb9e](https://github.com/tippfehlr/activity-roles/commit/6a1fb9e13b500019a22642f6dd015a37edc1019a))
+- add strings for addActivityRole/deleteActivityRole ([dbb61a6](https://github.com/tippfehlr/activity-roles/commit/dbb61a6f294f7ee87028b085b38d1d0dc4c2ec43))
+
+### Translation
+
+- **(i18n)** pull translations ([7c383a3](https://github.com/tippfehlr/activity-roles/commit/7c383a332ffe2f0e51a82e958a876ed2043739ef))
+
 ## [1.12.1](https://github.com/tippfehlr/activity-roles/compare/v1.12.0..v1.12.1) - 2024-04-24
 
 ### Features
@@ -32,7 +45,7 @@
 ### Bug Fixes
 
 - don’t use ...role to fill values ([b9bf6ad](https://github.com/tippfehlr/activity-roles/commit/b9bf6ad8cb0f330d4f52efd91a6d2d938ff49510))
-- convert count(\*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
+- convert count(*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
 - set maximum length for activity names to 100 characters ([bfa3f2e](https://github.com/tippfehlr/activity-roles/commit/bfa3f2edb4aaa8a8653229b0cb8a5eba33fbebb5))
 
 ## [1.11.0](https://github.com/tippfehlr/activity-roles/compare/v1.10.2..v1.11.0) - 2024-04-13
