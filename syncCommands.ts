@@ -5,7 +5,6 @@ import path from 'path';
 import { Command } from './src/modules/commandHandler';
 import config from './src/modules/config';
 
-
 const commandsDir = './src/modules/commands/';
 const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commandFiles = fs.readdirSync(path.resolve(commandsDir)).filter(file => file.endsWith('.ts'));
@@ -14,7 +13,6 @@ for (const file of commandFiles) {
   commands.push(command.data.toJSON());
 }
 
-
 const rest = new REST().setToken(config.TOKEN);
 
 (async () => {
@@ -22,11 +20,11 @@ const rest = new REST().setToken(config.TOKEN);
   let data: any;
   if (config.GUILD) {
     data = await rest.put(Routes.applicationGuildCommands(config.APPLICATION_ID, config.GUILD), {
-      body: commands
+      body: commands,
     });
   } else {
     data = await rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
-      body: commands
+      body: commands,
     });
   }
 

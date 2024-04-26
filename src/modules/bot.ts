@@ -3,7 +3,7 @@ import Discord, { Events, GatewayIntentBits, Options } from 'discord.js';
 import { getGuildConfig, roleRemoved } from './db';
 import config from './config';
 import { log } from './messages';
-import { close } from '../index';
+// import { close } from '../index';
 import { initClientReady } from './bot.ready';
 import { initPresenceUpdate } from './bot.presenceUpdate';
 
@@ -67,7 +67,7 @@ client.on(Events.Error, error => {
   log.error(error, 'The Discord WebSocket has encountered an error');
   stats.webSocketErrors++;
   if (error.message === 'driver has already been destroyed') {
-    close();
+    process.exit();
   }
 });
 
