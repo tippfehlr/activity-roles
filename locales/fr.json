@@ -111,11 +111,11 @@
     "deletedRoles": "Rôles D'activité Supprimés :"
   },
   "addActivityRole": {
-    "roleselector": "Please select a role for '%s'",
-    "createRole": "Create %s",
-    "createRoleDescription": "Create a new role with the name '%s'"
+    "roleselector": "Veuillez sélectionner un rôle pour '%s'",
+    "createRole": "Créez %s",
+    "createRoleDescription": "Créer un nouveau rôle avec le nom '%s'"
   },
   "deleteActivityRoles": {
-    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
+    "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
   }
 }
