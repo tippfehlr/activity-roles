@@ -1,11 +1,11 @@
 import { ActivityType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import { table } from 'table';
-import fs from 'fs';
 
 import { db, getLang } from '../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations, getEnumKey } from '../messages';
 import config from '../config';
+import { createActivityRolesTable } from '../activityRolesTable';
+import { unlinkSync, writeFileSync } from 'fs';
 
 export default {
   data: new SlashCommandBuilder()
@@ -15,6 +15,7 @@ export default {
     .setDMPermission(false),
 
   execute: async interaction => {
+    if (!interaction.guild) return;
     const locale = getLang(interaction);
 
     const activityRoles = await db
@@ -27,29 +28,10 @@ export default {
     if (activityRoles.length === 0) {
       activityRolesTable = __({ phrase: 'There are no activity roles in this guild.', locale });
     } else {
-      const array = [
-        [
-          '#',
-          __({ phrase: 'Role', locale }),
-          __({ phrase: 'Activity', locale }),
-          __({ phrase: 'Exact Activity Name', locale }),
-          __({ phrase: 'Permanent', locale }),
-        ],
-      ];
-      for (const i in activityRoles) {
-        array.push([
-          String(Number(i) + 1),
-          interaction.guild!.roles.cache.find(role => role.id === activityRoles[i].roleID)?.name +
-            ` <@&${activityRoles[i].roleID}>`,
-          activityRoles[i].activityName,
-          String(activityRoles[i].exactActivityName),
-          String(activityRoles[i].permanent),
-        ]);
-      }
-      activityRolesTable = table(array, {
-        drawHorizontalLine: (index: number) => {
-          return index === 0 || index === 1 || index === array.length;
-        },
+      activityRolesTable = createActivityRolesTable({
+        activityRoles,
+        guild: interaction.guild,
+        locale,
       });
     }
     // ------------ status roles ------------
@@ -67,8 +49,9 @@ export default {
     if (statusRoles === '') {
       statusRoles = __({ phrase: 'There are no status roles in this guild', locale });
     }
+
     const filename = `listActivityRoles-${interaction.id.substring(0, 7)}.txt`;
-    fs.writeFileSync(filename, activityRolesTable);
+    writeFileSync(filename, activityRolesTable);
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
@@ -78,6 +61,6 @@ export default {
       ],
       files: [filename],
     });
-    fs.unlinkSync(filename);
+    unlinkSync(filename);
   },
 } as Command;

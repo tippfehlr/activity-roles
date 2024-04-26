@@ -1,8 +1,3 @@
-import { db, getLang } from '../db';
-import { discordTranslations, log, __ } from '../messages';
-import config from '../config';
-import { Command } from '../commandHandler';
-
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -11,12 +6,17 @@ import {
   ChannelType,
   CommandInteraction,
   ComponentType,
-  EmbedBuilder,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 import { Selectable } from 'kysely';
+
+import { db, getLang } from '../db';
+import { discordTranslations, log, __ } from '../messages';
+import { Command } from '../commandHandler';
+import { createActivityRolesTable } from '../activityRolesTable';
 import { ActivityRoles } from '../db.types';
+import { unlinkSync, writeFileSync } from 'fs';
 
 export default {
   data: new SlashCommandBuilder()
@@ -190,64 +190,38 @@ function process(
   deleted: Selectable<ActivityRoles>[],
   locale: string,
 ) {
-  const reply = (content: string, embeds?: EmbedBuilder[]) => {
+  if (!interaction.guild) return;
+  const reply = async (content: string, files?: string[]) => {
     if (interaction instanceof CommandInteraction)
-      interaction.reply({
+      await interaction.reply({
         content,
-        embeds,
+        files,
         ephemeral: true,
       });
     else
-      interaction.update({
+      await interaction.update({
         content,
-        embeds,
+        files,
         components: [],
       });
+    if (files) unlinkSync(files[0]);
   };
 
   if (deleted.length > 0) {
-    const embeds: EmbedBuilder[] = [
-      // new EmbedBuilder().setTitle('Deleted Activity Roles:').setColor(config.COLOR)
-    ];
-    embeds.push(
-      ...deleted.map(activityRole => {
-        return new EmbedBuilder()
-          .addFields(
-            {
-              name: __({ phrase: 'Activity', locale }),
-              value: activityRole.activityName,
-              inline: true,
-            },
-            {
-              name: __({ phrase: 'Role', locale }),
-              value: `<@&${activityRole.roleID}>`,
-              inline: true,
-            },
-            {
-              name: __({ phrase: 'Exact Activity Name', locale }),
-              value: activityRole.exactActivityName
-                ? __({ phrase: 'Yes', locale })
-                : __({ phrase: 'No', locale }),
-              inline: true,
-            },
-            {
-              name: __({ phrase: 'Permanent', locale }),
-              value: activityRole.permanent
-                ? __({ phrase: 'Yes', locale })
-                : __({ phrase: 'No', locale }),
-              inline: true,
-            },
-          )
-          .setColor(config.COLOR);
-      }),
-    );
+    const table = createActivityRolesTable({
+      guild: interaction.guild,
+      locale,
+      activityRoles: deleted,
+    });
+    const filename = `listActivityRoles-${interaction.id.substring(0, 7)}.txt`;
+    writeFileSync(filename, table);
 
     reply(
       __({
         phrase: 'deleteActivityRole->deletedRoles:Deleted Activity Roles:',
         locale,
       }),
-      embeds,
+      [filename],
     );
 
     deleted.forEach(activityRole => {
