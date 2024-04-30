@@ -15,7 +15,7 @@
     "other": "%s Gilden"
   },
   "%s user": {
-    "one": "%s user",
+    "one": "%s Nutzer",
     "other": "%s Benutzer"
   },
   "%s activity role": {
@@ -60,7 +60,7 @@
   "Activities (sorted by frequency):": "Aktivitäten (nach Häufigkeit sortiert):",
   "Show role IDs (can’t be imported in another guild)": "Rollen-IDs anzeigen (können nicht in eine andere Gilde importiert werden)",
   "No activity stats found.": "Keine Aktivitätsstatistiken gefunden.",
-  "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
+  "role to assign on LISTENING/WATCHING/etc.": "Rolle, die bei LISTENING/WATCHING/etc. zugewiesen wird.",
   "the event the user must have to receive the role": "das Ereignis, das der Benutzer die Rolle erhalten muss",
   "Playing": "Spielt",
   "Streaming": "Streamt",
