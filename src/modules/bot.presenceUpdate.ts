@@ -134,11 +134,18 @@ export async function processRoles({
   member: GuildMember;
   activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
 }): Promise<{ added: number; removed: number }> {
-  if (member.user.bot) return { added: 0, removed: 0 };
+  const status = { added: 0, removed: 0 };
+  if (member.user.bot) return status;
 
+  const userConfig = await getUserConfig(member.id);
+  if (!userConfig.autorole) return status;
+
+  const guildConfig = await getGuildConfig(guild.id);
+  if (guildConfig.requiredRoleID !== null && !member.roles.cache.has(guildConfig.requiredRoleID)) {
+    return status;
+  }
   const permanentRoleIDsToBeAdded: Set<string> = new Set();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
-  const status = { added: 0, removed: 0 };
 
   const addRoleHelper = async (roleID: string, change: 'add' | 'remove', permanent: boolean) => {
     switch (
@@ -222,10 +229,6 @@ export function initPresenceUpdate() {
       );
       return;
     }
-    if (!newMember.user || !newMember.guild || newMember.member?.user.bot) return;
-
-    const userConfig = await getUserConfig(newMember.userId);
-    if (!userConfig.autorole) return;
 
     const userIDHash = hashUserID(newMember.userId);
     const guildConfig = await getGuildConfig(guildID);

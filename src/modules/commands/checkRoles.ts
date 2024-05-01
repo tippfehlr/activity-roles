@@ -32,6 +32,19 @@ export async function checkRoles({
   interaction?: CommandInteraction;
   locale?: string;
 }) {
+  if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+    if (interaction && locale) {
+      //TODO: add message to allow permission
+      return;
+    } else {
+      log.warn(
+        `MISSING ACCESS: LEFT guild: ${guild.name} (ID: ${guild.id}, OwnerID: ${guild.ownerId}), Permission: MANAGE_ROLES`,
+      );
+      await guild.leave();
+      return;
+    }
+  }
+
   if (checkrolesCurrentGuilds.has(guild.id)) {
     log.debug(`checkroles already running on ${guild.name} (${guild.id})`);
     if (interaction && locale) {
