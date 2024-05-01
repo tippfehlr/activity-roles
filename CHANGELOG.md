@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.12.3](https://github.com/tippfehlr/activity-roles/compare/v1.12.2..v1.12.3) - 2024-05-01
+
+### Bug Fixes
+
+- **(/checkroles)** check for autorole and requiredRole ([8007214](https://github.com/tippfehlr/activity-roles/commit/800721445b588e16c2dba997aef7cf7faa9a27db))
+- **(syncCommands)** use process.exit() instead of close() in bot.ts ([2c71d82](https://github.com/tippfehlr/activity-roles/commit/2c71d82ac7479c360ea9e9e3b7338bb7e9e325ba))
+
+### Translation
+
+- **(i18n)** pull French ([d67ebc4](https://github.com/tippfehlr/activity-roles/commit/d67ebc4affc48a76a44e58163a9f0faa0e0bb3aa))
+- **(i18n)** pull German translation ([1ddfc4c](https://github.com/tippfehlr/activity-roles/commit/1ddfc4cac3aa82e92b16f616961e7b7c4987d7e0))
+
+### Documentation
+
+- **(README)** remove newline after badges ([ead3bc2](https://github.com/tippfehlr/activity-roles/commit/ead3bc2c96e39693bdc9b2f286e522e1c2e9235a))
+
 ## [1.12.2](https://github.com/tippfehlr/activity-roles/compare/v1.12.1..v1.12.2) - 2024-04-26
 
 ### Bug Fixes
