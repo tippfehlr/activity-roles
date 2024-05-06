@@ -1,13 +1,47 @@
-version: "3"
+version: '3' # deprecated in the latest versions of docker compose
 services:
   activity-roles:
-    image: ghcr.io/tippfehlr/activity-roles
-    environment:
-      TOKEN: your-discord-token
-      APPLICATION_ID: your-application-id
-      HOSTER_NAME: your-username-here
-      INFLUX_URL: your-influx-url-here # optional
-      INFLUX_TOKEN: your-influx-token-here # optional
-      restart: unless-stopped
+    image: ghcr.io/tippfehlr/activity-roles:latest
+    restart: unless-stopped
     volumes:
-      - ./db:/activity-roles/db
+      - ./db:/activity-roles/db # legacy, for importing old sqlite databases. No idea if it works without the mount (eg. the folder)
+    environment:
+      - DATABASE_URL=postgres://activity-roles:PASSWORD@postgres:5432/activity-roles
+      - TOKEN=
+      - HOSTER_NAME=
+      - APPLICATION_ID=
+      # - INFLUX_URL=
+      # - INFLUX_TOKEN=
+      # - INFLUX_ORG=
+      # - INFLUX_BUCKET=
+      - NODE_OPTIONS="--max-old-space-size=7000"
+      - LOG_LEVEL=debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    # to expose the postgres instance, uncomment this
+    # it is STRONGLY recommended to change the (external) port if you expose this to the internet
+    # ports:
+    #   - 5432:5432
+    environment:
+      - POSTGRES_USER=activity-roles
+      - POSTGRES_PASSWORD=PASSWORD
+      - POSTGRES_DB=activity-roles
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U activity-roles']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  # uncomment to enable influx, also fill env variables above
+  # influxdb:
+  #   volumes:
+  #     - ./influxdb-data:/var/lib/influxdb2
+  #   image: influxdb:alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8086:8086
