@@ -215,6 +215,7 @@ export async function processRoles({
 export function initPresenceUpdate() {
   // PresenceUpdate fires once for every guild the bot shares with the user
   client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
+    if (newMember.user?.bot) return;
     const startTime = Date.now();
     stats.presenceUpdates++;
 
