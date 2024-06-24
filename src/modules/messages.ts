@@ -18,7 +18,6 @@ export const i18n = new I18n({
   directory: __dirname + '/../../locales',
   defaultLocale: 'en-US',
   indent: '  ',
-  //@ts-expect-error i18n types are wrong
   objectNotation: '->',
 });
 export const __ = i18n.__;
