@@ -68,7 +68,7 @@ export function initClientReady() {
       `Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`,
     );
     log.info(
-      `The bot is currently on ${client.guilds.cache.size} guilds with ${await getUserCount()} users and manages ${await getRolesCount()} roles`,
+      `The bot is currently in ${client.guilds.cache.size} guilds with ${await getUserCount()} users and manages ${await getRolesCount()} roles`,
     );
 
     // checkroles:
