@@ -71,8 +71,17 @@ export function initClientReady() {
       `The bot is currently on ${client.guilds.cache.size} guilds with ${await getUserCount()} users and manages ${await getRolesCount()} roles`,
     );
 
+    // checkroles:
+    // execute every 30 minutes
+    // check if the last check was more than 20 hours ago
     checkGuilds();
     setInterval(checkGuilds, 30 * 60 * 1000);
+
+    // membercount:
+    // execute every 24 hours
+    // check if the last update was more than 7 days ago
+    updateMemberCount();
+    setInterval(updateMemberCount, 24 * 60 * 60 * 1000);
   });
 }
 
@@ -90,5 +99,33 @@ async function checkGuilds() {
     await delay(30 * 1000);
     const guild = client.guilds.cache.get(guildID);
     if (guild) await checkRoles({ guild });
+  }
+}
+
+async function updateMemberCount() {
+  const guildsToUpdate = await db
+    .selectFrom('guilds')
+    .select(['guildID', 'approxMemberCount', 'approxMemberCountLastUpdate'])
+    .where(eb =>
+      eb.or([
+        eb('approxMemberCountLastUpdate', '<', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+        eb('approxMemberCountLastUpdate', '=', null),
+        eb('approxMemberCount', '=', null),
+      ]),
+    )
+    .execute();
+
+  for (const dbGuild of guildsToUpdate) {
+    const guild = client.guilds.cache.get(dbGuild.guildID);
+    if (!guild) continue;
+    await guild.members.fetch();
+    await db
+      .updateTable('guilds')
+      .set({
+        approxMemberCount: guild.memberCount,
+        approxMemberCountLastUpdate: new Date(),
+      })
+      .where('guildID', '=', dbGuild.guildID)
+      .execute();
   }
 }

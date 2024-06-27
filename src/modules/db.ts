@@ -16,6 +16,7 @@ import { locales, log } from './messages';
 import { DB, ActivityRoles, Guilds, StatusRoles, Users } from './db.types';
 import config from './config';
 import { writeIntPoint } from './metrics';
+import { client } from './bot';
 
 const pool = new Pool({ connectionString: config.DATABASE_URL, max: 10 });
 const dialect = new PostgresDialect({ pool });
@@ -96,11 +97,24 @@ export async function getGuildConfig(guildID: string): Promise<Selectable<Guilds
     .where('guildID', '=', guildID)
     .executeTakeFirst();
   if (guild) return guild;
+  await client.guilds.fetch(guildID);
+  let dcGuild = client.guilds.cache.get(guildID);
+  let approxMemberCountLastUpdate = dcGuild ? new Date() : null;
   db.insertInto('guilds')
-    .values({ guildID })
+    .values({
+      guildID,
+      approxMemberCount: dcGuild?.memberCount,
+      approxMemberCountLastUpdate,
+    })
     .onConflict(oc => oc.column('guildID').doNothing())
     .execute();
-  return { guildID: guildID, requiredRoleID: null, lastCheckRoles: null };
+  return {
+    guildID,
+    requiredRoleID: null,
+    lastCheckRoles: null,
+    approxMemberCount: dcGuild ? dcGuild.memberCount : null,
+    approxMemberCountLastUpdate,
+  };
 }
 
 export async function getActivityRoles(guildID: string): Promise<Selectable<ActivityRoles>[]> {

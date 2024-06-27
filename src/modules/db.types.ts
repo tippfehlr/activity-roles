@@ -33,6 +33,8 @@ export interface ActivityStats {
 }
 
 export interface Guilds {
+  approxMemberCount: number | null;
+  approxMemberCountLastUpdate: Timestamp | null;
   guildID: string;
   lastCheckRoles: Timestamp | null;
   requiredRoleID: string | null;
