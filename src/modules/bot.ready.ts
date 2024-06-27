@@ -105,16 +105,16 @@ async function checkGuilds() {
 async function updateMemberCount() {
   const guildsToUpdate = await db
     .selectFrom('guilds')
-    .select(['guildID', 'approxMemberCount', 'approxMemberCountLastUpdate'])
+    .select(['guildID'])
     .where(eb =>
       eb.or([
         eb('approxMemberCountLastUpdate', '<', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-        eb('approxMemberCountLastUpdate', '=', null),
-        eb('approxMemberCount', '=', null),
+        eb('approxMemberCountLastUpdate', 'is', null),
+        eb('approxMemberCount', 'is', null),
       ]),
     )
     .execute();
-
+  await client.guilds.fetch();
   for (const dbGuild of guildsToUpdate) {
     const guild = client.guilds.cache.get(dbGuild.guildID);
     if (!guild) continue;
