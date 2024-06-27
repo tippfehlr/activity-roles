@@ -13,7 +13,7 @@
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-empty": "warn",
-    "@typescript-eslint/ban-ts-comment": "warn"
-    // "quotes": ["warn", "single", { "avoidEscape": true }]
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "quotes": ["warn", "single", { "avoidEscape": true }]
   }
 }
