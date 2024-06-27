@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.12.5](https://github.com/tippfehlr/activity-roles/compare/v1.12.4..v1.12.5) - 2024-06-27
+
+### Features
+
+- add column approxMemberCount to guilds ([21bd8b3](https://github.com/tippfehlr/activity-roles/commit/21bd8b3c0ac9a7ef44bf299bf7739b5a42147c45))
+
 ## [1.12.4](https://github.com/tippfehlr/activity-roles/compare/v1.12.3..v1.12.4) - 2024-06-24
 
 ### Bug Fixes
@@ -67,7 +73,7 @@
 ### Bug Fixes
 
 - don’t use ...role to fill values ([b9bf6ad](https://github.com/tippfehlr/activity-roles/commit/b9bf6ad8cb0f330d4f52efd91a6d2d938ff49510))
-- convert count(*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
+- convert count(\*) result to number ([a6e9399](https://github.com/tippfehlr/activity-roles/commit/a6e9399f50dbbe83c0e3c199ac690a8f77394abe))
 - set maximum length for activity names to 100 characters ([bfa3f2e](https://github.com/tippfehlr/activity-roles/commit/bfa3f2edb4aaa8a8653229b0cb8a5eba33fbebb5))
 
 ## [1.11.0](https://github.com/tippfehlr/activity-roles/compare/v1.10.2..v1.11.0) - 2024-04-13
@@ -223,5 +229,3 @@
 - **(readme)** add sponsor info ([5bde2fd](https://github.com/tippfehlr/activity-roles/commit/5bde2fdfe90b7c59f3e2630393a0e316eac535e9))
 - **(readme)** fix sponsor links ([f5d8514](https://github.com/tippfehlr/activity-roles/commit/f5d85140be93af0d5133d46c12083a6acd30ef28))
 - add architecture and github workflow for arkit ([1c3648a](https://github.com/tippfehlr/activity-roles/commit/1c3648a4310e50a2d4e0485d6a3b61745d253608))
-
-
