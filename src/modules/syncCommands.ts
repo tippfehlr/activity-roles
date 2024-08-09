@@ -2,10 +2,11 @@ import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody } from 'discord.js
 import fs from 'fs';
 import path from 'path';
 
-import { Command } from './src/modules/commandHandler';
-import config from './src/modules/config';
+import { Command } from './commandHandler';
+import config from './config';
 
-const commandsDir = './src/modules/commands/';
+// const commandsDir = './src/modules/commands/';
+const commandsDir = './commands/';
 const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commandFiles = fs.readdirSync(path.resolve(commandsDir)).filter(file => file.endsWith('.ts'));
 for (const file of commandFiles) {
@@ -15,7 +16,7 @@ for (const file of commandFiles) {
 
 const rest = new REST().setToken(config.TOKEN);
 
-(async () => {
+export async function uploadCommands() {
   console.log(`Started refreshing ${commands.length} application (/) commands.`);
   let data: any;
   if (config.GUILD) {
@@ -27,6 +28,5 @@ const rest = new REST().setToken(config.TOKEN);
       body: commands,
     });
   }
-
   console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-})();
+}

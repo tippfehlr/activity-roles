@@ -30,6 +30,8 @@ const INFLUX_TOKEN = process.env.INFLUX_TOKEN;
 const INFLUX_ORG = process.env.INFLUX_ORG;
 const INFLUX_BUCKET = process.env.INFLUX_BUCKET;
 
+const SKIP_COMMAND_UPLOAD = process.env.SKIP_COMMAND_UPLOAD;
+
 export default {
   TOKEN: TOKEN as string,
   APPLICATION_ID: APPLICATION_ID as string,
@@ -45,4 +47,5 @@ export default {
   INFLUX_TOKEN,
   INFLUX_ORG,
   INFLUX_BUCKET,
+  SKIP_COMMAND_UPLOAD,
 };
