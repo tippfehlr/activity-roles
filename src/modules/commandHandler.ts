@@ -1,6 +1,13 @@
-import { Client, CommandInteraction, InteractionType, SlashCommandBuilder } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
+import {
+  Client,
+  CommandInteraction,
+  InteractionType,
+  SlashCommandBuilder,
+  REST,
+  Routes,
+} from 'discord.js';
+
+import config from './config';
 import { getLang } from './db';
 import { log, __ } from './messages';
 
@@ -9,24 +16,13 @@ export interface Command {
   execute(interaction: CommandInteraction): Promise<void>;
 }
 
-const defaultOptions = {
-  commandsDir: './commands/',
-  commandFileExtension: ['.js', '.ts'] as string[]
-};
-
 export default class CommandHandler {
   private client: Client;
-  private options: typeof defaultOptions;
   public commands: Map<Command['data']['name'], Command>;
 
-  constructor(client: Client, options = defaultOptions) {
+  constructor(client: Client) {
     this.client = client;
-    this.options = options;
-
-    this.commands = this.getCommandFiles(
-      this.options.commandsDir,
-      this.options.commandFileExtension
-    );
+    this.commands = new Map();
 
     client.on('interactionCreate', async interaction => {
       if (interaction.type !== InteractionType.ApplicationCommand) return;
@@ -39,26 +35,40 @@ export default class CommandHandler {
         await interaction.reply({
           content: __({
             phrase: 'There was an error while executing this command!',
-            locale: getLang(interaction)
+            locale: getLang(interaction),
           }),
-          ephemeral: true
+          ephemeral: true,
         });
       }
     });
   }
 
-  getCommandFiles(commandsDir: string, commandFileExtension: string | string[]) {
-    const commands = new Map();
-    const commandFiles = fs.readdirSync(path.join(__dirname, commandsDir)).filter(file => {
-      for (const extension of commandFileExtension) {
-        if (file.endsWith(extension)) return true;
-      }
-      return false;
-    });
-    for (const file of commandFiles) {
-      const command: Command = require(commandsDir + file).default as Command;
-      commands.set(command.data.name, command);
+  public addCommand(command: Command) {
+    this.commands.set(command.data.name, command);
+    return this;
+  }
+
+  public async uploadCommands() {
+    let commandsJSON: any[] = [];
+
+    for (const [, command] of this.commands) {
+      commandsJSON.push(command.data.toJSON());
     }
-    return commands as typeof this.commands;
+
+    const rest = new REST().setToken(config.TOKEN);
+
+    log.info(`Started refreshing ${commandsJSON.length} application (/) commands.`);
+    let data: any;
+    if (config.GUILD) {
+      data = await rest.put(Routes.applicationGuildCommands(config.APPLICATION_ID, config.GUILD), {
+        body: commandsJSON,
+      });
+    } else {
+      data = await rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
+        body: commandsJSON,
+      });
+    }
+    log.info(`Successfully reloaded ${data.length} application (/) commands.`);
+    return this;
   }
 }

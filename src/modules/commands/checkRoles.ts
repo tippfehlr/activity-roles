@@ -19,11 +19,11 @@ export default {
   execute: async interaction => {
     if (!interaction.guild) return;
     const locale = getLang(interaction);
-    checkRoles({ guild: interaction.guild, interaction, locale });
+    checkRolesStandalone({ guild: interaction.guild, interaction, locale });
   },
 } as Command;
 
-export async function checkRoles({
+export async function checkRolesStandalone({
   guild,
   interaction,
   locale,

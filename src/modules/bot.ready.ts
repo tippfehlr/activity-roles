@@ -1,17 +1,43 @@
 import { ActivityType, Events } from 'discord.js';
+
+import { client } from './bot';
+import CommandHandler from './commandHandler';
+import config from './config';
+import { configureInfluxDB } from './metrics';
 import { getUserCount, getRolesCount, db } from './db';
 import { i18n, log } from './messages';
-import CommandHandler from './commandHandler';
-import { configureInfluxDB } from './metrics';
-import { client } from './bot';
-import { checkRoles } from './commands/checkRoles';
+
+import activityStats from './commands/activityStats';
+import addActivityRole from './commands/addActivityRole';
+import checkRoles, { checkRolesStandalone } from './commands/checkRoles';
+import deleteActivityRole from './commands/deleteActivityRole';
+import _export from './commands/export';
+import help from './commands/help';
+import listRoles from './commands/listRoles';
+import requireRole from './commands/requireRole';
+import setStatusRole from './commands/setStatusRole';
+import stats from './commands/stats';
+import toggleAutoRole from './commands/toggleAutoRole';
 
 export let commandHandler: CommandHandler;
 
 export function initClientReady() {
   client.on(Events.ClientReady, async () => {
     configureInfluxDB();
-    commandHandler = new CommandHandler(client);
+    commandHandler = new CommandHandler(client)
+      .addCommand(activityStats)
+      .addCommand(addActivityRole)
+      .addCommand(checkRoles)
+      .addCommand(deleteActivityRole)
+      .addCommand(_export)
+      .addCommand(help)
+      .addCommand(listRoles)
+      .addCommand(requireRole)
+      .addCommand(setStatusRole)
+      .addCommand(stats)
+      .addCommand(toggleAutoRole);
+    if (!config.SKIP_COMMAND_UPLOAD) await commandHandler.uploadCommands();
+
     const setActivityGuilds = () => {
       client.user?.setPresence({
         status: 'online',
@@ -98,7 +124,7 @@ async function checkGuilds() {
   for (const { guildID } of guildsToCheck) {
     await delay(30 * 1000);
     const guild = client.guilds.cache.get(guildID);
-    if (guild) await checkRoles({ guild });
+    if (guild) await checkRolesStandalone({ guild });
   }
 }
 
