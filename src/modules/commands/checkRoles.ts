@@ -34,7 +34,13 @@ export async function checkRolesStandalone({
 }) {
   if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
     if (interaction && locale) {
-      //TODO: add message to allow permission
+      await interaction.reply({
+        content: __({
+          phrase:
+            'checkRoles->askForManageRolesPermission:I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n\
+Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.',
+        }),
+      });
       return;
     } else {
       log.warn(
