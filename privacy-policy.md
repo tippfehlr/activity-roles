@@ -13,7 +13,7 @@ Discord (@tippfehlr) or via Email (<tippfehlr@tippfehlr.eu>).
 
 **WHAT INFORMATION DO I COLLECT AND HOW DO I USE IT?**
 
-- Discord user IDs, hashed with sha256 -> for providing per user settings,
+- Discord user IDs -> for providing per user settings,
   currently enabling/disabling the bot for the user
 - When you add an Activity Role to your guild: the **guild id**,
   the **role id** of the role you provided, the **activity name**,
