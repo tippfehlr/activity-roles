@@ -57,18 +57,18 @@ export default class CommandHandler {
 
     const rest = new REST().setToken(config.TOKEN);
 
-    log.info(`Started refreshing ${commandsJSON.length} application (/) commands.`);
     let data: any;
     if (config.GUILD) {
       data = await rest.put(Routes.applicationGuildCommands(config.APPLICATION_ID, config.GUILD), {
         body: commandsJSON,
       });
+      log.info(`Uploaded ${data.length} application (/) commands to guild ${config.GUILD}.`);
     } else {
       data = await rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
         body: commandsJSON,
       });
+      log.info(`Uploaded ${data.length} application (/) commands.`);
     }
-    log.info(`Successfully reloaded ${data.length} application (/) commands.`);
     return this;
   }
 }
