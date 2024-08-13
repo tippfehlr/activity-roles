@@ -103,7 +103,8 @@
   "checkRoles": {
     "description": "re-vérifie tous les utilisateurs/rôles",
     "success": "vérifié {{{usersChecked}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles",
-    "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles."
+    "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles.",
+    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically."
   },
   "Cancelled": "Annulé",
   "deleteActivityRole": {

@@ -88,34 +88,35 @@
   ":x: That activity role already exists in this guild! :x:": ":x: Esse cargo de atividade já existe nesse servidor! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Eu não uso o bot sozinho. Se você quiser acelerar o desenvolvimento ou me ajudar a pagar pelo servidor, por favor considere me apoiar.",
   "the role will not be removed again if set to true": "o papel não será removido novamente se definido como 'True'",
-  "Live": "Live",
+  "Live": "Temporário",
   "help": {
-    "description": "Shows the help menu",
-    "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
-    "reply-footer": "Made by tippfehlr"
+    "description": "Mostra o menu de ajuda",
+    "reply-description": "Um bot do Discord para atribuição automática de cargos com base em atividades.\nSuporte/Sugestões: {{{support}}}\nGitHub: {{{github}}}\nContato: {{{contact}}}\n\nAdicionar um cargo de atividade com `/addactivityrole`. Por padrão, o bot removerá o cargo novamente quando a atividade terminar.\nSe `permanente` estiver definido como true, o bot não removerá o cargo.\nSe `exact_activity_name` for verdadeiro, o bot só aceitará correspondências exatas.\nDefinir um cargo de status com `/setstatusrole`!\n**O bot não removerá nenhum cargo que foi adicionado manualmente. *\n\neu não uso o bot sozinho. Se você quer acelerar o desenvolvimento ou me ajudar a pagar pelo servidor, por favor, considere me apoiar.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Feito por tippfehlr"
   },
   "deleteactivityrole": {
     "description": {
-      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+      "all": "ATENÇÃO: EXCLUI TODOS OS CARGOS DE ATIVIDADE"
     }
   },
-  "Activities (sorted by frequency)": "Activities (sorted by frequency)",
+  "Activities (sorted by frequency)": "Atividades (ordenadas por frequência)",
   "checkRoles": {
-    "description": "re-check all users/roles",
-    "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
-    "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles."
+    "description": "re-verificar todos os usuários/cargos",
+    "success": "verificou {{{usersChecked}}} usuários, adicionou {{{added}}} e removeu cargos {{{removed}}}",
+    "in-progress": "EM PROGRESS: já verificou {{{usersChecked}}}/{{{totalUsersToCheck}}} usuários, adicionou {{{added}}} e removeu {{{removed}}} cargos.",
+    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically."
   },
-  "Cancelled": "Cancelled",
+  "Cancelled": "Cancelado",
   "deleteActivityRole": {
-    "noRoleDeleted": "No activity roles were deleted.",
-    "deletedRoles": "Deleted Activity Roles:"
+    "noRoleDeleted": "Nenhum cargo de atividade foi excluído.",
+    "deletedRoles": "Cargos de Atividade Excluídas:"
   },
   "addActivityRole": {
-    "roleselector": "Please select a role for '%s'",
-    "createRole": "Create %s",
-    "createRoleDescription": "Create a new role with the name '%s'"
+    "roleselector": "Por favor, selecione um cargo para '%s'",
+    "createRole": "Criar %s",
+    "createRoleDescription": "Criar um novo cargo com o nome '%s'"
   },
   "deleteActivityRoles": {
-    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
+    "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
   }
 }
