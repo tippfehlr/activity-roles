@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { Command } from '../commandHandler';
 
 import config from '.././config';

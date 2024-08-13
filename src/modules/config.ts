@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { ColorResolvable } from 'discord.js';
 import { log } from './messages';
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import config from '../config';
 import { Command } from '../commandHandler';

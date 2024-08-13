@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import fs from 'fs';
 import { createHash } from 'crypto';
 import { CommandInteraction, StringSelectMenuInteraction } from 'discord.js';

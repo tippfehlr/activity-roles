@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { addDiscordRoleToMember, processRoles, addRoleStatus } from './../bot.presenceUpdate';
 import { Command } from '../commandHandler';
 

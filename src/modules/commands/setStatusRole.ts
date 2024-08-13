@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { db, getLang } from './../db';
 import { Command } from '../commandHandler';
 

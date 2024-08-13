@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { InfluxDB, Point, WriteApi } from '@influxdata/influxdb-client';
 export { Point } from '@influxdata/influxdb-client';
 

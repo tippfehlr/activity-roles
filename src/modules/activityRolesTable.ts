@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { Selectable } from 'kysely';
 import { ActivityRoles } from './db.types';
 import { Guild } from 'discord.js';

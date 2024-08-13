@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { PermissionsBitField, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import fs from 'fs';
 

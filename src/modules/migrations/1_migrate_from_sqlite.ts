@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 /*
  *  This file is commented out to remove the dependency on better-sqlite3,
  *  as it takes relatively long to compile the C bindings.
