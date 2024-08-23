@@ -3,6 +3,7 @@
 import {
   Activity,
   ActivityType,
+  CommandInteraction,
   Events,
   Guild,
   GuildMember,
@@ -18,8 +19,9 @@ import {
   db,
   hashUserID,
   roleRemoved,
+  getLang,
 } from './db';
-import { log } from './messages';
+import { log, __ } from './messages';
 import { writeIntPoint } from './metrics';
 import { client, stats } from './bot';
 import { Selectable } from 'kysely';
@@ -59,13 +61,15 @@ export async function addDiscordRoleToMember({
   permanent,
   guild,
   member,
+  interaction,
 }: {
   change: 'add' | 'remove';
   roleID: string;
   permanent?: boolean;
   guild: Guild;
   member: GuildMember;
-}): Promise<addRoleStatus | undefined> {
+  interaction?: CommandInteraction;
+}): Promise<addRoleStatus | 'abort' | undefined> {
   const role = guild.roles.cache.get(roleID);
   if (!role) {
     roleRemoved(roleID, guild.id);
@@ -73,9 +77,20 @@ export async function addDiscordRoleToMember({
   }
   const highestBotRolePosition = guild.members.me?.roles.highest.position;
   if (!highestBotRolePosition || highestBotRolePosition <= role.position) {
-    log.warn(
-      `Role ${role.name} is higher than the bot’s highest role and was skipped (in guild ${guild.name})`,
-    );
+    if (interaction) {
+      interaction.editReply({
+        content: __(
+          { phrase: 'presenceUpdate->roleHigherThanBotRole', locale: getLang(interaction) },
+          `<@&${role.id}>`,
+        ),
+      });
+      return 'abort';
+    } else {
+      log.warn(
+        `Role ${role.name} is higher than the bot’s highest role and was \
+skipped (in guild ${guild.name})`,
+      );
+    }
     return;
   }
 
@@ -127,6 +142,7 @@ export async function processRoles({
   activeTemporaryRoles,
   guild,
   member,
+  interaction,
 }: {
   memberStatus: PresenceStatus;
   statusRoles: Selectable<StatusRoles>[];
@@ -135,7 +151,8 @@ export async function processRoles({
   guild: Guild;
   member: GuildMember;
   activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
-}): Promise<{ added: number; removed: number }> {
+  interaction?: CommandInteraction;
+}): Promise<{ added: number; removed: number } | 'abort'> {
   const status = { added: 0, removed: 0 };
   if (member.user.bot) return status;
 
@@ -157,6 +174,7 @@ export async function processRoles({
         change,
         guild,
         member,
+        interaction,
       })
     ) {
       case addRoleStatus.RoleAdded:
@@ -165,6 +183,8 @@ export async function processRoles({
       case addRoleStatus.RoleRemoved:
         status.removed++;
         break;
+      case 'abort':
+        return 'abort';
     }
   };
   // if user is offline, skip checking for added activities
@@ -198,17 +218,18 @@ export async function processRoles({
     // ------------ “apply changes” ------------
 
     for (const roleID of permanentRoleIDsToBeAdded) {
-      await addRoleHelper(roleID, 'add', true);
+      if ((await addRoleHelper(roleID, 'add', true)) === 'abort') return 'abort';
     }
     for (const roleID of tempRoleIDsToBeAdded) {
-      await addRoleHelper(roleID, 'add', false);
+      if ((await addRoleHelper(roleID, 'add', false)) === 'abort') return 'abort';
     }
   }
 
   // remove temporary roles --- new activeTemporaryRoles
   for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      await addRoleHelper(activeTemporaryRole.roleID, 'remove', false);
+      if ((await addRoleHelper(activeTemporaryRole.roleID, 'remove', false)) === 'abort')
+        return 'abort';
     }
   }
   return status;
