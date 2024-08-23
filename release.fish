@@ -16,7 +16,7 @@ git add CHANGELOG.md package.json
 git commit -m "chore(release): v$newversion"
 git tag v$newversion
 git tag -f latest
-read -p "> Push and release changes?"
+read -p "Push and release changes?"
 git push
 git push --tags origin v$newversion
 
