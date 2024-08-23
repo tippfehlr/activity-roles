@@ -37,16 +37,13 @@ export async function checkRolesStandalone({
   if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
     if (interaction && locale) {
       await interaction.reply({
-        content: __({
-          phrase:
-            'checkRoles->askForManageRolesPermission:I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n\
-Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.',
-        }),
+        content: __({ phrase: 'checkRoles->askForManageRolesPermission', locale }),
       });
       return;
     } else {
       log.warn(
-        `MISSING ACCESS: LEFT guild: ${guild.name} (ID: ${guild.id}, OwnerID: ${guild.ownerId}), Permission: MANAGE_ROLES`,
+        `MISSING ACCESS: LEFT guild: ${guild.name} (ID: ${guild.id}, OwnerID: \
+${guild.ownerId}), Permission: MANAGE_ROLES`,
       );
       await guild.leave();
       return;
@@ -57,11 +54,7 @@ Please add the permission to the “Activity Roles” role. Otherwise the bot wi
     log.debug(`checkroles already running on ${guild.name} (${guild.id})`);
     if (interaction && locale) {
       await interaction.reply({
-        content: __({
-          phrase:
-            'checkRoles->alreadyRunning:A `/checkroles` request is already running for this guild.',
-          locale,
-        }),
+        content: __({ phrase: 'checkRoles->alreadyRunning', locale }),
         ephemeral: true,
       });
     }
@@ -122,10 +115,7 @@ Please add the permission to the “Activity Roles” role. Otherwise the bot wi
     interval = setInterval(() => {
       interaction.editReply({
         content: __(
-          {
-            phrase: `checkRoles->in-progress:IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles.`,
-            locale,
-          },
+          { phrase: 'checkRoles->in-progress', locale },
           {
             usersChecked: status.usersChecked.toString(),
             added: status.rolesAdded.toString(),
@@ -155,7 +145,17 @@ Please add the permission to the “Activity Roles” role. Otherwise the bot wi
       activeTemporaryRoles,
       guild,
       member: presence.member,
+      interaction,
     });
+    // res can only be 'abort' when interaction is passed.
+    // check for this nonetheless because it could change in the future.
+    if (res === 'abort') {
+      if (interaction && locale) {
+        clearInterval(interval);
+      }
+      checkrolesCurrentGuilds.delete(guild.id);
+      return;
+    }
     status.rolesAdded += res.added;
     status.rolesRemoved += res.removed;
 

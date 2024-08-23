@@ -104,7 +104,8 @@
     "description": "re-check all users/roles",
     "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
     "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles.",
-    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically."
+    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.",
+    "alreadyRunning": "A `/checkroles` request is already running for this guild."
   },
   "Cancelled": "Cancelled",
   "deleteActivityRole": {
@@ -118,5 +119,8 @@
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
+  },
+  "presenceUpdate": {
+    "roleHigherThanBotRole": "I don’t have permission to manage %s because it is higher than my highest role.\nPlease move one of my roles above all Activity Roles."
   }
 }
