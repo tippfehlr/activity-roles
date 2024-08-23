@@ -5,7 +5,12 @@ import { connect } from './modules/bot';
 import { writeApi } from './modules/metrics';
 import config from './modules/config';
 
+// npm and pnpm invoke SIGINT twice when ^C is pressed.
+let closed = false;
+
 export async function close() {
+  if (closed) return;
+  closed = true;
   console.log('quitting ...');
   if (writeApi) await writeApi.close();
   await db.destroy();
