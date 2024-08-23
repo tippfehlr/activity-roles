@@ -230,34 +230,10 @@ async function process(
     interaction.guild.members.me?.roles.highest?.position &&
     role.position >= interaction.guild.members.me.roles.highest.position
   ) {
-    reply(interaction, undefined, [
-      new EmbedBuilder()
-        .setColor(Colors.Red)
-        .setDescription(
-          __({
-            phrase:
-              'To assign roles, my highest role needs to be higher than the role I am assigning.\nMove any of my roles higher than the role I should manage.',
-            locale,
-          }),
-        )
-        .addFields(
-          {
-            name: __({ phrase: 'My highest role:', locale }),
-            value:
-              `<@&${interaction.guild.members.me.roles.highest.id}> ` +
-              __(
-                { phrase: '(position #%s)', locale },
-                interaction.guild.members.me.roles.highest.position.toString(),
-              ),
-          },
-          {
-            name: __({ phrase: 'the activity role:', locale }),
-            value:
-              `<@&${role.id}> ` +
-              __({ phrase: '(position #%s)', locale }, role.position.toString()),
-          },
-        ),
-    ]);
+    reply(
+      interaction,
+      __({ phrase: 'presenceUpdate->roleHigherThanBotRole', locale }, `<@&${role.id}>`),
+    );
     return;
   }
   if (
