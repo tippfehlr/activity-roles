@@ -53,7 +53,9 @@ export default class CommandHandler {
   public async uploadCommands() {
     let commandsJSON: any[] = [];
 
+    log.debug(`Uploading ${this.commands.size} application (/) commands:`);
     for (const [, command] of this.commands) {
+      log.debug('  - ' + command.data.name);
       commandsJSON.push(command.data.toJSON());
     }
 
@@ -69,7 +71,7 @@ export default class CommandHandler {
       data = await rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
         body: commandsJSON,
       });
-      log.info(`Uploaded ${data.length} application (/) commands.`);
+      log.info(`Uploaded ${data.length} application (/) commands to global.`);
     }
     return this;
   }
