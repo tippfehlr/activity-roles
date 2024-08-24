@@ -153,14 +153,18 @@ export function getLang(interaction: CommandInteraction | StringSelectMenuIntera
 }
 
 export async function addActivity(guildID: string, activityName: string) {
-  db.insertInto('activityStats')
-    .values({ guildID, activityName, count: 1 })
-    .onConflict(oc =>
-      oc
-        .columns(['guildID', 'activityName'])
-        .doUpdateSet(eb => ({ count: eb('activityStats.count', '+', 1) })),
-    )
-    .execute();
+  // if (activityName.includes('®')) {
+  //   log.warn(`activityName '${activityName}'includes '®'. Somehow postgres doesn’t like this.`);
+  //   return;
+  // }
+  // db.insertInto('activityStats')
+  //   .values({ guildID, activityName, count: 1 })
+  //   .onConflict(oc =>
+  //     oc
+  //       .columns(['guildID', 'activityName'])
+  //       .doUpdateSet(eb => ({ count: eb('activityStats.count', '+', 1) })),
+  //   )
+  //   .execute();
 }
 
 export async function getRowCount(table: TableExpression<DB, keyof DB>) {
