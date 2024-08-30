@@ -104,7 +104,8 @@
     "description": "re-verificar todos os usuários/cargos",
     "success": "verificou {{{usersChecked}}} usuários, adicionou {{{added}}} e removeu cargos {{{removed}}}",
     "in-progress": "EM PROGRESS: já verificou {{{usersChecked}}}/{{{totalUsersToCheck}}} usuários, adicionou {{{added}}} e removeu {{{removed}}} cargos.",
-    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically."
+    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.",
+    "alreadyRunning": "A `/checkroles` request is already running for this guild."
   },
   "Cancelled": "Cancelado",
   "deleteActivityRole": {
@@ -118,5 +119,12 @@
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
+  },
+  "presenceUpdate": {
+    "roleHigherThanBotRole": "I don’t have permission to manage %s because it is higher than my highest role.\nPlease move one of my roles above all Activity Roles."
+  },
+  "reset": {
+    "description": "resets the bot for this guild",
+    "confirmationPrompt": ":warning: You are about to reset the whole bot including all your activity roles. Roles will not be removed from members, and the bot will not remove them even if you create a new Activity Role.\nThis is normally not necessary! Are you _**absolutely**_ sure?"
   }
 }

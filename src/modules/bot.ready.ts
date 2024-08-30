@@ -17,6 +17,7 @@ import _export from './commands/export';
 import help from './commands/help';
 import listRoles from './commands/listRoles';
 import requireRole from './commands/requireRole';
+import reset from './commands/reset';
 import setStatusRole from './commands/setStatusRole';
 import stats from './commands/stats';
 import toggleAutoRole from './commands/toggleAutoRole';
@@ -35,6 +36,7 @@ export function initClientReady() {
       .addCommand(help)
       .addCommand(listRoles)
       .addCommand(requireRole)
+      .addCommand(reset)
       .addCommand(setStatusRole)
       .addCommand(stats)
       .addCommand(toggleAutoRole);

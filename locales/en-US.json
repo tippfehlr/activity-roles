@@ -122,5 +122,9 @@
   },
   "presenceUpdate": {
     "roleHigherThanBotRole": "I don’t have permission to manage %s because it is higher than my highest role.\nPlease move one of my roles above all Activity Roles."
+  },
+  "reset": {
+    "description": "resets the bot for this guild",
+    "confirmationPrompt": ":warning: You are about to reset the whole bot including all your activity roles. Roles will not be removed from members, and the bot will not remove them even if you create a new Activity Role.\nThis is normally not necessary! Are you _**absolutely**_ sure?"
   }
 }
