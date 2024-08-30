@@ -34,13 +34,26 @@ export default class CommandHandler {
         command.execute(interaction);
       } catch (error) {
         log.error(error, 'Error while executing command' + command.data.name);
-        await interaction.reply({
-          content: __({
-            phrase: 'There was an error while executing this command!',
-            locale: getLang(interaction),
-          }),
-          ephemeral: true,
-        });
+        try {
+          if (interaction.replied) {
+            await interaction.editReply({
+              content: __({
+                phrase: 'There was an error while executing this command!',
+                locale: getLang(interaction),
+              }),
+            });
+          } else {
+            await interaction.reply({
+              content: __({
+                phrase: 'There was an error while executing this command!',
+                locale: getLang(interaction),
+              }),
+              ephemeral: true,
+            });
+          }
+        } catch (error) {
+          log.error(error, 'Error replying');
+        }
       }
     });
   }
