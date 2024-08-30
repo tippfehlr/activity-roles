@@ -51,11 +51,6 @@
   "disabled": "vypnuto",
   "Automatic role assignment for your user is now **%s**.": "Automatické přiřazení role pro uživatele je nyní **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Můžete to změnit příkazem `/toggleAutoRole`.",
-  "Require users to have this role in order to receive Activity Roles.": "Uživatelé nyní potřebují %s aby mohli přijímat role aktivity.",
-  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "The role to require. To get the current role, omit this. To reset, enter @everyone.",
-  "Users need to have %s in order to receive Activity Roles.": "Uživatelé nyní potřebují %s aby mohli přijímat role aktivity.",
-  "%s is already set as the required role.": "%s je již nastaven jako povinná role.",
-  "Users now need to have %s in order to receive Activity Roles.": "Uživatelé nyní potřebují %s aby mohli přijímat role aktivity.",
   "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
   "Activities (sorted by frequency):": "Activities (sorted by frequency):",
   "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
@@ -135,5 +130,17 @@
   },
   "setStatusRole": {
     "roleNotValid": "%s is not a valid role for status roles."
+  },
+  "listRoles": {
+    "requiredRole": "Required role: %s",
+    "requiredRoleExplanation": "Members need this role to receive roles from this bot."
+  },
+  "requireRole": {
+    "description": "Require users to have this role in order to receive Activity Roles.",
+    "roleOptionDescription": "The role to require. Omit this to unset the required role",
+    "successRemove": "Successfully unset the required role.",
+    "failedNoRequiredRole": "There is no required role to unset!",
+    "roleAlreadySet": "%s is already set as the required role.",
+    "success": "Required role is now %s. Members will need it to get activity/status roles."
   }
 }

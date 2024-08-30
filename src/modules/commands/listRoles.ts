@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { ActivityType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { ActivityType, EmbedBuilder, Role, SlashCommandBuilder } from 'discord.js';
 
-import { db, getLang } from '../db';
+import { db, getGuildConfig, getLang } from '../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations, getEnumKey } from '../messages';
 import config from '../config';
@@ -51,6 +51,7 @@ export default {
     if (statusRoles === '') {
       statusRoles = __({ phrase: 'There are no status roles in this guild', locale });
     }
+    const { requiredRoleID } = await getGuildConfig(interaction.guild.id);
 
     const filename = `listActivityRoles-${interaction.id.substring(0, 7)}.txt`;
     writeFileSync(filename, activityRolesTable);
@@ -60,6 +61,14 @@ export default {
           .setTitle(__({ phrase: 'Status Roles', locale }))
           .setDescription(statusRoles)
           .setColor(config.COLOR),
+        new EmbedBuilder()
+          .setDescription(
+            __(
+              { phrase: 'listRoles->requiredRole', locale },
+              requiredRoleID ? `<&${requiredRoleID}>` : 'None',
+            ),
+          )
+          .setFooter({ text: __({ phrase: 'listRoles->requireRolesExplanation', locale }) }),
       ],
       files: [filename],
     });

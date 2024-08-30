@@ -51,11 +51,6 @@
   "disabled": "désactivé",
   "Automatic role assignment for your user is now **%s**.": "L'ajout automatique de rôle pour votre utilisateur est maintenant **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Vous pouvez changer cela avec la commande `/toggleAutoRole`.",
-  "Require users to have this role in order to receive Activity Roles.": "Exige que les utilisateurs aient ce rôle pour obtenir les Rôles D'activité.",
-  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "Le rôle à exiger. Pour obtenir le rôle actuel, omettez cela. Pour réinitialiser, entrez @everyone.",
-  "Users need to have %s in order to receive Activity Roles.": "Les utilisateurs doivent avoir %s pour obtenir les Rôles D'activité.",
-  "%s is already set as the required role.": "%s est déjà défini comme le rôle requis.",
-  "Users now need to have %s in order to receive Activity Roles.": "Les utilisateurs doivent désormais avoir %s pour obtenir les Rôles D'activité.",
   "Shows a list of activities in this guild.": "Affiche une liste des activités dans ce serveur.",
   "Activities (sorted by frequency):": "Activités (classées par fréquence) :",
   "Show role IDs (can’t be imported in another guild)": "Affiche les identifiants des rôles (ne peuvent pas être importés dans un autre serveur)",
@@ -135,5 +130,17 @@
   },
   "setStatusRole": {
     "roleNotValid": "%s is not a valid role for status roles."
+  },
+  "listRoles": {
+    "requiredRole": "Required role: %s",
+    "requiredRoleExplanation": "Members need this role to receive roles from this bot."
+  },
+  "requireRole": {
+    "description": "Require users to have this role in order to receive Activity Roles.",
+    "roleOptionDescription": "The role to require. Omit this to unset the required role",
+    "successRemove": "Successfully unset the required role.",
+    "failedNoRequiredRole": "There is no required role to unset!",
+    "roleAlreadySet": "%s is already set as the required role.",
+    "success": "Required role is now %s. Members will need it to get activity/status roles."
   }
 }

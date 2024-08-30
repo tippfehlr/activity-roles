@@ -51,11 +51,6 @@
   "disabled": "desabilitado",
   "Automatic role assignment for your user is now **%s**.": "Atribuição automática do cargo para o seu usuário agora é **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Você pode mudar isso com o comando `/toggleAutoRole`.",
-  "Require users to have this role in order to receive Activity Roles.": "Exigir jogadores terem esse cargo para receber Cargos de Atividades.",
-  "The role to require. To get the current role, omit this. To reset, enter @everyone.": "O cargo necessário. Para obter o cargo atual, omita isso. Para redefinir, digite @everyone.",
-  "Users need to have %s in order to receive Activity Roles.": "Exigir jogadores terem %s para receber Cargos de Atividades.",
-  "%s is already set as the required role.": "%s já está definido como um cargo necessário.",
-  "Users now need to have %s in order to receive Activity Roles.": "Usuários agora precisam ter %s para receber Cargos de Atividades.",
   "Shows a list of activities in this guild.": "Mostra uma lista de atividades nesse servidor.",
   "Activities (sorted by frequency):": "Atividades (ordenadas por frequência):",
   "Show role IDs (can’t be imported in another guild)": "Mostrar IDs de cargos (não pode ser importado em outra guilda)",
@@ -135,5 +130,17 @@
   },
   "setStatusRole": {
     "roleNotValid": "%s is not a valid role for status roles."
+  },
+  "listRoles": {
+    "requiredRole": "Required role: %s",
+    "requiredRoleExplanation": "Members need this role to receive roles from this bot."
+  },
+  "requireRole": {
+    "description": "Require users to have this role in order to receive Activity Roles.",
+    "roleOptionDescription": "The role to require. Omit this to unset the required role",
+    "successRemove": "Successfully unset the required role.",
+    "failedNoRequiredRole": "There is no required role to unset!",
+    "roleAlreadySet": "%s is already set as the required role.",
+    "success": "Required role is now %s. Members will need it to get activity/status roles."
   }
 }
