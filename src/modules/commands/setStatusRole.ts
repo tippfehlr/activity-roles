@@ -4,13 +4,22 @@ import { db, getLang } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, getEnumKey } from '../messages';
-import { ActivityType, APIRole, Colors, EmbedBuilder, Role, SlashCommandBuilder } from 'discord.js';
+import {
+  ActivityType,
+  APIRole,
+  Colors,
+  EmbedBuilder,
+  PermissionsBitField,
+  Role,
+  SlashCommandBuilder,
+} from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('setstatusrole')
     .setDescription('role to assign on LISTENING/WATCHING/etc.')
     .setDescriptionLocalizations(discordTranslations('role to assign on LISTENING/WATCHING/etc.'))
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .addStringOption(option =>
       option
         .setName('event')

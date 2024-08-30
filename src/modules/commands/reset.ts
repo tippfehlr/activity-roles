@@ -11,7 +11,7 @@ import {
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
-import { __, discordTranslations, log } from '../messages';
+import { __, discordTranslations } from '../messages';
 import { db, getLang } from '../db';
 
 export default {

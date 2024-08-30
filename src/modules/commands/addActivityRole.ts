@@ -13,7 +13,6 @@ import {
   APIRole,
   SlashCommandBuilder,
   ComponentType,
-  Colors,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
