@@ -4,19 +4,26 @@ import { db, getLang } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, getEnumKey } from '../messages';
-import { ActivityType, APIRole, Colors, EmbedBuilder, Role, SlashCommandBuilder } from 'discord.js';
+import {
+  ActivityType,
+  Colors,
+  EmbedBuilder,
+  PermissionsBitField,
+  SlashCommandBuilder,
+} from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
-    .setName('setstatusrole')
-    .setDescription('role to assign on LISTENING/WATCHING/etc.')
-    .setDescriptionLocalizations(discordTranslations('role to assign on LISTENING/WATCHING/etc.'))
+    .setName('deletestatusrole')
+    .setDescription(__({ phrase: 'deleteStatusRole->description', locale: 'en-US' }))
+    .setDescriptionLocalizations(discordTranslations('deleteStatusRole->description'))
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .addStringOption(option =>
       option
         .setName('event')
-        .setDescription('the event the user must have to receive the role')
+        .setDescription(__({ phrase: 'deleteStatusRole->eventOptionDescription', locale: 'en-US' }))
         .setDescriptionLocalizations(
-          discordTranslations('the event the user must have to receive the role'),
+          discordTranslations('deleteStatusRole->eventOptionDescription'),
         )
         .setChoices(
           { name: 'Playing', name_localizations: discordTranslations('Playing'), value: '0' }, // value 0
@@ -27,23 +34,12 @@ export default {
           { name: 'Competing', name_localizations: discordTranslations('Competing'), value: '5' }, // value 5
         )
         .setRequired(true),
-    )
-    .addRoleOption(option =>
-      option
-        .setName('role')
-        .setDescription('the role to assign. To remove the role, omit this option')
-        .setDescriptionLocalizations(
-          discordTranslations('the role to assign. To remove the role, omit this option'),
-        )
-        .setRequired(true),
     ),
-
   execute: async interaction => {
     if (!interaction.guildId) return;
     const locale = getLang(interaction);
     const type = Number(interaction.options.get('event')?.value) as number;
     const typeString = getEnumKey(ActivityType, type);
-    const role = interaction.options.get('role')?.role as Role | APIRole;
     const currentStatusRole = await db
       .selectFrom('statusRoles')
       .selectAll()
@@ -51,53 +47,30 @@ export default {
       .where('type', '=', type)
       .executeTakeFirst();
 
-    if (role.name === '@everyone') {
-      interaction.reply(
-        ':x:' + __({ phrase: 'setStatusRole->roleNotValid', locale }, `<@&${role.id}>`),
-      );
-      return;
-    }
-
-    if (currentStatusRole && role.id === currentStatusRole.roleID) {
-      interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              __(
-                {
-                  phrase: 'the status role for **%s** already is <@&%s>!',
-                  locale,
-                },
-                typeString,
-                role.id,
-              ),
-            )
-            .setColor(Colors.Green),
-        ],
-        ephemeral: true,
-      });
-    } else {
-      db.insertInto('statusRoles')
-        .values({
-          guildID: interaction.guildId,
-          type,
-          roleID: role.id,
-        })
-        .onConflict(oc => oc.columns(['type', 'guildID']).doUpdateSet({ roleID: role.id }))
+    if (currentStatusRole) {
+      await db
+        .deleteFrom('statusRoles')
+        .where('guildID', '=', interaction.guildId)
+        .where('type', '=', type)
         .execute();
       interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(
-              __(
-                { phrase: 'The status role for **%s** is now <@&%s>!', locale },
-                typeString,
-                role.id,
-              ),
+              __({ phrase: 'deleteStatusRole->success', locale }, '`' + typeString + '`'),
             )
             .setColor(Colors.Green),
         ],
-        ephemeral: true,
+      });
+    } else {
+      interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setDescription(
+              __({ phrase: 'deleteStatusRole->noStatusRole', locale }, '`' + typeString + '`'),
+            )
+            .setColor(Colors.Red),
+        ],
       });
     }
   },

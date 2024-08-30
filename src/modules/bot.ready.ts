@@ -13,6 +13,7 @@ import activityStats from './commands/activityStats';
 import addActivityRole from './commands/addActivityRole';
 import checkRoles, { checkRolesStandalone } from './commands/checkRoles';
 import deleteActivityRole from './commands/deleteActivityRole';
+import deleteStatusRole from './commands/deleteStatusRole';
 import _export from './commands/export';
 import help from './commands/help';
 import listRoles from './commands/listRoles';
@@ -32,6 +33,7 @@ export function initClientReady() {
       .addCommand(addActivityRole)
       .addCommand(checkRoles)
       .addCommand(deleteActivityRole)
+      .addCommand(deleteStatusRole)
       .addCommand(_export)
       .addCommand(help)
       .addCommand(listRoles)

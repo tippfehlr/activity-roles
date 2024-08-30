@@ -126,5 +126,14 @@
   "reset": {
     "description": "resets the bot for this guild",
     "confirmationPrompt": ":warning: You are about to reset the whole bot including all your activity roles. Roles will not be removed from members, and the bot will not remove them even if you create a new Activity Role.\nThis is normally not necessary! Are you _**absolutely**_ sure?"
+  },
+  "deleteStatusRole": {
+    "description": "deletes a status role",
+    "eventOptionDescription": "the status role to delete",
+    "success": "Deleted status role for %s",
+    "noStatusRole": "There is no status role for %s"
+  },
+  "setStatusRole": {
+    "roleNotValid": "%s is not a valid role for status roles."
   }
 }
