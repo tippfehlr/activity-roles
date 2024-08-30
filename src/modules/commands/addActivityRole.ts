@@ -242,6 +242,7 @@ async function process(
       .selectAll()
       .where('guildID', '=', interaction.guildId)
       .where('activityName', '=', activityName)
+      .where('roleID', '=', role.id)
       .executeTakeFirst()
   ) {
     reply(
