@@ -17,7 +17,7 @@ import {
 
 import { Command } from '../commandHandler';
 import config from '../config';
-import { log, __ } from '../messages';
+import { log, __, i18n } from '../messages';
 import { db, getLang } from '../db';
 
 export default {
@@ -68,6 +68,18 @@ export default {
           discordTranslations('the role will not be removed again if set to true'),
         )
         .setRequired(false),
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('remove_after_days')
+        .setDescription(
+          __({ phrase: 'addActivityRole->removeAfterDaysDescription', locale: 'en-US' }),
+        )
+        .setDescriptionLocalizations(
+          discordTranslations('addActivityRole->removeAfterDaysDescription'),
+        )
+        .setRequired(false)
+        .setMinValue(1),
     ),
   execute: async interaction => {
     const locale = getLang(interaction);
@@ -76,14 +88,7 @@ export default {
     const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 100) {
       await interaction.reply({
-        content: __(
-          {
-            phrase:
-              'addActivityRole->activityNameTooLong:The maximum length for activity names is %s characters.',
-            locale,
-          },
-          '100',
-        ),
+        content: __({ phrase: 'addActivityRole->activityNameTooLong', locale }, '100'),
         ephemeral: true,
       });
       return;
@@ -94,8 +99,16 @@ export default {
       false;
     const permanent =
       (interaction.options.get('permanent', false)?.value as boolean | undefined) ?? false;
-
     let role = interaction.options.get('role', false)?.role;
+    const removeAfterDays = interaction.options.get('remove_after_days')?.value as
+      | number
+      | undefined;
+
+    if (permanent === false && removeAfterDays !== undefined) {
+      interaction.reply(__({ phrase: 'addActivityRole->removeAfterDaysButNotPermanent', locale }));
+      return;
+    }
+
     if (!role) {
       // role not provided
       const possibleRoles = interaction.guild?.roles.cache.filter(role => {
@@ -104,11 +117,27 @@ export default {
       if (!possibleRoles || possibleRoles.size === 0) {
         // create role
         role = await createRole(interaction, activityName);
-        process(interaction, role, activityName, exactActivityName, permanent, locale);
+        process(
+          interaction,
+          role,
+          activityName,
+          exactActivityName,
+          permanent,
+          removeAfterDays,
+          locale,
+        );
       } else if (possibleRoles.size === 1) {
         // use role
         role = possibleRoles.first()!;
-        process(interaction, role, activityName, exactActivityName, permanent, locale);
+        process(
+          interaction,
+          role,
+          activityName,
+          exactActivityName,
+          permanent,
+          removeAfterDays,
+          locale,
+        );
       } else {
         // select role
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
@@ -171,6 +200,7 @@ export default {
                 activityName,
                 exactActivityName,
                 permanent,
+                removeAfterDays,
                 locale,
               );
             }
@@ -181,7 +211,15 @@ export default {
         });
       }
     } else {
-      process(interaction, role, activityName, exactActivityName, permanent, locale);
+      process(
+        interaction,
+        role,
+        activityName,
+        exactActivityName,
+        permanent,
+        removeAfterDays,
+        locale,
+      );
     }
   },
 } as Command;
@@ -212,6 +250,7 @@ async function process(
   activityName: string,
   exactActivityName: boolean,
   permanent: boolean,
+  removeAfterDays: number | undefined,
   locale: string,
 ) {
   if (!role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
@@ -257,10 +296,11 @@ async function process(
         roleID: role.id,
         exactActivityName,
         permanent,
+        removeAfterDays,
       })
       .execute();
     log.info(
-      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}`,
+      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}, removeAfterDays: ${removeAfterDays}`,
     );
     reply(interaction, undefined, [
       new EmbedBuilder()
@@ -276,6 +316,12 @@ async function process(
           {
             name: __({ phrase: 'Permanent', locale }),
             value: permanent ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale }),
+          },
+          {
+            name: __({ phrase: 'remove after days', locale }),
+            value: removeAfterDays
+              ? i18n.__n({ singular: '%s day', plural: '%s days', locale, count: removeAfterDays })
+              : '–',
           },
         ),
     ]);

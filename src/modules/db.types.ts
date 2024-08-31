@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: AGPL-3.0-only
-
 import type { ColumnType } from 'kysely';
 
 export type Generated<T> =
@@ -26,6 +24,7 @@ export interface ActivityRoles {
   exactActivityName: Generated<boolean>;
   guildID: string;
   permanent: Generated<boolean>;
+  removeAfterDays: number | null;
   roleID: string;
 }
 
