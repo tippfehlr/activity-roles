@@ -5,6 +5,7 @@ import { ActivityRoles } from './db.types';
 import { Guild } from 'discord.js';
 import { __ } from './messages';
 import { table } from 'table';
+import { __n } from 'i18n';
 
 export function createActivityRolesTable({
   activityRoles,
@@ -22,21 +23,27 @@ export function createActivityRolesTable({
       __({ phrase: 'Activity', locale }),
       __({ phrase: 'Exact Activity Name', locale }),
       __({ phrase: 'Permanent', locale }),
+      __({ phrase: 'Remove roles after' }),
     ],
   ];
-  for (const i in activityRoles) {
+  for (const activityRole of activityRoles) {
     array.push([
-      String(Number(i) + 1),
-      guild.roles.cache.find(role => role.id === activityRoles[i].roleID)?.name +
-        ` <@&${activityRoles[i].roleID}>`,
-      activityRoles[i].activityName,
-      String(activityRoles[i].exactActivityName),
-      String(activityRoles[i].permanent),
+      guild.roles.cache.find(role => role.id === activityRole.roleID)?.name +
+        ` <@&${activityRole.roleID}>`,
+      activityRole.activityName,
+      String(activityRole.exactActivityName),
+      String(activityRole.permanent),
+      __n({
+        singular: '%s day',
+        plural: '%s days',
+        locale,
+        count: activityRole.removeAfterDays ?? undefined,
+      }),
     ]);
   }
   return table(array, {
     drawHorizontalLine: (index: number) => {
-      return index === 0 || index === 1 || index === array.length;
+      return [0, 1, array.length].includes(index);
     },
   });
 }

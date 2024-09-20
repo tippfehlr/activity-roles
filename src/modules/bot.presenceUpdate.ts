@@ -62,6 +62,7 @@ export async function addDiscordRoleToMember({
   guild,
   member,
   interaction,
+  removeAfterDays,
 }: {
   change: 'add' | 'remove';
   roleID: string;
@@ -69,6 +70,7 @@ export async function addDiscordRoleToMember({
   guild: Guild;
   member: GuildMember;
   interaction?: CommandInteraction;
+  removeAfterDays: number | null;
 }): Promise<addRoleStatus | 'abort' | undefined> {
   const role = guild.roles.cache.get(roleID);
   if (!role) {
@@ -110,6 +112,17 @@ skipped (in guild ${guild.name})`,
         .values({ userID: member.user.id, guildID: guild.id, roleID })
         .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
         .execute();
+    }
+    if (removeAfterDays !== null) {
+      let date = new Date();
+      date.setDate(date.getDate() + removeAfterDays);
+      db.insertInto('scheduledRoleActions').values({
+        action: 'remove',
+        guildID: guild.id,
+        roleID: roleID,
+        userID: member.id,
+        scheduledDate: date,
+      });
     }
     await member.roles.add(role);
     stats.rolesAdded++;
@@ -163,10 +176,15 @@ export async function processRoles({
   if (guildConfig.requiredRoleID !== null && !member.roles.cache.has(guildConfig.requiredRoleID)) {
     return status;
   }
-  const permanentRoleIDsToBeAdded: Set<string> = new Set();
+  const permanentRoleIDsToBeAdded: Map<string, number | null> = new Map();
   const tempRoleIDsToBeAdded: Set<string> = new Set();
 
-  const addRoleHelper = async (roleID: string, change: 'add' | 'remove', permanent: boolean) => {
+  const addRoleHelper = async (
+    roleID: string,
+    change: 'add' | 'remove',
+    permanent: boolean,
+    removeAfterDays: number | null,
+  ) => {
     switch (
       await addDiscordRoleToMember({
         roleID,
@@ -174,6 +192,7 @@ export async function processRoles({
         change,
         guild,
         member,
+        removeAfterDays,
         interaction,
       })
     ) {
@@ -189,9 +208,17 @@ export async function processRoles({
   };
   // if user is offline, skip checking for added activities
   if (memberStatus !== 'offline') {
-    const addRole = ({ roleID, permanent }: { roleID: string; permanent: boolean }) => {
+    const addRole = ({
+      roleID,
+      permanent,
+      removeAfterDays,
+    }: {
+      roleID: string;
+      permanent: boolean;
+      removeAfterDays: number | null;
+    }) => {
       if (permanent) {
-        permanentRoleIDsToBeAdded.add(roleID);
+        permanentRoleIDsToBeAdded.set(roleID, removeAfterDays);
       } else {
         tempRoleIDsToBeAdded.add(roleID);
       }
@@ -203,7 +230,8 @@ export async function processRoles({
       states.add(activity.type);
     }
     statusRoles.forEach(statusRole => {
-      if (states.has(statusRole.type)) addRole({ roleID: statusRole.roleID, permanent: false });
+      if (states.has(statusRole.type))
+        addRole({ roleID: statusRole.roleID, permanent: false, removeAfterDays: null });
     });
 
     // ------------ activity roles ------------
@@ -211,24 +239,42 @@ export async function processRoles({
 
     activityRoles.forEach(activityRole => {
       if (checkActivityName({ userActivities, activityRole })) {
-        addRole({ roleID: activityRole.roleID, permanent: activityRole.permanent });
+        addRole({
+          roleID: activityRole.roleID,
+          permanent: activityRole.permanent,
+          removeAfterDays: activityRole.removeAfterDays,
+        });
       }
     });
 
     // ------------ “apply changes” ------------
 
-    for (const roleID of permanentRoleIDsToBeAdded) {
-      if ((await addRoleHelper(roleID, 'add', true)) === 'abort') return 'abort';
+    for (const [roleID, removeAfterDays] of permanentRoleIDsToBeAdded) {
+      if ((await addRoleHelper(roleID, 'add', true, removeAfterDays)) === 'abort') return 'abort';
+      if (removeAfterDays !== null) {
+        let scheduledDate = new Date();
+        scheduledDate.setDate(scheduledDate.getDate() + removeAfterDays);
+        await db
+          .insertInto('scheduledRoleActions')
+          .values({
+            roleID,
+            userID: member.id,
+            action: 'remove',
+            guildID: guild.id,
+            scheduledDate,
+          })
+          .execute();
+      }
     }
     for (const roleID of tempRoleIDsToBeAdded) {
-      if ((await addRoleHelper(roleID, 'add', false)) === 'abort') return 'abort';
+      if ((await addRoleHelper(roleID, 'add', false, null)) === 'abort') return 'abort';
     }
   }
 
-  // remove temporary roles --- new activeTemporaryRoles
+  // remove temporary roles
   for (const activeTemporaryRole of activeTemporaryRoles) {
     if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-      if ((await addRoleHelper(activeTemporaryRole.roleID, 'remove', false)) === 'abort')
+      if ((await addRoleHelper(activeTemporaryRole.roleID, 'remove', false, null)) === 'abort')
         return 'abort';
     }
   }

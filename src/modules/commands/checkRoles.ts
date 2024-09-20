@@ -175,6 +175,7 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
           guild,
           change: 'remove',
           roleID: activeTemporaryRole.roleID,
+          removeAfterDays: null,
         })
       ) {
         case addRoleStatus.RoleAdded:

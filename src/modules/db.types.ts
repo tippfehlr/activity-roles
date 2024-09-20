@@ -42,6 +42,14 @@ export interface Guilds {
   requiredRoleID: string | null;
 }
 
+export interface ScheduledRoleActions {
+  action: string;
+  guildID: string;
+  roleID: string;
+  userID: string;
+  scheduledDate: Timestamp;
+}
+
 export interface StatusRoles {
   guildID: string;
   roleID: string;
@@ -64,6 +72,7 @@ export interface DB {
   activityRoles: ActivityRoles;
   activityStats: ActivityStats;
   guilds: Guilds;
+  scheduledRoleActions: ScheduledRoleActions;
   statusRoles: StatusRoles;
   users: Users;
   usersHashed: UsersHashed;

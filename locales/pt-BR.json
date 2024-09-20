@@ -110,7 +110,10 @@
   "addActivityRole": {
     "roleselector": "Por favor, selecione um cargo para '%s'",
     "createRole": "Criar %s",
-    "createRoleDescription": "Criar um novo cargo com o nome '%s'"
+    "createRoleDescription": "Criar um novo cargo com o nome '%s'",
+    "activityNameTooLong": "The maximum length for activity names is %s characters.",
+    "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
@@ -142,5 +145,10 @@
     "failedNoRequiredRole": "There is no required role to unset!",
     "roleAlreadySet": "%s is already set as the required role.",
     "success": "Required role is now %s. Members will need it to get activity/status roles."
+  },
+  "remove after days": "remove after days",
+  "%s day": {
+    "one": "%s day",
+    "other": "%s days"
   }
 }

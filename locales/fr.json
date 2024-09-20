@@ -77,7 +77,7 @@
   },
   "There are no status roles in this guild": "Il n'y a pas de rôles de statut dans ce serveur",
   "Set a status role with /setstatusrole!": "Définissez un rôle de statut avec /setstatusrole !",
-  "Set a status role with /setstatusrole!\n": "Définissez un rôle de statut avec /setstatusrole !\n",
+  "Set a status role with /setstatusrole!\n": "Définissez un rôle de statut avec /setstatusrole !",
   "Permanent": "Permanent",
   "Yes": "Oui",
   ":x: That activity role already exists in this guild! :x:": ":x: Ce rôle d'activité existe déjà dans ce serveur ! :x:",
@@ -100,7 +100,7 @@
     "success": "vérifié {{{usersChecked}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles",
     "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles.",
     "askForManageRolesPermission": "Je n'ai pas la permission `GERER_LES_RÔLES` mais j'en ai besoin pour assigner des rôles.\n Veuillez ajouter la permission au rôle \"Activity Roles\". Sinon, le robot quittera automatiquement le serveur.",
-    "alreadyRunning": "A `/checkroles` request is already running for this guild."
+    "alreadyRunning": "Une requête `/checkroles` est déjà en cours d'exécution pour ce serveur."
   },
   "Cancelled": "Annulé",
   "deleteActivityRole": {
@@ -110,37 +110,45 @@
   "addActivityRole": {
     "roleselector": "Veuillez sélectionner un rôle pour '%s'",
     "createRole": "Créez %s",
-    "createRoleDescription": "Créer un nouveau rôle avec le nom '%s'"
+    "createRoleDescription": "Créer un nouveau rôle avec le nom '%s'",
+    "activityNameTooLong": "The maximum length for activity names is %s characters.",
+    "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
   },
   "presenceUpdate": {
-    "roleHigherThanBotRole": "I don’t have permission to manage %s because it is higher than my highest role.\nPlease move one of my roles above all Activity Roles."
+    "roleHigherThanBotRole": "Je n'ai pas l'autorisation de gérer %s parce qu'il est plus élevé hiérarchiquement que mon rôle le plus élevé.\nVeuillez déplacer l'un de mes rôles au-dessus de tous les rôles d'activité."
   },
   "reset": {
-    "description": "resets the bot for this guild",
-    "confirmationPrompt": ":warning: You are about to reset the whole bot including all your activity roles. Roles will not be removed from members, and the bot will not remove them even if you create a new Activity Role.\nThis is normally not necessary! Are you _**absolutely**_ sure?"
+    "description": "réinitialise le robot pour ce serveur",
+    "confirmationPrompt": ":warning: Vous êtes sur le point de réinitialiser l'ensemble du robot, y compris tous vos rôles d'activité. Les rôles ne seront pas retirés aux membres, et le robot ne les retirera pas même si vous créez un nouveau rôle d'activité.\nCeci n'est normalement pas nécessaire ! Êtes-vous _**absolument**_ sûr ?"
   },
   "deleteStatusRole": {
-    "description": "deletes a status role",
-    "eventOptionDescription": "the status role to delete",
-    "success": "Deleted status role for %s",
-    "noStatusRole": "There is no status role for %s"
+    "description": "supprime un rôle de statut",
+    "eventOptionDescription": "le rôle de statut à supprimer",
+    "success": "Rôle de statut supprimé pour %s",
+    "noStatusRole": "Il n'y a pas de rôle de statut pour %s"
   },
   "setStatusRole": {
-    "roleNotValid": "%s is not a valid role for status roles."
+    "roleNotValid": "%s n'est pas un rôle valide pour les rôles de statut."
   },
   "listRoles": {
-    "requiredRole": "Required role: %s",
-    "requiredRoleExplanation": "Members need this role to receive roles from this bot."
+    "requiredRole": "Rôle exigé : %s",
+    "requiredRoleExplanation": "Les membres ont besoin de ce rôle pour recevoir des rôles de ce robot."
   },
   "requireRole": {
-    "description": "Require users to have this role in order to receive Activity Roles.",
-    "roleOptionDescription": "The role to require. Omit this to unset the required role",
-    "successRemove": "Successfully unset the required role.",
-    "failedNoRequiredRole": "There is no required role to unset!",
-    "roleAlreadySet": "%s is already set as the required role.",
-    "success": "Required role is now %s. Members will need it to get activity/status roles."
+    "description": "Exige que les utilisateurs aient ce rôle pour obtenir les rôles d'activité.",
+    "roleOptionDescription": "Le rôle à exiger. Omettez cela pour supprimer le rôle à exiger",
+    "successRemove": "Le rôle exigé a été supprimé avec succès.",
+    "failedNoRequiredRole": "Il n'y a pas de rôle exigé à supprimer !",
+    "roleAlreadySet": "%s est déjà défini comme le rôle exigé.",
+    "success": "Le rôle exigé est maintenant %s. Les membres en auront besoin pour obtenir des rôles d'activité/de statut."
+  },
+  "remove after days": "remove after days",
+  "%s day": {
+    "one": "%s day",
+    "other": "%s days"
   }
 }
