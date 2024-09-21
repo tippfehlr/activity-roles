@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.14.0](https://github.com/tippfehlr/activity-roles/compare/v1.13.0..v1.14.0) - 2024-09-21
+
+### Features
+
+- add /reset command ([1ea0154](https://github.com/tippfehlr/activity-roles/commit/1ea0154c9fe5efb8b1e902d666233a814d084a6d))
+- add /deletestatusrole ([5ea3c1f](https://github.com/tippfehlr/activity-roles/commit/5ea3c1fa0502789c1a47d2391a370de764ad7597))
+- add required role info to /listroles, /requirerole without arguments resets ([ef199f9](https://github.com/tippfehlr/activity-roles/commit/ef199f9f3e1e992debd9a3a7a47c8b92232094c5))
+- add removeAfterDays to db & /addActivityRole ([2ce0b3c](https://github.com/tippfehlr/activity-roles/commit/2ce0b3cf0de28980eb3671862791f363ae7ce43e))
+- implement removeAfterDays ([9d9a327](https://github.com/tippfehlr/activity-roles/commit/9d9a327fce383ba9d9a022ab484d40631d473a33))
+
+### Bug Fixes
+
+- **(release)** push latest tag ([d70543e](https://github.com/tippfehlr/activity-roles/commit/d70543e370dced525babe8c7a7e0ec2337595c6e))
+- release script fix #2 ([603b5e1](https://github.com/tippfehlr/activity-roles/commit/603b5e145e565580233e736d8433d3aece1cf583))
+- disable activityStats for now ([92a5f45](https://github.com/tippfehlr/activity-roles/commit/92a5f4580f9568491bd28ac7d0b0f85c0e53f73f))
+- allow 2+ activity roles with same activity name but different roles ([242324a](https://github.com/tippfehlr/activity-roles/commit/242324af836eb9c5200ad7238f4eaa96ed4ddc73))
+- catch more errors when executing commands ([a1388b5](https://github.com/tippfehlr/activity-roles/commit/a1388b563a65c8c2e61414b1e0674ae6583c118c))
+- correct command permissions ([eb22769](https://github.com/tippfehlr/activity-roles/commit/eb2276987cc368402dfec4c83d7605ddee0c31f8))
+
 ## [1.13.0](https://github.com/tippfehlr/activity-roles/compare/v1.12.5..v1.13.0) - 2024-08-23
 
 ### Features
