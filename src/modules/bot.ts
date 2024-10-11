@@ -72,6 +72,10 @@ client.on(Events.Error, error => {
   }
 });
 
+process.on('unhandledRejection', (reason, _) => {
+  log.error(reason);
+});
+
 client.on(Events.GuildRoleDelete, role => {
   roleRemoved(role.id, role.guild.id);
 });
