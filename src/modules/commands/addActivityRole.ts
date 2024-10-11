@@ -14,6 +14,7 @@ import {
   SlashCommandBuilder,
   ComponentType,
   InteractionContextType,
+  ChannelType,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -84,7 +85,14 @@ export default {
     ),
   execute: async interaction => {
     const locale = getLang(interaction);
-    if (!interaction.channel) return;
+    // the command cannot be used in DMs anyways
+    if (
+      !interaction.channel ||
+      interaction.channel.type === ChannelType.GroupDM ||
+      interaction.channel.type === ChannelType.DM
+    ) {
+      return;
+    }
 
     const activityName = interaction.options.get('activity', true)?.value as string;
     if (activityName.length > 100) {

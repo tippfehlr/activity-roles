@@ -5,6 +5,7 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
+  ChannelType,
   ComponentType,
   InteractionContextType,
   PermissionsBitField,
@@ -25,6 +26,15 @@ export default {
 
   execute: async interaction => {
     const locale = getLang(interaction);
+    // the command cannot be used in DMs anyways
+    if (
+      !interaction.channel ||
+      interaction.channel.type === ChannelType.GroupDM ||
+      interaction.channel.type === ChannelType.DM
+    ) {
+      return;
+    }
+
     await interaction.reply({
       content: __({ phrase: 'reset->confirmationPrompt', locale }),
       components: [
@@ -43,7 +53,7 @@ export default {
     });
 
     interaction.channel
-      ?.createMessageComponentCollector({
+      .createMessageComponentCollector({
         componentType: ComponentType.Button,
         filter: (btnInt: ButtonInteraction) => interaction.user.id === btnInt.user.id,
         max: 1,
