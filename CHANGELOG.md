@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.14.1](https://github.com/tippfehlr/activity-roles/compare/v1.14.0..v1.14.1) - 2024-10-11
+
+### Bug Fixes
+
+- typo in /listroles ([96dcb63](https://github.com/tippfehlr/activity-roles/commit/96dcb6348bb494279232eb8558eb18e12f6a708f))
+- use setContext instead of setDMPermission ([4079c6b](https://github.com/tippfehlr/activity-roles/commit/4079c6bf723c133731f2ecfe5d8c4056231e1163))
+- tell ts that the command isn’t executed in a DM ([6fad7b9](https://github.com/tippfehlr/activity-roles/commit/6fad7b96c17fc0aa1bfe1381767269f5f14ed9e3))
+- catch "Unknown Interaction" errors ([46ba2c9](https://github.com/tippfehlr/activity-roles/commit/46ba2c951ce9171308d3e019493a1809f4709811))
+- fix activity roles table ([04e0726](https://github.com/tippfehlr/activity-roles/commit/04e07261eb79b3dda6931accd7f240960652ee49))
+
 ## [1.14.0](https://github.com/tippfehlr/activity-roles/compare/v1.13.0..v1.14.0) - 2024-09-21
 
 ### Features
