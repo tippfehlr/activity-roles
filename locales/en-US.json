@@ -147,8 +147,9 @@
     "success": "Required role is now %s. Members will need it to get activity/status roles."
   },
   "remove after days": "remove after days",
-  "%s day": {
-    "one": "%s day",
-    "other": "%s days"
-  }
+  "after %s day": {
+    "one": "after %s day",
+    "other": "after %s days"
+  },
+  "Remove roles after": "Remove roles after"
 }
