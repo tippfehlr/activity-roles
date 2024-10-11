@@ -111,9 +111,9 @@
     "roleselector": "Veuillez sélectionner un rôle pour '%s'",
     "createRole": "Créez %s",
     "createRoleDescription": "Créer un nouveau rôle avec le nom '%s'",
-    "activityNameTooLong": "The maximum length for activity names is %s characters.",
-    "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false"
+    "activityNameTooLong": "La longueur maximale pour les noms d'activité est de %s caractères.",
+    "removeAfterDaysDescription": "supprime les rôles après x jours sans activité. Fonctionne uniquement avec l'option permanent = true",
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
@@ -146,9 +146,10 @@
     "roleAlreadySet": "%s est déjà défini comme le rôle exigé.",
     "success": "Le rôle exigé est maintenant %s. Les membres en auront besoin pour obtenir des rôles d'activité/de statut."
   },
-  "remove after days": "remove after days",
-  "%s day": {
-    "one": "%s day",
-    "other": "%s days"
-  }
+  "remove after days": "retire après les jours",
+  "after %s day": {
+    "one": "after %s day",
+    "other": "after %s days"
+  },
+  "Remove roles": "Remove roles"
 }
