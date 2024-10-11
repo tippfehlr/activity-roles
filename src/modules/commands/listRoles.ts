@@ -68,7 +68,7 @@ export default {
               requiredRoleID ? `<&${requiredRoleID}>` : 'None',
             ),
           )
-          .setFooter({ text: __({ phrase: 'listRoles->requireRolesExplanation', locale }) }),
+          .setFooter({ text: __({ phrase: 'listRoles->requiredRoleExplanation', locale }) }),
       ],
       files: [filename],
     });
