@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { ActivityType, EmbedBuilder, Role, SlashCommandBuilder } from 'discord.js';
+import {
+  ActivityType,
+  EmbedBuilder,
+  InteractionContextType,
+  Role,
+  SlashCommandBuilder,
+} from 'discord.js';
 
 import { db, getGuildConfig, getLang } from '../db';
 import { Command } from '../commandHandler';
@@ -14,8 +20,7 @@ export default {
     .setName('listroles')
     .setDescription('Lists all managed roles in your guild.')
     .setDescriptionLocalizations(discordTranslations('Lists all managed roles in your guild.'))
-    .setDMPermission(false),
-
+    .setContexts([InteractionContextType.Guild]),
   execute: async interaction => {
     if (!interaction.guild) return;
     const locale = getLang(interaction);

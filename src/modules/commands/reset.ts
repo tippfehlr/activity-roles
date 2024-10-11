@@ -6,6 +6,7 @@ import {
   ButtonInteraction,
   ButtonStyle,
   ComponentType,
+  InteractionContextType,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -19,7 +20,8 @@ export default {
     .setName('reset')
     .setDescription(__({ phrase: 'reset->description', locale: 'en-US' }))
     .setDescriptionLocalizations(discordTranslations('reset->description'))
-    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
+    .setContexts([InteractionContextType.Guild]),
 
   execute: async interaction => {
     const locale = getLang(interaction);

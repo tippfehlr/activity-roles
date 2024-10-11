@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { SlashCommandBuilder, PermissionsBitField, CommandInteraction } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  PermissionsBitField,
+  CommandInteraction,
+  InteractionContextType,
+} from 'discord.js';
 import { db, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
 import { __, discordTranslations } from '../messages';
@@ -11,7 +16,7 @@ export default {
     .setDescription(__({ phrase: 'requireRole->description', locale: 'en-US' }))
     .setDescriptionLocalizations(discordTranslations('requireRole->description'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .addRoleOption(option =>
       option
         .setName('role')

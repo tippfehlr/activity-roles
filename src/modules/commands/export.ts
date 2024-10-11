@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { SlashCommandBuilder } from 'discord.js';
+import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import fs from 'fs';
 
 import { db, getLang } from '../db';
@@ -12,7 +12,7 @@ export default {
     .setName('export')
     .setDescription('Exports all activity roles in your guild.')
     .setDescriptionLocalizations(discordTranslations('Lists all activity roles in your guild.'))
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .addBooleanOption(option =>
       option
         .setName('roleids')

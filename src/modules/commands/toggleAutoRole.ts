@@ -4,7 +4,7 @@ import { db, getLang, getUserConfig } from './../db';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations } from '../messages';
-import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { Colors, EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('toggleautorole')
@@ -18,7 +18,12 @@ export default {
           discordTranslations('Enable/Disable automatic role assignment'),
         )
         .setRequired(false),
-    ),
+    )
+    .setContexts([
+      InteractionContextType.BotDM,
+      InteractionContextType.Guild,
+      InteractionContextType.PrivateChannel,
+    ]),
 
   execute: async interaction => {
     const locale = getLang(interaction);

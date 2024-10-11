@@ -8,6 +8,7 @@ import {
   ChannelType,
   CommandInteraction,
   ComponentType,
+  InteractionContextType,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -32,7 +33,7 @@ export default {
       ),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .addStringOption(option =>
       option
         .setName('activity')

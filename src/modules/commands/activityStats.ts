@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { PermissionsBitField, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import {
+  PermissionsBitField,
+  SlashCommandBuilder,
+  EmbedBuilder,
+  InteractionContextType,
+} from 'discord.js';
 import fs from 'fs';
 
 import { getLang, db } from '../db';
@@ -13,7 +18,7 @@ export default {
     .setName('activitystats')
     .setDescription('Shows a list of activities in this guild.')
     .setDescriptionLocalizations(discordTranslations('Shows a list of activities in this guild.'))
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles),
 
   execute: async interaction => {

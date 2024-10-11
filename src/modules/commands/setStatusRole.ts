@@ -9,6 +9,7 @@ import {
   APIRole,
   Colors,
   EmbedBuilder,
+  InteractionContextType,
   PermissionsBitField,
   Role,
   SlashCommandBuilder,
@@ -18,7 +19,7 @@ export default {
     .setName('setstatusrole')
     .setDescription('role to assign on LISTENING/WATCHING/etc.')
     .setDescriptionLocalizations(discordTranslations('role to assign on LISTENING/WATCHING/etc.'))
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .addStringOption(option =>
       option

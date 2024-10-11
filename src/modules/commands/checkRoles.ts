@@ -4,7 +4,13 @@ import { addDiscordRoleToMember, processRoles, addRoleStatus } from './../bot.pr
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
-import { SlashCommandBuilder, PermissionsBitField, Guild, CommandInteraction } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  PermissionsBitField,
+  Guild,
+  CommandInteraction,
+  InteractionContextType,
+} from 'discord.js';
 import { checkrolesCurrentGuilds, db, getActivityRoles, getLang, getStatusRoles } from '../db';
 import { Point, writeApi, writeIntPoint } from '../metrics';
 
@@ -16,7 +22,7 @@ export default {
       discordTranslations('checkRoles->description:re-check all users/roles'),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
-    .setDMPermission(false),
+    .setContexts([InteractionContextType.Guild]),
 
   execute: async interaction => {
     if (!interaction.guild) return;

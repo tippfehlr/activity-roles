@@ -4,13 +4,18 @@ import { Command } from '../commandHandler';
 
 import config from '.././config';
 import { __, discordTranslations } from '../messages';
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { getLang } from '../db';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('help')
     .setDescriptionLocalizations(discordTranslations('help->description:Shows the help page'))
+    .setContexts([
+      InteractionContextType.BotDM,
+      InteractionContextType.Guild,
+      InteractionContextType.PrivateChannel,
+    ])
     .setDescription(__({ phrase: 'help->description', locale: 'en-US' })),
 
   execute: async interaction => {

@@ -8,6 +8,7 @@ import {
   ActivityType,
   Colors,
   EmbedBuilder,
+  InteractionContextType,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -16,7 +17,7 @@ export default {
     .setName('deletestatusrole')
     .setDescription(__({ phrase: 'deleteStatusRole->description', locale: 'en-US' }))
     .setDescriptionLocalizations(discordTranslations('deleteStatusRole->description'))
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
     .addStringOption(option =>
       option

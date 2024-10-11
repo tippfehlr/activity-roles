@@ -13,6 +13,7 @@ import {
   APIRole,
   SlashCommandBuilder,
   ComponentType,
+  InteractionContextType,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -26,7 +27,7 @@ export default {
     .setDescription('Adds an activity role to your guild.')
     .setDescriptionLocalizations(discordTranslations('Adds an activity role to your guild.'))
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
-    .setDMPermission(false)
+    .setContexts([InteractionContextType.Guild])
     .addStringOption(option =>
       option
         .setName('activity')

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import config from '../config';
 import { Command } from '../commandHandler';
 import { getLang, getRowCount, getUserCount } from '../db';
@@ -10,7 +10,12 @@ export default {
   data: new SlashCommandBuilder()
     .setName('stats')
     .setDescription('Shows some stats about the bot.')
-    .setDescriptionLocalizations(discordTranslations('Shows some stats about the bot.')),
+    .setDescriptionLocalizations(discordTranslations('Shows some stats about the bot.'))
+    .setContexts([
+      InteractionContextType.BotDM,
+      InteractionContextType.Guild,
+      InteractionContextType.PrivateChannel,
+    ]),
   execute: async interaction => {
     const locale = getLang(interaction);
 
