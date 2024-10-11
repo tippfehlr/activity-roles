@@ -77,6 +77,10 @@ export async function addDiscordRoleToMember({
     roleRemoved(roleID, guild.id);
     return;
   }
+  if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+    log.warn(`no ManageRoles permission in guild ${guild.name} (${guild.id})`);
+    return;
+  }
   const highestBotRolePosition = guild.members.me?.roles.highest.position;
   if (!highestBotRolePosition || highestBotRolePosition <= role.position) {
     if (interaction) {
