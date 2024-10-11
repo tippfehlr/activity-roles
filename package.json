@@ -34,10 +34,10 @@
   },
   "scripts": {
     "bot": "ts-node src/index.ts",
-    "temp-db": "podman run --replace --name temp-postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=activity-roles -e POSTGRES_PASSWORD=postgres -p 5432:5432 docker.io/postgres; podman rm temp-postgres",
+    "temp-db": "docker run --rm --name temp-postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=activity-roles -e POSTGRES_PASSWORD=postgres -p 5432:5432 docker.io/postgres",
     "kysely-codegen": "./node_modules/.bin/kysely-codegen --out-file src/modules/db.types.ts",
-    "docker-push": "docker buildx build --platform=linux/amd64 -t ghcr.io/tippfehlr/activity-roles:test --push .",
-    "mkdocs": "podman run --rm -it -e UID=1000 -e GID=1000 -p 8000:8000 -v ./docs:/docs squidfunk/mkdocs-material",
+    "docker-push": "docker buildx build --platform=linux/amd64,linux/arm64 -t ghcr.io/tippfehlr/activity-roles:test --push .",
+    "mkdocs": "docker run --rm -it -e UID=1000 -e GID=1000 -p 8000:8000 -v ./docs:/docs squidfunk/mkdocs-material",
     "release": "./release.fish"
   }
 }
