@@ -148,8 +148,8 @@
   },
   "remove after days": "retire après les jours",
   "after %s day": {
-    "one": "after %s day",
-    "other": "after %s days"
+    "one": "après %s jour",
+    "other": "après %s jours"
   },
-  "Remove roles": "Remove roles"
+  "Remove roles": "Retirer les rôles"
 }

@@ -99,8 +99,8 @@
     "description": "re-verificar todos os usuários/cargos",
     "success": "verificou {{{usersChecked}}} usuários, adicionou {{{added}}} e removeu cargos {{{removed}}}",
     "in-progress": "EM PROGRESS: já verificou {{{usersChecked}}}/{{{totalUsersToCheck}}} usuários, adicionou {{{added}}} e removeu {{{removed}}} cargos.",
-    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.",
-    "alreadyRunning": "A `/checkroles` request is already running for this guild."
+    "askForManageRolesPermission": "Eu não tenho a permissão `Gerenciar cargos`, mas ela é necessária para definir cargos.\nPor favor, adicione a permissão para o cargo \"Activity Roles\". Caso contrario o bot sairá do servidor automaticamente.",
+    "alreadyRunning": "Uma solicitação `/checkroles` já esta sendo executado nesse servidor."
   },
   "Cancelled": "Cancelado",
   "deleteActivityRole": {
@@ -111,45 +111,45 @@
     "roleselector": "Por favor, selecione um cargo para '%s'",
     "createRole": "Criar %s",
     "createRoleDescription": "Criar um novo cargo com o nome '%s'",
-    "activityNameTooLong": "The maximum length for activity names is %s characters.",
-    "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false"
+    "activityNameTooLong": "O comprimento máximo para nomes de atividade é %s caracteres.",
+    "removeAfterDaysDescription": "remove cargos novamente após x dias sem atividade. Funciona apenas com permanente = true",
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` não pode ser usado com permanente = false"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
   },
   "presenceUpdate": {
-    "roleHigherThanBotRole": "I don’t have permission to manage %s because it is higher than my highest role.\nPlease move one of my roles above all Activity Roles."
+    "roleHigherThanBotRole": "Eu não tenho permissão para gerenciar %s porque é maior que meu cargo de maior valor.\nPor favor, mova um dos meus cargos acima de todos os Cargos de Atividade."
   },
   "reset": {
-    "description": "resets the bot for this guild",
-    "confirmationPrompt": ":warning: You are about to reset the whole bot including all your activity roles. Roles will not be removed from members, and the bot will not remove them even if you create a new Activity Role.\nThis is normally not necessary! Are you _**absolutely**_ sure?"
+    "description": "redefine o bot para esse servidor",
+    "confirmationPrompt": ":warning: Você está prestes a reiniciar o bot inteiro, incluindo todos os seus cargos de atividade. Os cargos não serão removidos dos membros e o bot não os removerá mesmo se você criar um cargo de atividade.\nIsso normalmente não é necessário! Você tem _**absolutamente**_ certeza?"
   },
   "deleteStatusRole": {
-    "description": "deletes a status role",
-    "eventOptionDescription": "the status role to delete",
-    "success": "Deleted status role for %s",
-    "noStatusRole": "There is no status role for %s"
+    "description": "exclui um cargo de status",
+    "eventOptionDescription": "o status a ser excluído",
+    "success": "Cargo de status excluído para %s",
+    "noStatusRole": "Não há cargo de status para %s"
   },
   "setStatusRole": {
-    "roleNotValid": "%s is not a valid role for status roles."
+    "roleNotValid": "%s não é um cargo válido para cargos de status."
   },
   "listRoles": {
-    "requiredRole": "Required role: %s",
-    "requiredRoleExplanation": "Members need this role to receive roles from this bot."
+    "requiredRole": "Cargo necessário: %s",
+    "requiredRoleExplanation": "Os membros precisam desse cargo para receber funções desse bot."
   },
   "requireRole": {
-    "description": "Require users to have this role in order to receive Activity Roles.",
-    "roleOptionDescription": "The role to require. Omit this to unset the required role",
-    "successRemove": "Successfully unset the required role.",
-    "failedNoRequiredRole": "There is no required role to unset!",
-    "roleAlreadySet": "%s is already set as the required role.",
-    "success": "Required role is now %s. Members will need it to get activity/status roles."
+    "description": "Exigir que os usuários tenham essa cargo para receber os cargos da atividade.",
+    "roleOptionDescription": "O cargo a necessário. Omita isso para redefinir o cargo necessário",
+    "successRemove": "O cargo necessário foi redefinido com sucesso.",
+    "failedNoRequiredRole": "Não há nenhum cargo necessário para redefinir!",
+    "roleAlreadySet": "%s já está definido como um cargo necessário.",
+    "success": "O cargo necessário agora é %s. Membros vão precisar dele para obter cargo de atividade/estado."
   },
-  "remove after days": "remove after days",
+  "remove after days": "remover após dias",
   "after %s day": {
-    "one": "after %s day",
-    "other": "after %s days"
+    "one": "após %s dia",
+    "other": "após %s dias"
   },
-  "Remove roles": "Remove roles"
+  "Remove roles": "Remover cargos"
 }
