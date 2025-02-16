@@ -39,6 +39,7 @@ theme:
     - toc.follow
     - search.highlight
     - content.action.edit
+    - content.tooltips
     # - content.action.view
   icon:
     repo: fontawesome/brands/github
