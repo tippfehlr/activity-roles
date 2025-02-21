@@ -36,6 +36,7 @@ theme:
     - navigation.instant.progress
     - navigation.expand
     - navigation.indexes
+    - navigation.tracking
     - toc.follow
     - search.highlight
     - content.action.edit
