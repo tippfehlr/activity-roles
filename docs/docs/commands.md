@@ -1,5 +1,17 @@
+# `/activitystats`
+
+## Description
+Shows the server Actitivity Stats. (a better description? just adding some kind of placeholder)
+
+## Command
+`/activitystats`
+___
 # `/addactivityrole`
 
+## Description
+Adds a new activity role to the server. (a better description? just adding some kind of placeholder)
+
+## Command
 `/addactivityrole <activity> [<role> <exact_activity_name> <permanent> <remove_after_days>]`
 
 ## Arguments
@@ -17,3 +29,11 @@
 - `<remove_after_days>`: remove roles again after x days with no activity. Only works with permanent = true.
 
 ___
+
+# `/checkroles`
+
+## Description
+Verify users roles, then adds and remove bot's roles. (a better description? just adding some kind of placeholder)
+
+## Command
+`/checkroles`
