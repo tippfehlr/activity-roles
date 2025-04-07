@@ -3,9 +3,8 @@
 import { Selectable } from 'kysely';
 import { ActivityRoles } from './db.types';
 import { Guild } from 'discord.js';
-import { __ } from './messages';
+import { __n, __ } from './messages';
 import { table } from 'table';
-import { __n } from 'i18n';
 
 export function createActivityRolesTable({
   activityRoles,

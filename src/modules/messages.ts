@@ -15,15 +15,6 @@ export const localesMap: { [locale: string]: string } = {
 };
 export const locales = Object.keys(localesMap);
 
-export const i18n = new I18n({
-  locales,
-  directory: __dirname + '/../../locales',
-  defaultLocale: 'en-US',
-  indent: '  ',
-  objectNotation: '->',
-});
-export const __ = i18n.__;
-
 export function discordTranslations(s: string) {
   let dcTranslations: { [key: string]: string } = {};
 
@@ -50,3 +41,16 @@ export const log = pino({
   },
   level: process.env.LOG_LEVEL || 'info',
 });
+
+export const i18n = new I18n({
+  locales,
+  directory: __dirname + '/../../locales',
+  defaultLocale: 'en-US',
+  indent: '  ',
+  objectNotation: '->',
+  logDebugFn: m => log.debug(m),
+  logErrorFn: m => log.error(m),
+  logWarnFn: m => log.warn(m),
+});
+export const __ = i18n.__;
+export const __n = i18n.__n;

@@ -4,7 +4,6 @@ import {
   ActivityType,
   EmbedBuilder,
   InteractionContextType,
-  Role,
   SlashCommandBuilder,
 } from 'discord.js';
 
