@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.2](https://github.com/tippfehlr/activity-roles/compare/v1.14.1..v1.14.2) - 2025-04-07
+
+### Bug Fixes
+
+- check if bot has ManageRoles in addDiscordRoleToMember ([3990fdb](https://github.com/tippfehlr/activity-roles/commit/3990fdb4e35b51179677e2a894c5e273a8e9accb))
+- remove SIGINT handler ([b616988](https://github.com/tippfehlr/activity-roles/commit/b616988befd67843075149dc7e1ba747f2455a6d))
+- properly update scheduledRoleActions ([325d7ae](https://github.com/tippfehlr/activity-roles/commit/325d7ae8fd779f423c58feb4f3ed322a95d209c0))
+- listroles with removeAfterDays ([0e11e01](https://github.com/tippfehlr/activity-roles/commit/0e11e019eb28e3382d48fae821557e9928d9d873))
+
+### Documentation
+
+- fix line after badges in readme ([6ef5c61](https://github.com/tippfehlr/activity-roles/commit/6ef5c61a905b6354cf490ae2a492e63ed033c86a))
+
 ## [1.14.1](https://github.com/tippfehlr/activity-roles/compare/v1.14.0..v1.14.1) - 2024-10-11
 
 ### Bug Fixes
