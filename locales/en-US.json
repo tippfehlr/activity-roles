@@ -151,5 +151,9 @@
     "one": "after %s day",
     "other": "after %s days"
   },
-  "Remove roles": "Remove roles"
+  "Remove roles": "Remove roles",
+  "%s day": {
+    "one": "%s day",
+    "other": "%s days"
+  }
 }

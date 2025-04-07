@@ -102,12 +102,7 @@ skipped (in guild ${guild.name})`,
 
   if (change === 'add') {
     // does the cache need to be checked?
-    if (member.roles.cache.has(role.id)) {
-      // log.warn(
-      //   `${member.displayName} (${member.user.username}) already has the role ${role.name} in guild ${guild.name} (${guild.id})`,
-      // );
-      return;
-    }
+    // if (member.roles.cache.has(role.id)) return;
     if (permanent) {
       writeIntPoint('roles_added', 'permanent_roles_added', 1);
     } else {
@@ -120,25 +115,27 @@ skipped (in guild ${guild.name})`,
     if (removeAfterDays !== null) {
       let date = new Date();
       date.setDate(date.getDate() + removeAfterDays);
-      db.insertInto('scheduledRoleActions').values({
-        action: 'remove',
-        guildID: guild.id,
-        roleID: roleID,
-        userID: member.id,
-        scheduledDate: date,
-      });
+      db.insertInto('scheduledRoleActions')
+        .values({
+          action: 'remove',
+          guildID: guild.id,
+          roleID: roleID,
+          userID: member.id,
+          scheduledDate: date,
+        })
+        .onConflict(oc =>
+          oc
+            .columns(['roleID', 'guildID', 'userID', 'action'])
+            .doUpdateSet({ scheduledDate: date }),
+        )
+        .execute();
     }
     await member.roles.add(role);
     stats.rolesAdded++;
     return addRoleStatus.RoleAdded;
   } else if (change === 'remove') {
     // does the cache need to be checked?
-    if (!member.roles.cache.has(role.id)) {
-      // log.warn(
-      //   `can’t remove the role: ${member.displayName} (${member.user.username}) doesn’t have the role ${role.name} in guild ${guild.name} (${guild.id})`,
-      // );
-      return;
-    }
+    // if (!member.roles.cache.has(role.id)) return;
     await member.roles.remove(role);
     db.deleteFrom('activeTemporaryRoles')
       .where('guildID', '=', guild.id)
@@ -146,7 +143,6 @@ skipped (in guild ${guild.name})`,
       .where('userID', '=', member.user.id)
       .execute();
     stats.rolesRemoved++;
-
     return addRoleStatus.RoleRemoved;
   }
 }
@@ -255,20 +251,6 @@ export async function processRoles({
 
     for (const [roleID, removeAfterDays] of permanentRoleIDsToBeAdded) {
       if ((await addRoleHelper(roleID, 'add', true, removeAfterDays)) === 'abort') return 'abort';
-      if (removeAfterDays !== null) {
-        let scheduledDate = new Date();
-        scheduledDate.setDate(scheduledDate.getDate() + removeAfterDays);
-        await db
-          .insertInto('scheduledRoleActions')
-          .values({
-            roleID,
-            userID: member.id,
-            action: 'remove',
-            guildID: guild.id,
-            scheduledDate,
-          })
-          .execute();
-      }
     }
     for (const roleID of tempRoleIDsToBeAdded) {
       if ((await addRoleHelper(roleID, 'add', false, null)) === 'abort') return 'abort';
