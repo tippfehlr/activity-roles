@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.15.0](https://github.com/tippfehlr/activity-roles/compare/v1.14.2..v1.15.0) - 2025-04-17
+
+### Features
+
+- match state & details. Enables matching custom status ([9032029](https://github.com/tippfehlr/activity-roles/commit/90320293300a826716f7f6254d3da12ac0b8018f))
+
 ## [1.14.2](https://github.com/tippfehlr/activity-roles/compare/v1.14.1..v1.14.2) - 2025-04-07
 
 ### Bug Fixes
