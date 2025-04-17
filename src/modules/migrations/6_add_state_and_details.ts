@@ -5,8 +5,8 @@ import { Kysely } from 'kysely';
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('activityRoles')
-    .addColumn('state', 'text')
-    .addColumn('details', 'text')
+    .addColumn('state', 'text', col => col.notNull().defaultTo(''))
+    .addColumn('details', 'text', col => col.notNull().defaultTo(''))
     .execute();
   await db.schema.alterTable('activityRoles').renameColumn('exactActivityName', 'exact').execute();
   await db.schema.alterTable('activityRoles').dropConstraint('activityRoles_0').execute();
