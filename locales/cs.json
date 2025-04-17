@@ -19,12 +19,12 @@
     "other": "%s uživatelů"
   },
   "%s activity role": {
-    "one": "%s activity role",
-    "other": "%s activity roles"
+    "one": "%s role aktivity",
+    "other": "%s role aktivity"
   },
   "%s status role": {
     "one": "%s status role",
-    "other": "%s status roles"
+    "other": "%s status role"
   },
   "The bot currently serves **%s** and manages **%s** for **%s**.": "Bot aktuálně slouží **%s** a spravuje **%s** pro **%s**.",
   "Commands": "Příkazy",
@@ -51,64 +51,64 @@
   "disabled": "vypnuto",
   "Automatic role assignment for your user is now **%s**.": "Automatické přiřazení role pro uživatele je nyní **%s**.",
   "You can change this with the command `/toggleAutoRole`.": "Můžete to změnit příkazem `/toggleAutoRole`.",
-  "Shows a list of activities in this guild.": "Shows a list of activities in this guild.",
-  "Activities (sorted by frequency):": "Activities (sorted by frequency):",
-  "Show role IDs (can’t be imported in another guild)": "Show role IDs (can’t be imported in another guild)",
-  "No activity stats found.": "No activity stats found.",
+  "Shows a list of activities in this guild.": "Zobrazí seznam aktivit na tomto serveru.",
+  "Activities (sorted by frequency):": "Aktivity (seřazené podle frekvence):",
+  "Show role IDs (can’t be imported in another guild)": "Zobrazit ID role (nelze importovat na jiném serveru)",
+  "No activity stats found.": "Nebyly nalezeny žádné statistiky aktivit.",
   "role to assign on LISTENING/WATCHING/etc.": "role to assign on LISTENING/WATCHING/etc.",
   "the event the user must have to receive the role": "the event the user must have to receive the role",
-  "Playing": "Playing",
-  "Streaming": "Streaming",
-  "Listening": "Listening",
-  "Watching": "Watching",
-  "Custom": "Custom",
+  "Playing": "Hraje",
+  "Streaming": "Streamuje",
+  "Listening": "Poslouchá",
+  "Watching": "Sleduje",
+  "Custom": "Vlastní",
   "Competing": "Competing",
-  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
-  "The status role for **%s** is now <@&%s>!": "The status role for **%s** is now <@&%s>!",
-  "the status role for **%s** already is <@&%s>!": "the status role for **%s** already is <@&%s>!",
-  "The status role for **%s** has been deleted.": "The status role for **%s** has been deleted.",
-  "There is no status role set for **%s**": "There is no status role set for **%s**",
-  "Status Roles": "Status Roles",
-  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.",
-  "Lists all managed roles in your guild.": "Lists all managed roles in your guild.",
+  "the role to assign. To remove the role, omit this option": "role k přiřazení. Pro odebrání role vynechejte tuto možnost",
+  "The status role for **%s** is now <@&%s>!": "Status role pro **%s** je nyní <@&%s>!",
+  "the status role for **%s** already is <@&%s>!": "status role pro **%s** je již <@&%s>!",
+  "The status role for **%s** has been deleted.": "Status role pro **%s** byla odstraněna.",
+  "There is no status role set for **%s**": "Není nastavena žádná status role pro **%s**",
+  "Status Roles": "Status role",
+  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "Bot je aktuálně na **%s** a spravuje **%s**, **%s** pro **%s**.",
+  "Lists all managed roles in your guild.": "Seznam všech rolí aktivity na serveru.",
   "%s role": {
     "one": "%s role",
-    "other": "%s roles"
+    "other": "%s rolí"
   },
-  "There are no status roles in this guild": "There are no status roles in this guild",
-  "Set a status role with /setstatusrole!": "Set a status role with /setstatusrole!",
-  "Set a status role with /setstatusrole!\n": "Set a status role with /setstatusrole!\n",
-  "Permanent": "Permanent",
-  "Yes": "Yes",
-  ":x: That activity role already exists in this guild! :x:": ":x: That activity role already exists in this guild! :x:",
+  "There are no status roles in this guild": "Na tomto serveru nejsou žádné role aktivity",
+  "Set a status role with /setstatusrole!": "Nastavte status roli s /setstatusrole!",
+  "Set a status role with /setstatusrole!\n": "Nastavte status roli s /setstatusrole!\n",
+  "Permanent": "Trvalé",
+  "Yes": "Ano",
+  ":x: That activity role already exists in this guild! :x:": ":x: Tato role aktivity již existuje na tomto serveru! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.",
-  "the role will not be removed again if set to true": "the role will not be removed again if set to true",
-  "Live": "Live",
+  "the role will not be removed again if set to true": "role nebude odstraněna, pokud je nastavena na true",
+  "Live": "Živě",
   "help": {
-    "description": "Shows the help menu",
-    "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
-    "reply-footer": "Made by tippfehlr"
+    "description": "Zobrazí nabídku nápovědy",
+    "reply-description": "Discord bot pro automatické přiřazení rolí na základě aktivit.\nPodpora/Návrhy: {{{support}}}\nGitHub: {{{github}}}\nKontakt: {{{contact}}}\n\nPřidat aktivitu s `/addactivityrole`. Ve výchozím nastavení bota, tuto roli po ukončení aktivity opět odstraní.\nJe-li 'permanent' nastaveno na 'true', bot roli neodstraní.\nPokud je `exact_activity_name` nastaveno na true, bot přijme pouze přesné shody.\nNastavte stavovou roli pomocí `/setstatusrole`!\n**Bot neodstraní žádné role, které byly přidány ručně. *\n\nNepoužívám samotného bota. Pokud chcete urychlit vývoj nebo mi pomoci zaplatit za server, zvažte prosím mou podporu.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Vytvořil Tippfehlr"
   },
   "deleteactivityrole": {
     "description": {
-      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+      "all": "POZOR!: SMAŽE VŠECHNY ROLE AKTIVITY NA SERVERU"
     }
   },
-  "Activities (sorted by frequency)": "Activities (sorted by frequency)",
+  "Activities (sorted by frequency)": "Aktivity (seřazené podle frekvence)",
   "checkRoles": {
-    "description": "re-check all users/roles",
-    "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
-    "in-progress": "IN PROGRESS: already checked {{{usersChecked}}}/{{{totalUsersToCheck}}} users, added {{{added}}} and removed {{{removed}}} roles.",
-    "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.",
-    "alreadyRunning": "A `/checkroles` request is already running for this guild."
+    "description": "zkontroluje všechny uživatele/role",
+    "success": "zkontrolováno {{{usersChecked}}} uživatelů, přidáno {{{added}}} rolí a odstraněno {{{removed}}} rolí",
+    "in-progress": "IN PROGRESS: zkontrolováno {{{usersChecked}}} z {{{totalUsersToCheck}}} uživatelů, přidáno {{{added}}} rolí a odstraněno {{{removed}}} rolí.",
+    "askForManageRolesPermission": "Nemám oprávnění `MANAGE_ROLES`. Oprávnění je potřeba pro přidávání rolí.\n Přidejte oprávnění roli „Activity Roles“. Jinak bot automaticky opustí server.",
+    "alreadyRunning": "Požadavek `/checkroles` pro tento server již běží."
   },
-  "Cancelled": "Cancelled",
+  "Cancelled": "Zrušeno",
   "deleteActivityRole": {
-    "noRoleDeleted": "No activity roles were deleted.",
-    "deletedRoles": "Deleted Activity Roles:"
+    "noRoleDeleted": "Žádné role aktivity nebyly odstraněny.",
+    "deletedRoles": "Odstraněné role aktivity:"
   },
   "addActivityRole": {
-    "roleselector": "Please select a role for '%s'",
+    "roleselector": "Prosím vyberte roli pro '%s'",
     "createRole": "Create %s",
     "createRoleDescription": "Create a new role with the name '%s'",
     "activityNameTooLong": "The maximum length for activity names is %s characters.",

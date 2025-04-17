@@ -82,7 +82,7 @@
   "Yes": "Sim",
   ":x: That activity role already exists in this guild! :x:": ":x: Esse cargo de atividade já existe nesse servidor! :x:",
   "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Eu não uso o bot sozinho. Se você quiser acelerar o desenvolvimento ou me ajudar a pagar pelo servidor, por favor considere me apoiar.",
-  "the role will not be removed again if set to true": "o papel não será removido novamente se definido como 'True'",
+  "the role will not be removed again if set to true": "o cargo não será removido novamente se definido como 'True'",
   "Live": "Temporário",
   "help": {
     "description": "Mostra o menu de ajuda",
