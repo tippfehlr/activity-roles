@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.15.1](https://github.com/tippfehlr/activity-roles/compare/v1.15.0..v1.15.1) - 2025-04-17
+
+### Bug Fixes
+
+- fix database migration ([a6f6994](https://github.com/tippfehlr/activity-roles/commit/a6f69949681b4bf0cfa64ef06ceee7c9d9e0ea48))
+
 ## [1.15.0](https://github.com/tippfehlr/activity-roles/compare/v1.14.2..v1.15.0) - 2025-04-17
 
 ### Features
