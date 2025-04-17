@@ -10,6 +10,7 @@ import {
   Colors,
   EmbedBuilder,
   InteractionContextType,
+  MessageFlags,
   PermissionsBitField,
   Role,
   SlashCommandBuilder,
@@ -84,7 +85,7 @@ export default {
             )
             .setColor(Colors.Green),
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } else {
       db.insertInto('statusRoles')
@@ -107,7 +108,7 @@ export default {
             )
             .setColor(Colors.Green),
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

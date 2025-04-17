@@ -7,6 +7,7 @@ import {
   SlashCommandBuilder,
   REST,
   Routes,
+  MessageFlags,
 } from 'discord.js';
 
 import config from './config';
@@ -48,7 +49,7 @@ export default class CommandHandler {
                 phrase: 'There was an error while executing this command!',
                 locale: getLang(interaction),
               }),
-              ephemeral: true,
+              flags: MessageFlags.Ephemeral,
             });
           }
         } catch (error) {

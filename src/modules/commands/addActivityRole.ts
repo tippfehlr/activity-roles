@@ -15,6 +15,7 @@ import {
   ComponentType,
   InteractionContextType,
   ChannelType,
+  MessageFlags,
 } from 'discord.js';
 
 import { Command } from '../commandHandler';
@@ -118,7 +119,7 @@ export default {
     ) {
       await interaction.reply({
         content: __({ phrase: 'addActivityRole->activityNameTooLong', locale }, '100'),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral
       });
       return;
     }
@@ -236,7 +237,7 @@ export default {
           });
         interaction.reply({
           components: [row],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     } else {
@@ -267,7 +268,7 @@ function reply(
   embeds?: EmbedBuilder[],
 ) {
   if (interaction.type === InteractionType.ApplicationCommand) {
-    interaction.reply({ content, embeds, ephemeral: true });
+    interaction.reply({ content, embeds, flags: MessageFlags.Ephemeral });
   } else if (interaction.isStringSelectMenu()) {
     interaction.update({ content, embeds, components: [] });
   }

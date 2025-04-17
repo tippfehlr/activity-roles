@@ -5,6 +5,7 @@ import {
   PermissionsBitField,
   CommandInteraction,
   InteractionContextType,
+  MessageFlags,
 } from 'discord.js';
 import { db, getGuildConfig, getLang } from './../db';
 import { Command } from '../commandHandler';
@@ -37,7 +38,7 @@ export default {
           .execute();
         interaction.reply({
           content: ':white_check_mark: ' + __({ phrase: 'requireRole->successRemove', locale }),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else {
         interaction.reply({
@@ -48,7 +49,7 @@ export default {
       if (role.id === guildConfig.requiredRoleID) {
         interaction.reply({
           content: ':x: ' + __({ phrase: 'requireRole->roleAlreadySet', locale }),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else {
         await db
@@ -59,7 +60,7 @@ export default {
         interaction.reply({
           content:
             ':white_check_mark: ' + __({ phrase: 'requireRole->success', locale }, `<&${role.id}>`),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     }

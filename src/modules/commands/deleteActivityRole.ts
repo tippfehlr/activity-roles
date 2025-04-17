@@ -9,6 +9,7 @@ import {
   CommandInteraction,
   ComponentType,
   InteractionContextType,
+  MessageFlags,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -97,7 +98,7 @@ export default {
               .setStyle(ButtonStyle.Secondary),
           ),
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       interaction.channel
         .createMessageComponentCollector({
@@ -135,7 +136,7 @@ export default {
             'You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.',
           locale,
         }),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } else if (role && !activity) {
       process(
@@ -199,7 +200,7 @@ function process(
       await interaction.reply({
         content,
         files,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     else
       await interaction.update({

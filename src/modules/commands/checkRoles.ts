@@ -10,6 +10,7 @@ import {
   Guild,
   CommandInteraction,
   InteractionContextType,
+  MessageFlags,
 } from 'discord.js';
 import { checkrolesCurrentGuilds, db, getActivityRoles, getLang, getStatusRoles } from '../db';
 import { Point, writeApi, writeIntPoint } from '../metrics';
@@ -61,7 +62,7 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
     if (interaction && locale) {
       await interaction.reply({
         content: __({ phrase: 'checkRoles->alreadyRunning', locale }),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     return;
@@ -71,7 +72,7 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
   log.debug(`started checkroles on ${guild.name} (${guild.id})`);
   writeIntPoint('checkroles_guilds', `${guild.name} (${guild.id})`, 1);
 
-  if (interaction && locale) await interaction.deferReply({ ephemeral: true });
+  if (interaction && locale) await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
   const activityRoles = await getActivityRoles(guild.id);
   const statusRoles = await getStatusRoles(guild.id);

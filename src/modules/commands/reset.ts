@@ -8,6 +8,7 @@ import {
   ChannelType,
   ComponentType,
   InteractionContextType,
+  MessageFlags,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -49,7 +50,7 @@ export default {
             .setStyle(ButtonStyle.Secondary),
         ),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     interaction.channel
