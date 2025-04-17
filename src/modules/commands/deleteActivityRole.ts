@@ -229,7 +229,7 @@ function process(
 
     deleted.forEach(activityRole => {
       log.info(
-        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exactActivityName: ${activityRole.exactActivityName}, permanent: ${activityRole.permanent}`,
+        `Activity role removed: in guild ${interaction.guild?.name} (${interaction.guildId}) role: ${activityRole.roleID} activityName: ${activityRole.activityName}, exact: ${activityRole.exact}, permanent: ${activityRole.permanent}`,
       );
     });
   } else {

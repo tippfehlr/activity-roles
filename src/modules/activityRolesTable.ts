@@ -19,26 +19,31 @@ export function createActivityRolesTable({
     [
       __({ phrase: 'Role', locale }),
       __({ phrase: 'Activity', locale }),
-      __({ phrase: 'Exact Activity Name', locale }),
+      __({ phrase: 'Exact', locale }),
       __({ phrase: 'Permanent', locale }),
       __({ phrase: 'Remove roles', locale }),
+      __({ phrase: 'State', locale }),
+      __({ phrase: 'Details', locale }),
+      __({ phrase: 'Role id', locale }),
     ],
   ];
-  for (const activityRole of activityRoles) {
+  for (const r of activityRoles) {
     array.push([
-      guild.roles.cache.find(role => role.id === activityRole.roleID)?.name +
-        ` <@&${activityRole.roleID}>`,
-      activityRole.activityName,
-      String(activityRole.exactActivityName),
-      String(activityRole.permanent),
-      activityRole.removeAfterDays
+      guild.roles.cache.find(role => role.id === r.roleID)?.name ?? '',
+      r.activityName,
+      String(r.exact),
+      String(r.permanent),
+      r.removeAfterDays
         ? __n({
             singular: 'after %s day',
             plural: 'after %s days',
             locale,
-            count: activityRole.removeAfterDays,
+            count: r.removeAfterDays,
           })
-        : 'never',
+        : __({ phrase: 'never', locale }),
+      r.state,
+      r.details,
+      r.roleID,
     ]);
   }
   return table(array, {

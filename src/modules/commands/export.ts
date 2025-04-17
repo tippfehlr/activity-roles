@@ -50,7 +50,7 @@ export default {
       const role = interaction.guild!.roles.cache.find(role => role.id === activityRole.roleID);
       output +=
         activityRole.activityName +
-        `,\t${activityRole.exactActivityName}` +
+        `,\t${activityRole.exact}` +
         `,\t${activityRole.permanent}` +
         `,\t\t${role?.name}` +
         `,\t${role?.hexColor}`;

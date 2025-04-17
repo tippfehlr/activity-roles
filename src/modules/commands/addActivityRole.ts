@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { discordTranslations } from './../messages';
+import { discordTranslations, i18nifyBoolean } from './../messages';
 import {
   Role,
   CommandInteraction,
@@ -32,8 +32,8 @@ export default {
     .addStringOption(option =>
       option
         .setName('activity')
-        .setDescription('the name of the discord activity')
-        .setDescriptionLocalizations(discordTranslations('the name of the discord activity'))
+        .setDescription('addActivityRole->activityDescription')
+        .setDescriptionLocalizations(discordTranslations('addActivityRole->activityDescription'))
         .setRequired(true),
     )
     .addRoleOption(option =>
@@ -51,7 +51,7 @@ export default {
     )
     .addBooleanOption(option =>
       option
-        .setName('exact_activity_name')
+        .setName('exact')
         .setDescription(
           "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'",
         )
@@ -82,6 +82,20 @@ export default {
         )
         .setRequired(false)
         .setMinValue(1),
+    )
+    .addStringOption(option =>
+      option
+        .setName('state')
+        .setDescription(__({ phrase: 'addActivityRole->stateDescription', locale: 'en-US' }))
+        .setDescriptionLocalizations(discordTranslations('addActivityRole->stateDescription'))
+        .setRequired(false),
+    )
+    .addStringOption(option =>
+      option
+        .setName('details')
+        .setDescription(__({ phrase: 'addActivityRole->detailsDescription', locale: 'en-US' }))
+        .setDescriptionLocalizations(discordTranslations('addActivityRole->detailsDescription'))
+        .setRequired(false),
     ),
   execute: async interaction => {
     const locale = getLang(interaction);
@@ -95,7 +109,13 @@ export default {
     }
 
     const activityName = interaction.options.get('activity', true)?.value as string;
-    if (activityName.length > 100) {
+    const state = interaction.options.get('state')?.value as string | undefined;
+    const details = interaction.options.get('details')?.value as string | undefined;
+    if (
+      activityName.length > 100 ||
+      (state && state.length > 100) ||
+      (details && details.length > 100)
+    ) {
       await interaction.reply({
         content: __({ phrase: 'addActivityRole->activityNameTooLong', locale }, '100'),
         ephemeral: true,
@@ -103,8 +123,8 @@ export default {
       return;
     }
 
-    const exactActivityName =
-      (interaction.options.get('exact_activity_name', false)?.value as boolean | undefined) ??
+    const exact =
+      (interaction.options.get('exact', false)?.value as boolean | undefined) ??
       false;
     const permanent =
       (interaction.options.get('permanent', false)?.value as boolean | undefined) ?? false;
@@ -126,27 +146,27 @@ export default {
       if (!possibleRoles || possibleRoles.size === 0) {
         // create role
         role = await createRole(interaction, activityName);
-        process(
-          interaction,
+        process(interaction, locale, {
           role,
           activityName,
-          exactActivityName,
+          exact,
           permanent,
           removeAfterDays,
-          locale,
-        );
+          state,
+          details,
+        });
       } else if (possibleRoles.size === 1) {
         // use role
         role = possibleRoles.first()!;
-        process(
-          interaction,
+        process(interaction, locale, {
           role,
           activityName,
-          exactActivityName,
+          exact,
           permanent,
           removeAfterDays,
-          locale,
-        );
+          state,
+          details,
+        });
       } else {
         // select role
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
@@ -203,15 +223,15 @@ export default {
                 null;
             }
             if (role) {
-              process(
-                selectMenuInteraction,
+              process(selectMenuInteraction, locale, {
                 role,
                 activityName,
-                exactActivityName,
+                exact,
                 permanent,
                 removeAfterDays,
-                locale,
-              );
+                state,
+                details,
+              });
             }
           });
         interaction.reply({
@@ -220,15 +240,15 @@ export default {
         });
       }
     } else {
-      process(
-        interaction,
+      process(interaction, locale, {
         role,
         activityName,
-        exactActivityName,
+        exact,
         permanent,
         removeAfterDays,
-        locale,
-      );
+        state,
+        details,
+      });
     }
   },
 } as Command;
@@ -255,15 +275,19 @@ function reply(
 
 async function process(
   interaction: CommandInteraction | StringSelectMenuInteraction,
-  role: Role | APIRole,
-  activityName: string,
-  exactActivityName: boolean,
-  permanent: boolean,
-  removeAfterDays: number | undefined,
   locale: string,
+  r: {
+    role: Role | APIRole;
+    activityName: string;
+    exact: boolean;
+    permanent: boolean;
+    removeAfterDays: number | undefined;
+    state: string | undefined;
+    details: string | undefined;
+  },
 ) {
-  if (!role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
-  if (role.name === '@everyone') {
+  if (!r.role) reply(interaction, __({ phrase: ':x: That role does not exist! :x:', locale }));
+  if (r.role.name === '@everyone') {
     reply(interaction, __({ phrase: "You can't use \\@everyone as an activity role.", locale }));
     return;
   }
@@ -273,13 +297,13 @@ async function process(
   )
     return;
   if (
-    role.position &&
+    r.role.position &&
     interaction.guild.members.me?.roles.highest?.position &&
-    role.position >= interaction.guild.members.me.roles.highest.position
+    r.role.position >= interaction.guild.members.me.roles.highest.position
   ) {
     reply(
       interaction,
-      __({ phrase: 'presenceUpdate->roleHigherThanBotRole', locale }, `<@&${role.id}>`),
+      __({ phrase: 'presenceUpdate->roleHigherThanBotRole', locale }, `<@&${r.role.id}>`),
     );
     return;
   }
@@ -288,8 +312,10 @@ async function process(
       .selectFrom('activityRoles')
       .selectAll()
       .where('guildID', '=', interaction.guildId)
-      .where('activityName', '=', activityName)
-      .where('roleID', '=', role.id)
+      .where('activityName', '=', r.activityName)
+      .where('roleID', '=', r.role.id)
+      .where('state', '=', r.state ?? null)
+      .where('details', '=', r.details ?? null)
       .executeTakeFirst()
   ) {
     reply(
@@ -301,37 +327,45 @@ async function process(
     db.insertInto('activityRoles')
       .values({
         guildID: interaction.guildId!,
-        activityName,
-        roleID: role.id,
-        exactActivityName,
-        permanent,
-        removeAfterDays,
+        activityName: r.activityName,
+        roleID: r.role.id,
+        exact: r.exact,
+        permanent: r.permanent,
+        state: r.state ?? '',
+        details: r.details ?? '',
       })
       .execute();
     log.info(
-      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${role.name} (${role.id}) activityName: ${activityName}, exactActivityName: ${exactActivityName}, permanent: ${permanent}, removeAfterDays: ${removeAfterDays}`,
+      `New activity role added: in guild ${interaction.guild.name} (${interaction.guild.id}) role: ${r.role.name} (${r.role.id}) activityName: ${r.activityName}, exact: ${r.exact}, permanent: ${r.permanent}, removeAfterDays: ${r.removeAfterDays}, state: ${r.state}, details: ${r.details}`,
     );
     reply(interaction, undefined, [
       new EmbedBuilder()
         .setColor(config.COLOR)
         .setTitle(__({ phrase: 'Success!', locale }))
         .addFields(
-          { name: __({ phrase: 'Activity', locale }), value: activityName },
-          { name: __({ phrase: 'Role', locale }), value: `<@&${role.id}>` },
+          { name: __({ phrase: 'Activity', locale }), value: r.activityName },
+          { name: __({ phrase: 'Role', locale }), value: `<@&${r.role.id}>` },
           {
-            name: __({ phrase: 'Exact Activity Name', locale }),
-            value: exactActivityName ? __('Yes') : __('No'),
+            name: __({ phrase: 'Exact', locale }),
+            value: i18nifyBoolean(r.exact, locale),
           },
           {
             name: __({ phrase: 'Permanent', locale }),
-            value: permanent ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale }),
+            value: i18nifyBoolean(r.permanent, locale),
           },
           {
-            name: __({ phrase: 'remove after days', locale }),
-            value: removeAfterDays
-              ? i18n.__n({ singular: '%s day', plural: '%s days', locale, count: removeAfterDays })
+            name: __({ phrase: 'Remove roles', locale }),
+            value: r.removeAfterDays
+              ? i18n.__n({
+                  singular: '%s day',
+                  plural: '%s days',
+                  locale,
+                  count: r.removeAfterDays,
+                })
               : '–',
           },
+          { name: __({ phrase: 'State', locale }), value: r.state ?? '-' },
+          { name: __({ phrase: 'Details', locale }), value: r.details ?? '-' },
         ),
     ]);
   }

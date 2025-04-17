@@ -28,20 +28,30 @@ import { Selectable } from 'kysely';
 import { ActiveTemporaryRoles, ActivityRoles, StatusRoles } from './db.types';
 
 export function checkActivityName({
-  activityRole,
-  userActivities,
+  activityRole: r,
+  activities,
 }: {
   activityRole: Selectable<ActivityRoles>;
-  userActivities: string[];
+  activities: Activity[];
 }) {
-  if (activityRole.exactActivityName) {
-    if (userActivities.includes(activityRole.activityName)) {
+  if (r.exact) {
+    if (
+      activities.find(
+        a =>
+          a.name === r.activityName &&
+          (r.state === '' || a.state === r.state) &&
+          (r.details === '' || a.details === r.details),
+      )
+    ) {
       return true;
     }
   } else {
     if (
-      userActivities.find(userActivity =>
-        userActivity.toLowerCase().includes(activityRole.activityName.toLowerCase()),
+      activities.find(
+        a =>
+          a.name.toLowerCase().includes(r.activityName.toLowerCase()) &&
+          (r.state === '' || a.state?.toLowerCase().includes(r.state.toLowerCase())) &&
+          (r.details === '' || a.details?.toLowerCase().includes(r.details.toLowerCase())),
       )
     ) {
       return true;
@@ -235,10 +245,9 @@ export async function processRoles({
     });
 
     // ------------ activity roles ------------
-    const userActivities = activities.map(activity => activity.name);
-
+    //
     activityRoles.forEach(activityRole => {
-      if (checkActivityName({ userActivities, activityRole })) {
+      if (checkActivityName({ activities, activityRole })) {
         addRole({
           roleID: activityRole.roleID,
           permanent: activityRole.permanent,

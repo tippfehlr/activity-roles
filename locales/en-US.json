@@ -113,7 +113,10 @@
     "createRoleDescription": "Create a new role with the name '%s'",
     "activityNameTooLong": "The maximum length for activity names is %s characters.",
     "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false"
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false",
+    "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
+    "detailsDescription": "matches the first line after the activity name",
+    "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Are you sure you want to delete all activity roles?"
@@ -155,5 +158,10 @@
   "%s day": {
     "one": "%s day",
     "other": "%s days"
-  }
+  },
+  "Exact": "Exact",
+  "State": "State",
+  "Details": "Details",
+  "Role id": "Role id",
+  "never": "never"
 }

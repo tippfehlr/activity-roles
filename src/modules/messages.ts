@@ -2,6 +2,7 @@
 
 import { pino } from 'pino';
 import { I18n } from 'i18n';
+import { Locale } from 'discord.js';
 
 export const localesMap: { [locale: string]: string } = {
   'en-US': 'American English',
@@ -54,3 +55,7 @@ export const i18n = new I18n({
 });
 export const __ = i18n.__;
 export const __n = i18n.__n;
+
+export function i18nifyBoolean(b: boolean, locale: string): string {
+  return b ? __({ phrase: 'Yes', locale }) : __({ phrase: 'No', locale });
+}
