@@ -113,7 +113,10 @@
     "createRoleDescription": "Criar um novo cargo com o nome '%s'",
     "activityNameTooLong": "O comprimento máximo para nomes de atividade é %s caracteres.",
     "removeAfterDaysDescription": "remove cargos novamente após x dias sem atividade. Funciona apenas com permanente = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` não pode ser usado com permanente = false"
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` não pode ser usado com permanente = false",
+    "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
+    "detailsDescription": "matches the first line after the activity name",
+    "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
@@ -151,5 +154,14 @@
     "one": "após %s dia",
     "other": "após %s dias"
   },
-  "Remove roles": "Remover cargos"
+  "Remove roles": "Remover cargos",
+  "%s day": {
+    "one": "%s day",
+    "other": "%s days"
+  },
+  "Exact": "Exact",
+  "State": "State",
+  "Details": "Details",
+  "Role id": "Role id",
+  "never": "never"
 }

@@ -113,7 +113,10 @@
     "createRoleDescription": "Créer un nouveau rôle avec le nom '%s'",
     "activityNameTooLong": "La longueur maximale pour les noms d'activité est de %s caractères.",
     "removeAfterDaysDescription": "supprime les rôles après x jours sans activité. Fonctionne uniquement avec l'option permanent = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false"
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false",
+    "stateDescription": "correspond à la deuxième ligne. Correspond également au statut personnalisé si activity_name est 'Statut personnalisé'",
+    "detailsDescription": "correspond à la première ligne après le nom de l'activité",
+    "activityDescription": "le nom de l'activité Discord. Réglez ce paramètre sur 'Statut personnalisé' et utilisez l'état pour le statut personnalisé"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
@@ -151,5 +154,14 @@
     "one": "après %s jour",
     "other": "après %s jours"
   },
-  "Remove roles": "Retirer les rôles"
+  "Remove roles": "Retirer les rôles",
+  "%s day": {
+    "one": "%s jour",
+    "other": "%s jours"
+  },
+  "Exact": "Exact",
+  "State": "État",
+  "Details": "Détails",
+  "Role id": "Identifiant du rôle",
+  "never": "jamais"
 }
