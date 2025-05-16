@@ -116,7 +116,7 @@
     "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false",
     "stateDescription": "correspond à la deuxième ligne. Correspond également au statut personnalisé si activity_name est 'Statut personnalisé'",
     "detailsDescription": "correspond à la première ligne après le nom de l'activité",
-    "activityDescription": "le nom de l'activité Discord. Réglez ce paramètre sur 'Statut personnalisé' et utilisez l'état pour le statut personnalisé"
+    "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
   },
   "deleteActivityRoles": {
     "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
