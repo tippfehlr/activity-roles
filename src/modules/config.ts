@@ -4,8 +4,8 @@ import { ColorResolvable } from 'discord.js';
 import { log } from './messages';
 
 const missingEnv = (env: string) => {
-  log.error(`Environment variable ${env} not provided.`);
-  process.exit(1);
+	log.error(`Environment variable ${env} not provided.`);
+	process.exit(1);
 };
 
 const TOKEN = process.env.TOKEN;
@@ -35,19 +35,19 @@ const INFLUX_BUCKET = process.env.INFLUX_BUCKET;
 const SKIP_COMMAND_UPLOAD = process.env.SKIP_COMMAND_UPLOAD;
 
 export default {
-  TOKEN: TOKEN as string,
-  APPLICATION_ID: APPLICATION_ID as string,
-  HOSTER_NAME: HOSTER_NAME as string,
-  DATABASE_URL: DATABASE_URL as string,
-  INVITE_LINK,
-  COLOR,
-  SUPPORT_GUILD_LINK,
-  AUTHOR_LOGO_LINK,
-  AUTHOR,
-  GUILD,
-  INFLUX_URL,
-  INFLUX_TOKEN,
-  INFLUX_ORG,
-  INFLUX_BUCKET,
-  SKIP_COMMAND_UPLOAD,
+	TOKEN: TOKEN as string,
+	APPLICATION_ID: APPLICATION_ID as string,
+	HOSTER_NAME: HOSTER_NAME as string,
+	DATABASE_URL: DATABASE_URL as string,
+	INVITE_LINK,
+	COLOR,
+	SUPPORT_GUILD_LINK,
+	AUTHOR_LOGO_LINK,
+	AUTHOR,
+	GUILD,
+	INFLUX_URL,
+	INFLUX_TOKEN,
+	INFLUX_ORG,
+	INFLUX_BUCKET,
+	SKIP_COMMAND_UPLOAD,
 };

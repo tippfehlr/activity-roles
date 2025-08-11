@@ -5,7 +5,7 @@ import { initBot } from './modules/bot';
 import { log } from './modules/messages';
 
 process.on('unhandledRejection', (reason, _) => {
-  log.error(reason);
+	log.error(reason);
 });
 
 async function main() {

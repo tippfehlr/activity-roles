@@ -3,83 +3,84 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from "kysely";
+import type { ColumnType } from 'kysely';
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+	T extends ColumnType<infer S, infer I, infer U>
+		? ColumnType<S, I | undefined, U>
+		: ColumnType<T, T | undefined, T>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface ActiveTemporaryRoles {
-  guildID: string;
-  roleID: string;
-  userID: string;
+	guildID: string;
+	roleID: string;
+	userID: string;
 }
 
 export interface ActiveTemporaryRolesHashed {
-  guildID: string;
-  roleID: string;
-  userIDHash: string;
+	guildID: string;
+	roleID: string;
+	userIDHash: string;
 }
 
 export interface ActivityRoles {
-  activityName: string;
-  details: string;
-  exact: Generated<boolean>;
-  guildID: string;
-  permanent: Generated<boolean>;
-  removeAfterDays: number | null;
-  roleID: string;
-  state: string;
+	activityName: string;
+	details: string;
+	exact: Generated<boolean>;
+	guildID: string;
+	permanent: Generated<boolean>;
+	removeAfterDays: number | null;
+	roleID: string;
+	state: string;
 }
 
 export interface ActivityStats {
-  activityName: string;
-  count: Generated<number>;
-  guildID: string;
+	activityName: string;
+	count: Generated<number>;
+	guildID: string;
 }
 
 export interface Guilds {
-  approxMemberCount: number | null;
-  approxMemberCountLastUpdate: Timestamp | null;
-  guildID: string;
-  lastCheckRoles: Timestamp | null;
-  requiredRoleID: string | null;
+	approxMemberCount: number | null;
+	approxMemberCountLastUpdate: Timestamp | null;
+	guildID: string;
+	lastCheckRoles: Timestamp | null;
+	requiredRoleID: string | null;
 }
 
 export interface ScheduledRoleActions {
-  action: string;
-  guildID: string;
-  roleID: string;
-  scheduledDate: Timestamp;
-  userID: string;
+	action: string;
+	guildID: string;
+	roleID: string;
+	scheduledDate: Timestamp;
+	userID: string;
 }
 
 export interface StatusRoles {
-  guildID: string;
-  roleID: string;
-  type: number;
+	guildID: string;
+	roleID: string;
+	type: number;
 }
 
 export interface Users {
-  autorole: Generated<boolean>;
-  userID: string;
+	autorole: Generated<boolean>;
+	userID: string;
 }
 
 export interface UsersHashed {
-  autorole: Generated<boolean>;
-  userIDHash: string;
+	autorole: Generated<boolean>;
+	userIDHash: string;
 }
 
 export interface DB {
-  activeTemporaryRoles: ActiveTemporaryRoles;
-  activeTemporaryRolesHashed: ActiveTemporaryRolesHashed;
-  activityRoles: ActivityRoles;
-  activityStats: ActivityStats;
-  guilds: Guilds;
-  scheduledRoleActions: ScheduledRoleActions;
-  statusRoles: StatusRoles;
-  users: Users;
-  usersHashed: UsersHashed;
+	activeTemporaryRoles: ActiveTemporaryRoles;
+	activeTemporaryRolesHashed: ActiveTemporaryRolesHashed;
+	activityRoles: ActivityRoles;
+	activityStats: ActivityStats;
+	guilds: Guilds;
+	scheduledRoleActions: ScheduledRoleActions;
+	statusRoles: StatusRoles;
+	users: Users;
+	usersHashed: UsersHashed;
 }
