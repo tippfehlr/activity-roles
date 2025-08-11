@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 /*
  *  This file is commented out to remove the dependency on better-sqlite3,

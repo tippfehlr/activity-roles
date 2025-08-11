@@ -1,5 +1,6 @@
 #!/usr/bin/env fish
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 set oldversion (cat package.json | jq -r .version)
 set newversion (git cliff --bumped-version | cut -c 2-)

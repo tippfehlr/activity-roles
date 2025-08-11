@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { client } from '../bot';
 import { checkRolesStandalone } from '../commands/checkRoles';
 import { db } from '../db';
