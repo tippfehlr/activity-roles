@@ -26,6 +26,7 @@ export async function executeScheduledRoleActions() {
         stats.added += 1;
       } catch (error) {
         log.error(
+          error,
           `scheduledRoleActions: should assign role ${action.roleID} to user ` +
             `${user.nickname} (${user.id}) on guild ${guild.name} (${guild.id}) ` +
             'but it (probably) doesn’t exist.',
@@ -45,6 +46,7 @@ export async function executeScheduledRoleActions() {
         stats.removed += 1;
       } catch (error) {
         log.error(
+          error,
           `scheduledRoleActions: should remove role ${action.roleID} to user ` +
             `${user.nickname} (${user.id}) on guild ${guild.name} (${guild.id}) ` +
             'but it (probably) doesn’t exist.',

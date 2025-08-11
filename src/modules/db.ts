@@ -49,7 +49,7 @@ export async function initDB() {
   });
 
   if (error) {
-    log.error('failed to migrate', error);
+    log.error(error, 'failed to migrate');
     process.exit(1);
   }
 }

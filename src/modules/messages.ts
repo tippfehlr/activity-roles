@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { pino } from 'pino';
+import pino from 'pino';
 import { I18n } from 'i18n';
 import { Locale } from 'discord.js';
 
