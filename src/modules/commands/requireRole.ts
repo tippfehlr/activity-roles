@@ -59,7 +59,7 @@ export default {
           .execute();
         interaction.reply({
           content:
-            ':white_check_mark: ' + __({ phrase: 'requireRole->success', locale }, `<&${role.id}>`),
+            ':white_check_mark: ' + __({ phrase: 'requireRole->success', locale }, `<@&${role.id}>`),
           flags: MessageFlags.Ephemeral,
         });
       }
