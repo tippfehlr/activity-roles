@@ -114,7 +114,7 @@
     "activityNameTooLong": "La longueur maximale pour les noms d'activité est de %s caractères.",
     "removeAfterDaysDescription": "supprime les rôles après x jours sans activité. Fonctionne uniquement avec l'option permanent = true",
     "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false",
-    "stateDescription": "correspond à la deuxième ligne. Correspond également au statut personnalisé si activity_name est 'Statut personnalisé'",
+    "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
     "detailsDescription": "correspond à la première ligne après le nom de l'activité",
     "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
   },

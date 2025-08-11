@@ -63,7 +63,7 @@
   "Watching": "Schaut",
   "Custom": "Benutzerdefiniert",
   "Competing": "Competing",
-  "the role to assign. To remove the role, omit this option": "the role to assign. To remove the role, omit this option",
+  "the role to assign. To remove the role, omit this option": "die Rolle, die zugewiesen werden soll. Um die Rolle zu entfernen, ignorieren Sie diese Option",
   "The status role for **%s** is now <@&%s>!": "Die Statusrolle für **%s** ist jetzt <@&%s>!",
   "the status role for **%s** already is <@&%s>!": "die Status-Rolle für **%s** ist bereits <@&%s>!",
   "The status role for **%s** has been deleted.": "Die Statusrolle für **%s** wurde gelöscht.",
@@ -86,15 +86,15 @@
   "Live": "Live",
   "help": {
     "description": "Zeigt das Hilfe-Menü",
-    "reply-description": "A Discord bot for automatic role assignment based on activities.\nSupport/Suggestions: {{{support}}}\nGitHub: {{{github}}}\nContact: {{{contact}}}\n\nAdd an activity role with `/addactivityrole`. By default, the bot will remove the role again when the activity ends.\nIf `permanent` is set to true, the bot will not remove the role.\nIf `exact_activity_name` is true, the bot will only accept exact matches.\nSet a status role with `/setstatusrole`!\n**The bot will not remove any roles that were added manually.**\n\nI don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.\n{{{sponsor_links}}}\n",
-    "reply-footer": "Made by tippfehlr"
+    "reply-description": "Ein Discord Bot für automatische Rollenzuweisung basierend auf Aktivitäten.\nSupport/Vorschläge: {{{support}}}\nGitHub: {{{github}}}\nKontakt: {{{contact}}}\n\nFügen Sie eine Activity Role mit `/addactivityrole` hinzu. Standardmäßig wird der Bot die Rolle wieder entfernen, wenn die Aktivität endet.\nWenn `permanent` auf true gesetzt ist, wird der Bot die Rolle nicht entfernen.\nWenn `exact_activity_name` auf true gesetzt ist, akzeptiert der Bot nur genaue Übereinstimmungen.\nLege eine Statusrolle mit `/setstatusrole` fest!\n**Der Bot wird keine Rollen entfernen, die manuell hinzugefügt wurden. *\n\nIch benutze den Bot nicht. Wenn du die Entwicklung beschleunigen möchtest oder mir helfen willst, für den Server zu bezahlen, bitte unterstütze mich.\n{{{sponsor_links}}}\n",
+    "reply-footer": "Ein Projekt von Tippfehlr"
   },
   "deleteactivityrole": {
     "description": {
       "all": "ACHTUNG: LÖSCHT ALLE AKTIVITÄTSROLLEN"
     }
   },
-  "Activities (sorted by frequency)": "Activities (sorted by frequency)",
+  "Activities (sorted by frequency)": "Aktivitäten (nach Häufigkeit sortiert)",
   "checkRoles": {
     "description": "re-check all users/roles",
     "success": "checked {{{usersChecked}}} users, added {{{added}}} and removed {{{removed}}} roles",
@@ -102,18 +102,18 @@
     "askForManageRolesPermission": "I don’t have the `MANAGE_ROLES` permission but need it to assign roles.\n Please add the permission to the “Activity Roles” role. Otherwise the bot will leave the guild automatically.",
     "alreadyRunning": "A `/checkroles` request is already running for this guild."
   },
-  "Cancelled": "Cancelled",
+  "Cancelled": "Abgebrochen",
   "deleteActivityRole": {
-    "noRoleDeleted": "No activity roles were deleted.",
-    "deletedRoles": "Deleted Activity Roles:"
+    "noRoleDeleted": "Keine Activity Roles wurden gelöscht.",
+    "deletedRoles": "Gelöschte Activity Roles:"
   },
   "addActivityRole": {
-    "roleselector": "Please select a role for '%s'",
-    "createRole": "Create %s",
+    "roleselector": "Bitte wähle eine Rolle für '%s'",
+    "createRole": "Erstelle %s",
     "createRoleDescription": "Create a new role with the name '%s'",
-    "activityNameTooLong": "The maximum length for activity names is %s characters.",
-    "removeAfterDaysDescription": "remove roles again after x days with no activity. Only works with permanent = true",
-    "removeAfterDaysButNotPermanent": "`remove_after_roles` can’t be used with permanent = false",
+    "activityNameTooLong": "Die maximale Länge für Activity Namen ist %s Zeichen.",
+    "removeAfterDaysDescription": "Rollen nach x Tagen ohne Aktivität erneut entfernen. Funktioniert nur mit permanent = true",
+    "removeAfterDaysButNotPermanent": "`remove_after_roles` kann nicht mit permanent = false verwendet werden",
     "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
     "detailsDescription": "matches the first line after the activity name",
     "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
@@ -138,7 +138,7 @@
     "roleNotValid": "%s is not a valid role for status roles."
   },
   "listRoles": {
-    "requiredRole": "Required role: %s",
+    "requiredRole": "Benötigte Rolle: %s",
     "requiredRoleExplanation": "Members need this role to receive roles from this bot."
   },
   "requireRole": {
@@ -149,17 +149,17 @@
     "roleAlreadySet": "%s is already set as the required role.",
     "success": "Required role is now %s. Members will need it to get activity/status roles."
   },
-  "remove after days": "remove after days",
+  "remove after days": "nach Tagen entfernen",
   "after %s day": {
-    "one": "after %s day",
-    "other": "after %s days"
+    "one": "nach %s Tag",
+    "other": "nach %s Tagen"
   },
-  "Remove roles": "Remove roles",
+  "Remove roles": "Rollen entfernen",
   "%s day": {
-    "one": "%s day",
-    "other": "%s days"
+    "one": "%s Tag",
+    "other": "%s Tage"
   },
-  "Exact": "Exact",
+  "Exact": "Genau",
   "State": "State",
   "Details": "Details",
   "Role id": "Role id",
