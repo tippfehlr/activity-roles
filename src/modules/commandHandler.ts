@@ -2,12 +2,12 @@
 
 import {
 	Client,
-	CommandInteraction,
 	InteractionType,
 	SlashCommandBuilder,
 	REST,
 	Routes,
 	MessageFlags,
+	ChatInputCommandInteraction,
 } from 'discord.js';
 
 import config from './config';
@@ -16,7 +16,7 @@ import { log, __ } from './messages';
 
 export interface Command {
 	data: SlashCommandBuilder;
-	execute(interaction: CommandInteraction): Promise<void>;
+	execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }
 
 export default class CommandHandler {
@@ -29,6 +29,7 @@ export default class CommandHandler {
 
 		client.on('interactionCreate', async interaction => {
 			if (interaction.type !== InteractionType.ApplicationCommand) return;
+			if (!interaction.isChatInputCommand()) return;
 			const command = this.commands.get(interaction.commandName);
 			if (!command) return;
 			try {
