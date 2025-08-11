@@ -8,6 +8,7 @@ import {
   Guild,
   GuildMember,
   PermissionsBitField,
+  Presence,
   PresenceStatus,
 } from 'discord.js';
 import {
@@ -276,94 +277,88 @@ export async function processRoles({
   return status;
 }
 
-export function initPresenceUpdate() {
-  // PresenceUpdate fires once for every guild the bot shares with the user
-  client.on(Events.PresenceUpdate, async (oldMember, newMember) => {
-    if (newMember.user?.bot) return;
-    const startTime = Date.now();
-    stats.presenceUpdates++;
+// PresenceUpdate fires once for every guild the bot shares with the user
+export async function presenceUpdate(oldMember: Presence | null, newMember: Presence) {
+  if (newMember.user?.bot) return;
+  const startTime = Date.now();
+  stats.presenceUpdates++;
 
-    // no activities changed
-    // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
-    if (!newMember.guild) return;
-    const guildID = newMember.guild.id;
-    if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-      await newMember.guild.leave();
-      log.warn(
-        `MISSING ACCESS: LEFT guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`,
-      );
-      return;
-    }
+  // no activities changed
+  // if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
+  if (!newMember.guild) return;
+  const guildID = newMember.guild.id;
+  if (!newMember.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+    await newMember.guild.leave();
+    log.warn(
+      `MISSING ACCESS: LEFT guild: ${newMember.guild.name} (ID: ${guildID}, OwnerID: ${newMember.guild.ownerId}), Permission: MANAGE_ROLES`,
+    );
+    return;
+  }
 
-    const userIDHash = hashUserID(newMember.userId);
-    const guildConfig = await getGuildConfig(guildID);
-    if (
-      guildConfig.requiredRoleID !== null &&
-      !newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
-    ) {
-      return;
-    }
+  const userIDHash = hashUserID(newMember.userId);
+  const guildConfig = await getGuildConfig(guildID);
+  if (
+    guildConfig.requiredRoleID !== null &&
+    !newMember.member?.roles.cache.has(guildConfig.requiredRoleID)
+  ) {
+    return;
+  }
 
-    const addedActivities = newMember?.activities.filter(activity => {
-      return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
-    });
+  const addedActivities = newMember?.activities.filter(activity => {
+    return !oldMember?.activities.find(oldActivity => oldActivity.name === activity.name);
+  });
 
-    // statistics for activityStats
-    for (const activity of addedActivities) {
-      if (activity.name !== 'Custom Status') addActivity(guildID, activity.name);
-    }
+  // statistics for activityStats
+  for (const activity of addedActivities) {
+    if (activity.name !== 'Custom Status') addActivity(guildID, activity.name);
+  }
 
-    const statusRoles = await getStatusRoles(guildID);
-    const activityRoles = await getActivityRoles(guildID);
+  const statusRoles = await getStatusRoles(guildID);
+  const activityRoles = await getActivityRoles(guildID);
 
-    const activeTemporaryRoles = await db
-      .selectFrom('activeTemporaryRoles')
+  const activeTemporaryRoles = await db
+    .selectFrom('activeTemporaryRoles')
+    .selectAll()
+    .where('userID', '=', newMember.userId)
+    .where('guildID', '=', guildID)
+    .execute();
+  if (activeTemporaryRoles.length === 0) {
+    const activeTemporaryRolesHashed = await db
+      .selectFrom('activeTemporaryRolesHashed')
       .selectAll()
-      .where('userID', '=', newMember.userId)
+      .where('userIDHash', '=', userIDHash)
       .where('guildID', '=', guildID)
       .execute();
-    if (activeTemporaryRoles.length === 0) {
-      const activeTemporaryRolesHashed = await db
-        .selectFrom('activeTemporaryRolesHashed')
-        .selectAll()
-        .where('userIDHash', '=', userIDHash)
-        .where('guildID', '=', guildID)
+
+    for (const role of activeTemporaryRolesHashed) {
+      activeTemporaryRoles.push({
+        userID: newMember.userId,
+        roleID: role.roleID,
+        guildID: role.guildID,
+      });
+      await db
+        .insertInto('activeTemporaryRoles')
+        .values({ userID: newMember.userId, roleID: role.roleID, guildID: role.guildID })
+        .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
         .execute();
-
-      for (const role of activeTemporaryRolesHashed) {
-        activeTemporaryRoles.push({
-          userID: newMember.userId,
-          roleID: role.roleID,
-          guildID: role.guildID,
-        });
-        await db
-          .insertInto('activeTemporaryRoles')
-          .values({ userID: newMember.userId, roleID: role.roleID, guildID: role.guildID })
-          .onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
-          .execute();
-      }
-      db.deleteFrom('activeTemporaryRolesHashed').where('userIDHash', '=', userIDHash).execute();
     }
+    db.deleteFrom('activeTemporaryRolesHashed').where('userIDHash', '=', userIDHash).execute();
+  }
 
-    // return if guild doesn’t have any roles
-    if (
-      statusRoles.length === 0 &&
-      activityRoles.length === 0 &&
-      activeTemporaryRoles.length === 0
-    ) {
-      return;
-    }
-    if (!newMember.member) return;
-    await processRoles({
-      memberStatus: newMember.status,
-      statusRoles,
-      activities: newMember.activities,
-      activityRoles,
-      guild: newMember.guild,
-      member: newMember.member,
-      activeTemporaryRoles,
-    });
-
-    writeIntPoint('presence_updates', 'took_time', Date.now() - startTime);
+  // return if guild doesn’t have any roles
+  if (statusRoles.length === 0 && activityRoles.length === 0 && activeTemporaryRoles.length === 0) {
+    return;
+  }
+  if (!newMember.member) return;
+  await processRoles({
+    memberStatus: newMember.status,
+    statusRoles,
+    activities: newMember.activities,
+    activityRoles,
+    guild: newMember.guild,
+    member: newMember.member,
+    activeTemporaryRoles,
   });
+
+  writeIntPoint('presence_updates', 'took_time', Date.now() - startTime);
 }

@@ -5,8 +5,8 @@ import Discord, { Events, GatewayIntentBits, Options } from 'discord.js';
 import { getGuildConfig, roleRemoved } from './db';
 import config from './config';
 import { log } from './messages';
-import { initClientReady } from './bot.ready';
-import { initPresenceUpdate } from './bot.presenceUpdate';
+import { clientReady } from './bot.ready';
+import { presenceUpdate } from './bot.presenceUpdate';
 
 export const client = new Discord.Client({
   intents: [
@@ -57,31 +57,28 @@ export function resetStats() {
   stats.webSocketErrors = 0;
 }
 
-client.on(Events.GuildCreate, guild => {
-  log.info(`Joined guild ${guild.name}(${guild.id})`);
-  getGuildConfig(guild.id);
-});
+export function initBot() {
+  client.on(Events.GuildCreate, guild => {
+    log.info(`Joined guild ${guild.name}(${guild.id})`);
+    getGuildConfig(guild.id);
+  });
 
-client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name}(${guild.id})`));
+  client.on(Events.GuildDelete, guild => log.info(`Left guild ${guild.name}(${guild.id})`));
 
-client.on(Events.Error, error => {
-  log.error(error, 'The Discord WebSocket has encountered an error');
-  stats.webSocketErrors++;
-  if (error.message === 'driver has already been destroyed') {
-    process.exit();
-  }
-});
+  client.on(Events.Error, error => {
+    log.error(error, 'The Discord WebSocket has encountered an error');
+    stats.webSocketErrors++;
+    if (error.message === 'driver has already been destroyed') {
+      process.exit();
+    }
+  });
 
-process.on('unhandledRejection', (reason, _) => {
-  log.error(reason);
-});
+  client.on(Events.GuildRoleDelete, role => {
+    roleRemoved(role.id, role.guild.id);
+  });
 
-client.on(Events.GuildRoleDelete, role => {
-  roleRemoved(role.id, role.guild.id);
-});
+  client.on(Events.ClientReady, clientReady);
+  client.on(Events.PresenceUpdate, presenceUpdate);
 
-export function connect() {
-  initClientReady();
-  initPresenceUpdate();
-  return client.login(config.TOKEN);
+  client.login(config.TOKEN);
 }
