@@ -36,6 +36,7 @@
     "kysely-codegen": "./node_modules/.bin/kysely-codegen --out-file src/modules/db.types.ts",
     "docker-push": "docker buildx build --platform=linux/amd64,linux/arm64 -t ghcr.io/tippfehlr/activity-roles:test --push .",
     "mkdocs": "docker run --rm -it -e UID=1000 -e GID=1000 -p 8000:8000 -v ./docs:/docs squidfunk/mkdocs-material",
-    "release": "./release.fish"
+    "release": "./release.fish",
+    "format": "prettier -w src/*"
   }
 }
