@@ -10,11 +10,6 @@ A Discord bot for automatic role assignment based on activities. \
 Please join the [support guild](https://discord.gg/3K9Yx4ufN7) for the latest updates and infos. \
 Initially inspired by [Game Roles](https://top.gg/bot/511010215290863636).
 
----
-
-I don’t use the bot myself. If you want to speed up development or help
-me pay for the server, please consider supporting me ([GitHub Sponsors](https://github.com/sponsors/tippfehlr) or [Ko-fi](https://ko-fi.com/Z8Z7SYDDJ)).
-
 ## Configuration
 
 **The bot will not remove any roles that were added manually.**
@@ -49,7 +44,7 @@ Available translations:
 [![German translation](https://img.shields.io/badge/dynamic/json?color=blue&label=German&style=for-the-badge&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/de)
 [![Russian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Russian&style=for-the-badge&logo=crowdin&query=%24.progress.4.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085-update.json)](https://crowdin.com/project/activity-roles/ru)
 [![Ukrainian translation](https://img.shields.io/badge/dynamic/json?color=blue&label=Ukranian&style=for-the-badge&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/uk)
-[![French translation](<https://img.shields.io/badge/dynamic/json?color=blue&label=French&style=for-the-badge&logo=crowdin&query=%24.progress[?(@.data.languageId==%27fr%27)].data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json>)](https://crowdin.com/project/activity-roles/fr) \
+[![French translation](https://img.shields.io/badge/dynamic/json?color=blue&label=French&style=for-the-badge&logo=crowdin&query=%24.progress.2.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-15099081-554085.json)](https://crowdin.com/project/activity-roles/fr) \
 Help translate the bot on [Crowdin](https://crowdin.com/project/activity-roles).
 
 #### Thanks:
