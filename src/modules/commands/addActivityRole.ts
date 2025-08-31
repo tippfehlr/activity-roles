@@ -382,7 +382,7 @@ async function process(
 									locale,
 									count: r.removeAfterDays,
 								})
-							: '–',
+							: '-',
 					},
 					{ name: __({ phrase: 'State', locale }), value: r.state ?? '-' },
 					{ name: __({ phrase: 'Details', locale }), value: r.details ?? '-' },
