@@ -5,12 +5,12 @@ import {
 	Activity,
 	ActivityType,
 	CommandInteraction,
-	Events,
 	Guild,
 	GuildMember,
 	PermissionsBitField,
 	Presence,
 	PresenceStatus,
+	Role,
 } from 'discord.js';
 import {
 	addActivity,
@@ -28,6 +28,15 @@ import { writeIntPoint } from './metrics';
 import { client, stats } from './bot';
 import { Selectable } from 'kysely';
 import { ActiveTemporaryRoles, ActivityRoles, StatusRoles } from './db.types';
+
+export class RolePermissionsError extends Error {
+	role: Role;
+	constructor(role: Role) {
+		super('');
+		this.name = 'RolePermissionsError';
+		this.role = role;
+	}
+}
 
 export function checkActivityName({
 	activityRole: r,
@@ -68,6 +77,9 @@ export enum addRoleStatus {
 	RoleRemoved,
 }
 
+/**
+ * @throws NoRolePermissionsError when interaction is passed and role permissions are not met for some role
+ */
 export async function addDiscordRoleToMember({
 	change,
 	roleID,
@@ -84,7 +96,7 @@ export async function addDiscordRoleToMember({
 	member: GuildMember;
 	interaction?: CommandInteraction;
 	removeAfterDays: number | null;
-}): Promise<addRoleStatus | 'abort' | undefined> {
+}): Promise<addRoleStatus | undefined> {
 	const role = guild.roles.cache.get(roleID);
 	if (!role) {
 		roleRemoved(roleID, guild.id);
@@ -106,7 +118,7 @@ export async function addDiscordRoleToMember({
 					`<@&${role.id}>`,
 				),
 			});
-			return 'abort';
+			throw new RolePermissionsError(role); // only abort when /checkroles. Other roles could be ok.
 		} else {
 			log.warn(
 				`Role ${role.name} is higher than the bot’s highest role and was \
@@ -163,6 +175,9 @@ skipped (in guild ${guild.name})`,
 	}
 }
 
+/**
+ * @throws NoRolePermissionsError when interaction is passed and role permissions are not met for some role
+ */
 export async function processRoles({
 	memberStatus,
 	statusRoles,
@@ -181,7 +196,7 @@ export async function processRoles({
 	member: GuildMember;
 	activeTemporaryRoles: Selectable<ActiveTemporaryRoles>[];
 	interaction?: CommandInteraction;
-}): Promise<{ added: number; removed: number } | 'abort'> {
+}): Promise<{ added: number; removed: number }> {
 	const status = { added: 0, removed: 0 };
 	if (member.user.bot) return status;
 
@@ -221,8 +236,6 @@ export async function processRoles({
 			case addRoleStatus.RoleRemoved:
 				status.removed++;
 				break;
-			case 'abort':
-				return 'abort';
 		}
 	};
 	// if user is offline, skip checking for added activities
@@ -268,21 +281,17 @@ export async function processRoles({
 		// ------------ “apply changes” ------------
 
 		for (const [roleID, removeAfterDays] of permanentRoleIDsToBeAdded) {
-			if ((await addRoleHelper(roleID, 'add', true, removeAfterDays)) === 'abort')
-				return 'abort';
+			await addRoleHelper(roleID, 'add', true, removeAfterDays);
 		}
 		for (const roleID of tempRoleIDsToBeAdded) {
-			if ((await addRoleHelper(roleID, 'add', false, null)) === 'abort') return 'abort';
+			await addRoleHelper(roleID, 'add', false, null);
 		}
 	}
 
 	// remove temporary roles
 	for (const activeTemporaryRole of activeTemporaryRoles) {
 		if (!tempRoleIDsToBeAdded.has(activeTemporaryRole.roleID)) {
-			if (
-				(await addRoleHelper(activeTemporaryRole.roleID, 'remove', false, null)) === 'abort'
-			)
-				return 'abort';
+			await addRoleHelper(activeTemporaryRole.roleID, 'remove', false, null);
 		}
 	}
 	return status;
@@ -365,15 +374,23 @@ export async function presenceUpdate(oldMember: Presence | null, newMember: Pres
 		return;
 	}
 	if (!newMember.member) return;
-	await processRoles({
-		memberStatus: newMember.status,
-		statusRoles,
-		activities: newMember.activities,
-		activityRoles,
-		guild: newMember.guild,
-		member: newMember.member,
-		activeTemporaryRoles,
-	});
+	try {
+		await processRoles({
+			memberStatus: newMember.status,
+			statusRoles,
+			activities: newMember.activities,
+			activityRoles,
+			guild: newMember.guild,
+			member: newMember.member,
+			activeTemporaryRoles,
+		});
+	} catch (error) {
+		if (error instanceof RolePermissionsError) {
+			log.warn('NoRolePermissionsError should only be thrown when an interaction is passed');
+		} else {
+			throw error;
+		}
+	}
 
 	writeIntPoint('presence_updates', 'took_time', Date.now() - startTime);
 }

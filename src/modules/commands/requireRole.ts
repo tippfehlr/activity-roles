@@ -29,7 +29,7 @@ export default {
 					discordTranslations('requireRole->roleOptionDescription'),
 				),
 		),
-	execute: async (interaction) => {
+	execute: async interaction => {
 		const locale = getLang(interaction);
 		const role = interaction.options.get('role')?.role;
 		const guildConfig = await getGuildConfig(interaction.guildId!);

@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { addDiscordRoleToMember, processRoles, addRoleStatus } from './../bot.presenceUpdate';
+import {
+	addDiscordRoleToMember,
+	processRoles,
+	addRoleStatus,
+	RolePermissionsError,
+} from './../bot.presenceUpdate';
 import { Command } from '../commandHandler';
 
 import { __, discordTranslations, log } from '../messages';
@@ -145,24 +150,26 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
 			log.error('member not available');
 			continue;
 		}
-		const res = await processRoles({
-			memberStatus: presence.status,
-			statusRoles,
-			activities: presence.activities,
-			activityRoles,
-			activeTemporaryRoles,
-			guild,
-			member: presence.member,
-			interaction,
-		});
-		// res can only be 'abort' when interaction is passed.
-		// check for this nonetheless because it could change in the future.
-		if (res === 'abort') {
-			if (interaction && locale) {
+		let res;
+		try {
+			res = await processRoles({
+				memberStatus: presence.status,
+				statusRoles,
+				activities: presence.activities,
+				activityRoles,
+				activeTemporaryRoles,
+				guild,
+				member: presence.member,
+				interaction,
+			});
+		} catch (error) {
+			if (error instanceof RolePermissionsError) {
 				clearInterval(interval);
+				checkrolesCurrentGuilds.delete(guild.id);
+				return;
+			} else {
+				throw error;
 			}
-			checkrolesCurrentGuilds.delete(guild.id);
-			return;
 		}
 		status.rolesAdded += res.added;
 		status.rolesRemoved += res.removed;
