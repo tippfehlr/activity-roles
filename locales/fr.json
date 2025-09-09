@@ -1,6 +1,6 @@
 {
   "Adds an activity role to your guild.": "Ajoute un rôle d'activité à votre serveur.",
-  "If not provided, the bot will look for roles with the same name or create a new one": "S'il n'est pas fourni, le bot recherchera des rôles avec le même nom ou en créera un nouveau",
+  "If not provided, the bot will look for roles with the same name or create a new one": "S'il n'est pas fourni, le robot recherchera des rôles avec le même nom ou en créera un nouveau",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Si faux, le nom d'activité \"Chrome\" déclenchera également pour \"Google Chrome\"",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Supprime un rôle d'activité de votre serveur. Indiquez l'activité ou le rôle, ou les deux.",
   "the activity roles with this name will be deleted": "les rôles d'activité avec ce nom seront supprimés",
@@ -44,7 +44,7 @@
   "No activity stats found.": "Pas de statistiques d'activité trouvées.",
   "role to assign on LISTENING/WATCHING/etc.": "rôle à assigner sur ÉCOUTE/REGARDE/etc.",
   "the event the user must have to receive the role": "l'évènement que l'utilisateur doit avoir pour recevoir le rôle",
-  "Playing": "Joue",
+  "Playing": "Joue à",
   "Streaming": "Diffuse",
   "Listening": "Écoute",
   "Watching": "Regarde",
@@ -73,7 +73,7 @@
   "checkRoles": {
     "description": "re-vérifie tous les utilisateurs/rôles",
     "success": "vérifié {{{usersChecked}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles",
-    "in-progress": "EN COURS : a déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, a ajouté {{{added}}} et a supprimé {{{removed}}} rôles.",
+    "in-progress": "EN COURS : déjà vérifié {{{usersChecked}}}/{{{totalUsersToCheck}}} utilisateurs, ajouté {{{added}}} et retiré {{{removed}}} rôles.",
     "askForManageRolesPermission": "Je n'ai pas la permission `GERER_LES_RÔLES` mais j'en ai besoin pour assigner des rôles.\n Veuillez ajouter la permission au rôle \"Activity Roles\". Sinon, le robot quittera automatiquement le serveur.",
     "alreadyRunning": "Une requête `/checkroles` est déjà en cours d'exécution pour ce serveur."
   },
@@ -81,9 +81,9 @@
   "deleteActivityRole": {
     "noRoleDeleted": "Aucun rôle d'activité n'a été supprimé.",
     "deletedRoles": "Rôles D'activité Supprimés :",
-    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?",
+    "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?",
     "description": {
-      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+      "all": "ATTENTION : SUPPRIME TOUS LES RÔLES D'ACTIVITÉ"
     }
   },
   "addActivityRole": {
@@ -93,12 +93,12 @@
     "activityNameTooLong": "La longueur maximale pour les noms d'activité est de %s caractères.",
     "removeAfterDaysDescription": "supprime les rôles après x jours sans activité. Fonctionne uniquement avec l'option permanent = true",
     "removeAfterDaysButNotPermanent": "`remove_after_roles` ne peut pas être utilisé avec l'option permanent = false",
-    "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
+    "stateDescription": "correspond à la 2ème ligne. Correspond aussi au statut si activity_name est \"Statut personnalisé\"",
     "detailsDescription": "correspond à la première ligne après le nom de l'activité",
-    "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
+    "activityDescription": "nom de l’activité Discord. Mettez \"Statut personnalisé\" et utilisez l'état pour un statut perso"
   },
   "presenceUpdate": {
-    "roleHigherThanBotRole": "Je n'ai pas l'autorisation de gérer %s parce qu'il est plus élevé hiérarchiquement que mon rôle le plus élevé.\nVeuillez déplacer l'un de mes rôles au-dessus de tous les rôles d'activité."
+    "roleHigherThanBotRole": "Je n'ai pas la permission de gérer %s parce qu'il est plus élevé hiérarchiquement que mon rôle le plus élevé.\nVeuillez déplacer l'un de mes rôles au-dessus de tous les rôles d'activité."
   },
   "reset": {
     "description": "réinitialise le robot pour ce serveur",
@@ -140,6 +140,6 @@
   "Role id": "Identifiant du rôle",
   "never": "jamais",
   "stats": {
-    "response": "The bot currently serves **{{{guilds}}}** and manages **{{{activityRoles}}}** and **{{{statusRoles}}}**."
+    "response": "Le robot sert actuellement **{{{guilds}}}** et gère **{{{activityRoles}}}** pour **{{{statusRoles}}}**."
   }
 }
