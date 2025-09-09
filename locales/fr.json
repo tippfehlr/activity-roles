@@ -1,12 +1,10 @@
 {
   "Adds an activity role to your guild.": "Ajoute un rôle d'activité à votre serveur.",
-  "the name of the discord activity": "le nom de l'activité Discord",
   "If not provided, the bot will look for roles with the same name or create a new one": "S'il n'est pas fourni, le bot recherchera des rôles avec le même nom ou en créera un nouveau",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Si faux, le nom d'activité \"Chrome\" déclenchera également pour \"Google Chrome\"",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Supprime un rôle d'activité de votre serveur. Indiquez l'activité ou le rôle, ou les deux.",
   "the activity roles with this name will be deleted": "les rôles d'activité avec ce nom seront supprimés",
   "the activity roles of this role will be deleted": "les rôles d'activité de ce rôle seront supprimés",
-  "Shows the help menu": "Affiche le menu d'aide",
   "Lists all activity roles in your guild.": "Liste tous les rôles d'activités dans votre serveur.",
   "Shows some stats about the bot.": "Affiche quelques statistiques à propos du robot.",
   "Enable/Disable automatic role assignment": "Active/Désactive l'ajout automatique des rôles",
@@ -26,14 +24,6 @@
     "one": "%s rôle de statut",
     "other": "%s rôles de statut"
   },
-  "The bot currently serves **%s** and manages **%s** for **%s**.": "Le robot sert actuellement **%s** et gère **%s** pour **%s**.",
-  "Commands": "Commandes",
-  "Made and hosted by %s": "Créé et hébergé par %s",
-  "A Discord bot for automatic role assignment based on activities.\n": "Un robot Discord pour l'ajout automatique de rôles basé sur des activités.\n",
-  "Support/Suggestions: %s\n": "Support/Suggestions : %s\n",
-  "GitHub: %s\n": "GitHub : %s\n",
-  "Contact: %s\n\n": "Contact : %s\n\n",
-  "**The bot will not remove any roles that were added manually.**": "**Le robot ne supprimera pas les rôles qui ont été ajoutés manuellement.**",
   "Success!": "Succès !",
   "activity": "activité",
   "role": "rôle",
@@ -41,9 +31,6 @@
   "You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.": "Vous devez fournir un rôle ou une activité. Si vous fournissez un rôle, tous les rôles d'activité pour ce rôle seront supprimés. Si vous fournissez une activité, tous les rôles d'activité portant ce nom seront supprimés.\nSi vous fournissez les deux, tous les rôles d'activité portant ce nom pour ce rôle seront supprimés.",
   "Activity": "Activité",
   "Role": "Rôle",
-  "Exact Activity Name": "Nom Exact De L'activité",
-  "Deleted Activity Roles:": "Rôles D'activité Supprimés :",
-  "Languages": "Langues",
   "There are no activity roles in this guild.": "Il n'y a pas de rôles d'activité dans ce serveur.",
   "User Status": "Statut De L'utilisateur",
   "The bot is currently **%s** for this user.\n\nYou can change this with the command `/toggleAutoRole`.": "Le robot est actuellement **%s** pour cet utilisateur.\n\nVous pouvez changer cela avec la commande `/toggleAutoRole`.",
@@ -66,33 +53,21 @@
   "the role to assign. To remove the role, omit this option": "le rôle à ajouter. Pour supprimer le rôle, omettez cette option",
   "The status role for **%s** is now <@&%s>!": "Le rôle de statut pour **%s** est maintenant <@&%s> !",
   "the status role for **%s** already is <@&%s>!": "le rôle de statut pour **%s** est déjà <@&%s > !",
-  "The status role for **%s** has been deleted.": "Le rôle de statut pour **%s** a été supprimé.",
-  "There is no status role set for **%s**": "Il n'y a pas de rôle de statut défini pour **%s**",
   "Status Roles": "Rôles De Statut",
-  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "Le robot sert actuellement **%s** et gère **%s** et **%s** pour **%s**.",
   "Lists all managed roles in your guild.": "Liste tous les rôles gérés dans votre serveur.",
   "%s role": {
     "one": "%s rôle",
     "other": "%s rôles"
   },
   "There are no status roles in this guild": "Il n'y a pas de rôles de statut dans ce serveur",
-  "Set a status role with /setstatusrole!": "Définissez un rôle de statut avec /setstatusrole !",
-  "Set a status role with /setstatusrole!\n": "Définissez un rôle de statut avec /setstatusrole !",
   "Permanent": "Permanent",
   "Yes": "Oui",
   ":x: That activity role already exists in this guild! :x:": ":x: Ce rôle d'activité existe déjà dans ce serveur ! :x:",
-  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Je n'utilise pas le robot moi-même. Si vous voulez accélérer le développement ou m'aider à payer pour l'hébergement, s'il vous plaît envisager de me soutenir.",
   "the role will not be removed again if set to true": "le rôle ne sera plus supprimé si défini sur vrai",
-  "Live": "En direct",
   "help": {
     "description": "Affiche le menu d'aide",
-    "reply-description": "Un robot Discord pour l'ajout automatique de rôles basé sur des activités.\nSupport / Suggestions : {{{support}}}\nGitHub : {{{github}}}\nContact : {{{contact}}}\n\nAjoutez un rôle d'activité avec `/addactivityrole`. Par défaut, le robot supprimera le rôle à la fin de l'activité.\nSi `permanent` est défini sur vrai, le robot ne supprimera pas le rôle.\nSi `exact_activity_name` est défini sur vrai, le robot n'acceptera que les correspondances exactes.\nDéfinissez un rôle de statut avec `/setstatusrole` !\n**Le robot ne supprimera aucun rôle qui a été ajouté manuellement. *\n\nJe n'utilise pas le robot moi-même. Si vous voulez accélérer le développement ou m'aider à payer pour le serveur, pensez à me soutenir.\n{{{sponsor_links}}}\n",
+    "reply-description": "Un robot Discord pour l'ajout automatique de rôles basé sur des activités.\nSupport / Suggestions : {{{support}}}\nGitHub : {{{github}}}\nContact : {{{contact}}}\n\nAjoutez un rôle d'activité avec `/addactivityrole`. Par défaut, le robot supprimera le rôle à la fin de l'activité.\nSi `permanent` est défini sur vrai, le robot ne supprimera pas le rôle.\nSi `exact_activity_name` est défini sur vrai, le robot n'acceptera que les correspondances exactes.\nDéfinissez un rôle de statut avec `/setstatusrole` !\n**Le robot ne supprimera aucun rôle qui a été ajouté manuellement. *",
     "reply-footer": "Créé par tippfehlr"
-  },
-  "deleteactivityrole": {
-    "description": {
-      "all": "ATTENTION : SUPPRIME TOUS LES RÔLES D'ACTIVITÉ"
-    }
   },
   "Activities (sorted by frequency)": "Activités (classées par fréquence)",
   "checkRoles": {
@@ -105,7 +80,11 @@
   "Cancelled": "Annulé",
   "deleteActivityRole": {
     "noRoleDeleted": "Aucun rôle d'activité n'a été supprimé.",
-    "deletedRoles": "Rôles D'activité Supprimés :"
+    "deletedRoles": "Rôles D'activité Supprimés :",
+    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?",
+    "description": {
+      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+    }
   },
   "addActivityRole": {
     "roleselector": "Veuillez sélectionner un rôle pour '%s'",
@@ -117,9 +96,6 @@
     "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
     "detailsDescription": "correspond à la première ligne après le nom de l'activité",
     "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
-  },
-  "deleteActivityRoles": {
-    "deleteAllConfirmation": "Êtes-vous sûr de vouloir supprimer tous les rôles d'activité ?"
   },
   "presenceUpdate": {
     "roleHigherThanBotRole": "Je n'ai pas l'autorisation de gérer %s parce qu'il est plus élevé hiérarchiquement que mon rôle le plus élevé.\nVeuillez déplacer l'un de mes rôles au-dessus de tous les rôles d'activité."
@@ -149,7 +125,6 @@
     "roleAlreadySet": "%s est déjà défini comme le rôle exigé.",
     "success": "Le rôle exigé est maintenant %s. Les membres en auront besoin pour obtenir des rôles d'activité/de statut."
   },
-  "remove after days": "retire après les jours",
   "after %s day": {
     "one": "après %s jour",
     "other": "après %s jours"
@@ -163,5 +138,8 @@
   "State": "État",
   "Details": "Détails",
   "Role id": "Identifiant du rôle",
-  "never": "jamais"
+  "never": "jamais",
+  "stats": {
+    "response": "The bot currently serves **{{{guilds}}}** and manages **{{{activityRoles}}}** and **{{{statusRoles}}}**."
+  }
 }

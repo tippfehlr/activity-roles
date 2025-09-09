@@ -1,12 +1,10 @@
 {
   "Adds an activity role to your guild.": "Adiciona um cargo de atividade a seu servidor.",
-  "the name of the discord activity": "o nome da atividade do Discord",
   "If not provided, the bot will look for roles with the same name or create a new one": "Se não for fornecido, o bot irá procurar por cargos com o mesmo nome ou criar um",
   "If false, the activity name 'Chrome' would also trigger for 'Google Chrome'": "Se falso, o nome da atividade 'Chrome' também ativaria para 'Google Chrome'",
   "Deletes an activity role from your guild. Provide the activity or the role, or both.": "Exclui um cargo de atividade do seu servidor. Fornece a atividade ou o cargo, ou ambos.",
   "the activity roles with this name will be deleted": "os cargos de atividade com este nome serão excluídos",
   "the activity roles of this role will be deleted": "os cargos de atividade com este nome serão excluídos",
-  "Shows the help menu": "Mostra o menu de ajuda",
   "Lists all activity roles in your guild.": "Lista todos os cargos de atividades no seu servidor.",
   "Shows some stats about the bot.": "Mostra algumas estatísticas sobre o bot.",
   "Enable/Disable automatic role assignment": "Ativar/Desativar atribuição automática de cargo",
@@ -26,14 +24,6 @@
     "one": "cargo de status %s",
     "other": "cargos de status %s"
   },
-  "The bot currently serves **%s** and manages **%s** for **%s**.": "O bot atualmente serve **%s** e gerência **%s** por **%s**.",
-  "Commands": "Comandos",
-  "Made and hosted by %s": "Criado e hospedado por %s",
-  "A Discord bot for automatic role assignment based on activities.\n": "Um bot do Discord para atribuição automática de cargo com base nas atividades.\n",
-  "Support/Suggestions: %s\n": "Suporte/Sugestões: %s\n",
-  "GitHub: %s\n": "GitHub: %s\n",
-  "Contact: %s\n\n": "Contato: %s\n\n",
-  "**The bot will not remove any roles that were added manually.**": "**O bot não removerá nenhum cargo adicionado manualmente.**",
   "Success!": "Sucesso!",
   "activity": "atividade",
   "role": "cargo",
@@ -41,9 +31,6 @@
   "You need to provide a role or an activity. If you provide a role, all activity roles for that role will be deleted. If you provide an activity, all activity roles with that name will be deleted.\nIf you provide both, all activity roles with that name for that role will be deleted.": "Você precisa fornecer um cargo ou uma atividade. Se você fornecer um cargo, todos os cargos de atividade para esse cargo serão excluídos. Se você fornecer uma atividade, todos os cargos de atividade com esse nome serão apagados.\nSe você fornecer os dois, todos os papéis de atividade com esse nome para esse papel serão excluídos.",
   "Activity": "Atividade",
   "Role": "Cargo",
-  "Exact Activity Name": "Nome exato da atividade",
-  "Deleted Activity Roles:": "Cargos de Atividade Excluídas:",
-  "Languages": "Idiomas",
   "There are no activity roles in this guild.": "Não há nenhum cargo de atividade nesse servidor.",
   "User Status": "Status do usuário",
   "The bot is currently **%s** for this user.\n\nYou can change this with the command `/toggleAutoRole`.": "O bot é atualmente **%s** para este usuário.\n\nVocê pode alterar isso com o comando `/toggleAutoRole`.",
@@ -66,33 +53,21 @@
   "the role to assign. To remove the role, omit this option": "o cargo a receber. Para remover o cargo, omita essa opção",
   "The status role for **%s** is now <@&%s>!": "O cargo de status para **%s** agora é <@&%s>!",
   "the status role for **%s** already is <@&%s>!": "o cargo de status para **%s** já é <@&%s>!",
-  "The status role for **%s** has been deleted.": "O cargo de status para **%s** foi excluído.",
-  "There is no status role set for **%s**": "Não há nenhum cargo de status definido para **%s**",
   "Status Roles": "Cargos de Status",
-  "The bot currently serves **%s** and manages **%s** and **%s** for **%s**.": "O bot atualmente serve **%s** e gerencia **%s** e **%s** para **%s**.",
   "Lists all managed roles in your guild.": "Lista todos os cargos gerenciadas no seu servidor.",
   "%s role": {
     "one": "%s cargo",
     "other": "%s cargos"
   },
   "There are no status roles in this guild": "Não há nenhum cargo de estado nesse servidor",
-  "Set a status role with /setstatusrole!": "Defina um cargo de estado com /setstatusrole!",
-  "Set a status role with /setstatusrole!\n": "Defina um cargo de estado com /setstatusrole!\n",
   "Permanent": "Permanente",
   "Yes": "Sim",
   ":x: That activity role already exists in this guild! :x:": ":x: Esse cargo de atividade já existe nesse servidor! :x:",
-  "I don’t use the bot myself. If you want to speed up development or help me pay for the server, please consider supporting me.": "Eu não uso o bot sozinho. Se você quiser acelerar o desenvolvimento ou me ajudar a pagar pelo servidor, por favor considere me apoiar.",
   "the role will not be removed again if set to true": "o cargo não será removido novamente se definido como 'True'",
-  "Live": "Temporário",
   "help": {
     "description": "Mostra o menu de ajuda",
-    "reply-description": "Um bot do Discord para atribuição automática de cargos com base em atividades.\nSuporte/Sugestões: {{{support}}}\nGitHub: {{{github}}}\nContato: {{{contact}}}\n\nAdicionar um cargo de atividade com `/addactivityrole`. Por padrão, o bot removerá o cargo novamente quando a atividade terminar.\nSe `permanente` estiver definido como true, o bot não removerá o cargo.\nSe `exact_activity_name` for verdadeiro, o bot só aceitará correspondências exatas.\nDefinir um cargo de status com `/setstatusrole`!\n**O bot não removerá nenhum cargo que foi adicionado manualmente. *\n\neu não uso o bot sozinho. Se você quer acelerar o desenvolvimento ou me ajudar a pagar pelo servidor, por favor, considere me apoiar.\n{{{sponsor_links}}}\n",
+    "reply-description": "Um bot do Discord para atribuição automática de cargos com base em atividades.\nSuporte/Sugestões: {{{support}}}\nGitHub: {{{github}}}\nContato: {{{contact}}}\n\nAdicionar um cargo de atividade com `/addactivityrole`. Por padrão, o bot removerá o cargo novamente quando a atividade terminar.\nSe `permanente` estiver definido como true, o bot não removerá o cargo.\nSe `exact_activity_name` for verdadeiro, o bot só aceitará correspondências exatas.\nDefinir um cargo de status com `/setstatusrole`!\n**O bot não removerá nenhum cargo que foi adicionado manualmente. *",
     "reply-footer": "Feito por tippfehlr"
-  },
-  "deleteactivityrole": {
-    "description": {
-      "all": "ATENÇÃO: EXCLUI TODOS OS CARGOS DE ATIVIDADE"
-    }
   },
   "Activities (sorted by frequency)": "Atividades (ordenadas por frequência)",
   "checkRoles": {
@@ -105,7 +80,11 @@
   "Cancelled": "Cancelado",
   "deleteActivityRole": {
     "noRoleDeleted": "Nenhum cargo de atividade foi excluído.",
-    "deletedRoles": "Cargos de Atividade Excluídas:"
+    "deletedRoles": "Cargos de Atividade Excluídas:",
+    "deleteAllConfirmation": "Are you sure you want to delete all activity roles?",
+    "description": {
+      "all": "ATTENTION: DELETES ALL ACTIVITY ROLES"
+    }
   },
   "addActivityRole": {
     "roleselector": "Por favor, selecione um cargo para '%s'",
@@ -117,9 +96,6 @@
     "stateDescription": "matches the second line. Also matches the custom status if activity_name is 'Custom Status'",
     "detailsDescription": "matches the first line after the activity name",
     "activityDescription": "the name of the discord activity. Set this to 'Custom Status' and use state for custom status"
-  },
-  "deleteActivityRoles": {
-    "deleteAllConfirmation": "Tem certeza que deseja excluir todos os cargos de atividade?"
   },
   "presenceUpdate": {
     "roleHigherThanBotRole": "Eu não tenho permissão para gerenciar %s porque é maior que meu cargo de maior valor.\nPor favor, mova um dos meus cargos acima de todos os Cargos de Atividade."
@@ -149,7 +125,6 @@
     "roleAlreadySet": "%s já está definido como um cargo necessário.",
     "success": "O cargo necessário agora é %s. Membros vão precisar dele para obter cargo de atividade/estado."
   },
-  "remove after days": "remover após dias",
   "after %s day": {
     "one": "após %s dia",
     "other": "após %s dias"
@@ -163,5 +138,8 @@
   "State": "State",
   "Details": "Details",
   "Role id": "Role id",
-  "never": "never"
+  "never": "never",
+  "stats": {
+    "response": "The bot currently serves **{{{guilds}}}** and manages **{{{activityRoles}}}** and **{{{statusRoles}}}**."
+  }
 }
