@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.16.0](https://github.com/tippfehlr/activity-roles/compare/v1.15.1..v1.16.0) - 2025-09-09
+
+### Features
+
+- add metrics endpoint ([c031cc9](https://github.com/tippfehlr/activity-roles/commit/c031cc9187bfab99ec5038a2b5ffb7545c849251))
+
+### Bug Fixes
+
+- add missing @ to mention role ([ca87b8f](https://github.com/tippfehlr/activity-roles/commit/ca87b8febf42d81eaf06188edc6b22ef0f5d1a46))
+- update to pino 9.6.0 ([e0147ee](https://github.com/tippfehlr/activity-roles/commit/e0147eec1e5598716135c825149acbe43d216ce0))
+- use same dash for every addActivityRole option ([79e1aa7](https://github.com/tippfehlr/activity-roles/commit/79e1aa723b5781225c4198157ffa39a457f1ec12))
+
+### Documentation
+
+- remove sponsor notice & fix french badge ([b8428c0](https://github.com/tippfehlr/activity-roles/commit/b8428c043dd4285a13e6bd19833de50563cf81f3))
+- remove funding notice from github ([737d9e4](https://github.com/tippfehlr/activity-roles/commit/737d9e4903b6258484c86963a16a0cc3365b7537))
+- remove donation notice ([41b88d1](https://github.com/tippfehlr/activity-roles/commit/41b88d132b4fc5aeb3bf6d4fe710ef516d70657e))
+
 ## [1.15.1](https://github.com/tippfehlr/activity-roles/compare/v1.15.0..v1.15.1) - 2025-04-17
 
 ### Bug Fixes
