@@ -25,33 +25,29 @@ export default {
 				new EmbedBuilder().setColor(config.COLOR).setDescription(
 					__(
 						{
-							phrase: 'The bot currently serves **%s** and manages **%s** and **%s** for **%s**.',
+							phrase: 'stats->response',
 							locale,
 						},
-						i18n.__n({
-							singular: '%s guild',
-							plural: '%s guilds',
-							locale,
-							count: interaction.client.guilds.cache.size,
-						}),
-						i18n.__n({
-							singular: '%s activity role',
-							plural: '%s activity roles',
-							locale,
-							count: await getRowCount('activityRoles'),
-						}),
-						i18n.__n({
-							singular: '%s status role',
-							plural: '%s status roles',
-							locale,
-							count: await getRowCount('statusRoles'),
-						}),
-						i18n.__n({
-							singular: '%s user',
-							plural: '%s users',
-							locale,
-							count: await getUserCount(),
-						}),
+						{
+							guilds: i18n.__n({
+								singular: '%s guild',
+								plural: '%s guilds',
+								locale,
+								count: interaction.client.guilds.cache.size,
+							}),
+							activityRoles: i18n.__n({
+								singular: '%s activity role',
+								plural: '%s activity roles',
+								locale,
+								count: await getRowCount('activityRoles'),
+							}),
+							statusRoles: i18n.__n({
+								singular: '%s status role',
+								plural: '%s status roles',
+								locale,
+								count: await getRowCount('statusRoles'),
+							}),
+						},
 					),
 				),
 			],

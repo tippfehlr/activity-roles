@@ -60,7 +60,7 @@ export default {
 				.setDescription('ATTENTION: DELETES ALL ACTIVITY ROLES')
 				.setDescriptionLocalizations(
 					discordTranslations(
-						'deleteactivityrole->description->all:ATTENTION: DELETES ALL ACTIVITY ROLES',
+						'deleteActivityRole->description->all',
 					),
 				)
 				.setRequired(false),
@@ -83,7 +83,7 @@ export default {
 		if (all) {
 			interaction.reply({
 				content: __({
-					phrase: 'deleteActivityRoles->deleteAllConfirmation:Are you sure you want to delete all activity roles?',
+					phrase: 'deleteActivityRole->deleteAllConfirmation',
 					locale,
 				}),
 				components: [
@@ -223,7 +223,7 @@ function process(
 
 		reply(
 			__({
-				phrase: 'deleteActivityRole->deletedRoles:Deleted Activity Roles:',
+				phrase: 'deleteActivityRole->deletedRoles',
 				locale,
 			}),
 			[filename],
@@ -237,7 +237,7 @@ function process(
 	} else {
 		reply(
 			__({
-				phrase: 'deleteActivityRole->noRoleDeleted:No activity roles were deleted.',
+				phrase: 'deleteActivityRole->noRoleDeleted',
 				locale,
 			}),
 		);
