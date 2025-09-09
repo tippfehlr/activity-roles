@@ -4,12 +4,14 @@
 import { initDB } from './modules/db';
 import { initBot } from './modules/bot';
 import { log } from './modules/messages';
+import { initMetrics } from './modules/metrics';
 
 process.on('unhandledRejection', (reason, _) => {
 	log.error(reason);
 });
 
 async function main() {
+	await initMetrics();
 	await initDB();
 	initBot();
 }

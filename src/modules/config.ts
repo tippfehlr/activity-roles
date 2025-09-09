@@ -25,13 +25,10 @@ const INVITE_LINK = `https://discord.com/api/oauth2/authorize?client_id=${APPLIC
 const COLOR = (process.env.COLOR || '#3695d3') as ColorResolvable;
 const SUPPORT_GUILD_LINK = 'https://discord.gg/3K9Yx4ufN7';
 const AUTHOR_LOGO_LINK = 'https://drive.google.com/uc?id=1c-jP8Znqm72U2kEhoOdP-DzFvpiyJnvd';
-const AUTHOR = 'tippfehlr#3575';
+const AUTHOR = 'tippfehlr';
 const GUILD: string | false = process.env.GUILD || false;
 
-const INFLUX_URL = process.env.INFLUX_URL;
-const INFLUX_TOKEN = process.env.INFLUX_TOKEN;
-const INFLUX_ORG = process.env.INFLUX_ORG;
-const INFLUX_BUCKET = process.env.INFLUX_BUCKET;
+const METRICS_PORT = Number(process.env.METRICS_PORT) || 8080;
 
 const SKIP_COMMAND_UPLOAD = process.env.SKIP_COMMAND_UPLOAD;
 
@@ -46,9 +43,6 @@ export default {
 	AUTHOR_LOGO_LINK,
 	AUTHOR,
 	GUILD,
-	INFLUX_URL,
-	INFLUX_TOKEN,
-	INFLUX_ORG,
-	INFLUX_BUCKET,
+	METRICS_PORT,
 	SKIP_COMMAND_UPLOAD,
 };

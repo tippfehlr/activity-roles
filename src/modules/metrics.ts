@@ -1,84 +1,140 @@
 // SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { InfluxDB, Point, WriteApi } from '@influxdata/influxdb-client';
-export { Point } from '@influxdata/influxdb-client';
+import prom from 'prom-client';
+import http from 'node:http';
 
-import { client as discordClient } from './bot';
-import config from './config';
+import { client } from './bot';
 import { log } from './messages';
 
-import { stats as botStats, resetStats as resetBotStats } from './bot';
-import {
-	getUserCount,
-	getRolesCount,
-	getActiveTemporaryRolesCount,
-	getTempRoleCount,
-	getPermRoleCount,
-	getRowCount,
-} from './db';
+import { getTempRoleCount, getPermRoleCount, getRowCount, db } from './db';
+import config from './config';
 
-let client: InfluxDB;
-export let writeApi: WriteApi;
+const metricsPublic = {
+	checkroles: new prom.Counter({
+		name: 'activityroles_checkroles_total',
+		help: 'The number of times checkroles was executed for a guild',
+		labelNames: ['guildId'],
+	}),
+	checkrolesRolesModified: new prom.Counter({
+		name: 'activityroles_checkroles_roles_modified_total',
+		help: 'The number of roles that were added/removed by checkroles',
+		labelNames: ['action'], // add, remove
+	}),
+	commands: new prom.Counter({
+		name: 'activityroles_commands_total',
+		help: 'The number of commands that were executed',
+		labelNames: ['locale'],
+	}),
+	presenceUpdateDuration: new prom.Histogram({
+		name: 'activityroles_presence_update_duration_seconds',
+		help: 'The time a presence update takes',
+		buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
+	}),
+	presenceUpdates: new prom.Counter({
+		name: 'activityroles_presence_updates_total',
+		help: 'The number of presence updates the bot received',
+	}),
+	rolesModified: new prom.Counter({
+		name: 'activityroles_roles_modified_total',
+		help: 'The number of roles that were added or removed',
+		labelNames: ['action'], // add_permanent, add_temporary, remove
+	}),
+	websocketErrors: new prom.Counter({
+		name: 'activityroles_websocket_errors_total',
+		help: 'The number of websocket errors',
+	}),
+};
+export default metricsPublic;
 
-export function writeIntPoint(name: string, fieldName: string, value: number) {
-	if (writeApi)
-		try {
-			writeApi.writePoint(new Point(name).intField(fieldName, value));
-		} catch (err: any) {
-			if (err.message !== 'writeApi: already closed!') {
-				log.error(err);
-			}
-		}
-}
-
-export async function configureInfluxDB() {
-	if (config.INFLUX_URL && config.INFLUX_TOKEN && config.INFLUX_ORG && config.INFLUX_BUCKET) {
-		client = new InfluxDB({ url: config.INFLUX_URL, token: config.INFLUX_TOKEN });
-		writeApi = client.getWriteApi(config.INFLUX_ORG, config.INFLUX_BUCKET);
-
-		writeIntPoint('process', 'started', 1);
-		setInterval(async () => {
-			const startTime = performance.now();
-
-			writeIntPoint('presence_updates', 'presence_updates', botStats.presenceUpdates);
-			writeIntPoint('roles_added', 'roles_added', botStats.rolesAdded);
-			writeIntPoint('roles_removed', 'roles_removed', botStats.rolesRemoved);
-			writeIntPoint('web_socket_errors', 'web_socket_errors', botStats.webSocketErrors);
-			writeIntPoint('guilds', 'guilds_total', discordClient.guilds.cache.size);
-			writeIntPoint('roles', 'roles_count', await getRolesCount());
-			writeIntPoint('roles', 'temporary_roles_count', await getTempRoleCount());
-			writeIntPoint('roles', 'permanent_roles_count', await getPermRoleCount());
-			writeIntPoint('roles', 'status_roles_count', await getRowCount('statusRoles'));
-			writeApi.writePoint(
-				new Point('users')
-					.intField('users_cache_total', discordClient.users.cache.size)
-					.intField('old_users_count', await getRowCount('usersHashed'))
-					.intField('new_users_count', await getRowCount('users'))
-					.intField('users_db_total', await getUserCount()),
+const metricsAll = {
+	guilds: new prom.Gauge({
+		name: 'activityroles_guilds',
+		help: 'The total number of guilds',
+		labelNames: ['source'],
+		async collect() {
+			this.set({ source: 'cache' }, client.guilds.cache.size);
+			this.set({ source: 'database' }, await getRowCount('guilds'));
+		},
+	}),
+	roles: new prom.Gauge({
+		name: 'activityroles_roles',
+		help: 'The total number of roles in the database',
+		labelNames: ['type'],
+		async collect() {
+			this.set({ type: 'temporary' }, await getTempRoleCount());
+			this.set({ type: 'permanent' }, await getPermRoleCount());
+			this.set({ type: 'status' }, await getRowCount('statusRoles'));
+		},
+	}),
+	users: new prom.Gauge({
+		name: 'activityroles_users',
+		help: 'The total number of users',
+		labelNames: ['source'],
+		async collect() {
+			this.set({ source: 'cache' }, client.users.cache.size);
+			this.set({ source: 'database_hashed' }, await getRowCount('usersHashed'));
+			this.set({ source: 'database' }, await getRowCount('users'));
+		},
+	}),
+	usersAutoroleDisabled: new prom.Gauge({
+		name: 'activityroles_users_autorole_disabled',
+		help: 'The number of users who disabled autorole',
+		async collect() {
+			this.set(
+				Number(
+					(
+						await db
+							.selectFrom('users')
+							.where('autorole', '=', false)
+							.select(eb => eb.fn.countAll().as('count'))
+							.executeTakeFirstOrThrow()
+					).count,
+				),
 			);
-			writeApi.writePoint(
-				new Point('activeTemporaryRoles')
-					.intField('old', await getRowCount('activeTemporaryRolesHashed'))
-					.intField('new', await getRowCount('activeTemporaryRoles'))
-					.intField('total', await getActiveTemporaryRolesCount()),
+		},
+	}),
+	activeTemporaryRoles: new prom.Gauge({
+		name: 'activityroles_active_temporary_roles',
+		help: 'The number of active temporary roles',
+		labelNames: ['source'],
+		async collect() {
+			this.set(
+				{ source: 'database_hashed' },
+				await getRowCount('activeTemporaryRolesHashed'),
 			);
+			this.set({ source: 'database' }, await getRowCount('activeTemporaryRoles'));
+		},
+	}),
+	...metricsPublic,
+};
 
-			const ram = process.memoryUsage();
-			writeApi.writePoint(
-				new Point('memory')
-					.intField('rss', ram.rss)
-					.intField('heap_total', ram.heapTotal)
-					.intField('heap_used', ram.heapUsed)
-					.intField('external', ram.external)
-					.intField('array_buffers', ram.arrayBuffers),
-			);
+export async function initMetrics() {
+	const register = new prom.Registry();
 
-			resetBotStats();
-
-			writeIntPoint('metrics', 'time_ms', performance.now() - startTime);
-		}, 1000);
-	} else {
-		log.info('InfluxDB not configured');
+	for (const metric of Object.values(metricsAll)) {
+		register.registerMetric(metric);
 	}
+
+	prom.collectDefaultMetrics({ register, prefix: 'activityroles_' });
+
+	const server = http.createServer(async (req, res) => {
+		log.debug(req.url);
+
+		if (req.url === '/metrics') {
+			res.setHeader('Content-Type', register.contentType);
+			res.end(await register.metrics());
+		}
+	});
+	// Start the HTTP server which exposes the metrics on http://localhost:8080/metrics
+	server.listen(config.METRICS_PORT);
+
+	prom.collectDefaultMetrics();
+
+	http.createServer(async (req, res) => {
+		if (req.url === '/metrics') {
+			res.end(await register.metrics());
+		}
+	});
+	log.info(`Metrics listening on http://0.0.0.0:${config.METRICS_PORT}/metrics`);
 }

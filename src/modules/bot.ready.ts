@@ -1,12 +1,11 @@
 // SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ActivityType, Events } from 'discord.js';
+import { ActivityType } from 'discord.js';
 
 import { client } from './bot';
 import CommandHandler from './commandHandler';
 import config from './config';
-import { configureInfluxDB } from './metrics';
 import { getUserCount, getRolesCount } from './db';
 import { i18n, log } from './messages';
 import { cron } from './cron';
@@ -28,7 +27,6 @@ import toggleAutoRole from './commands/toggleAutoRole';
 export let commandHandler: CommandHandler;
 
 export async function clientReady() {
-	configureInfluxDB();
 	commandHandler = new CommandHandler(client)
 		.addCommand(activityStats)
 		.addCommand(addActivityRole)

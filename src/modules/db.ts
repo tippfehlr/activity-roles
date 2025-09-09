@@ -18,7 +18,7 @@ import path from 'path';
 import { locales, log } from './messages';
 import { DB, ActivityRoles, Guilds, StatusRoles, Users } from './db.types';
 import config from './config';
-import { writeIntPoint } from './metrics';
+import metrics from './metrics';
 import { client } from './bot';
 
 const pool = new Pool({ connectionString: config.DATABASE_URL, max: 10 });
@@ -152,7 +152,7 @@ export async function getStatusRoles(guildID: string): Promise<Selectable<Status
 }
 
 export function getLang(interaction: CommandInteraction | StringSelectMenuInteraction): string {
-	writeIntPoint('locale', interaction.locale, 1);
+	metrics.commands.inc({ locale: interaction.locale });
 	if (locales.includes(interaction.locale)) return interaction.locale;
 	else return 'en-US';
 }
@@ -188,23 +188,27 @@ export async function getUserCount(): Promise<number> {
 }
 
 export async function getTempRoleCount(): Promise<number> {
-	return (
-		await db
-			.selectFrom('activityRoles')
-			.select(eb => eb.fn.countAll().as('count'))
-			.where('permanent', '=', false)
-			.executeTakeFirstOrThrow()
-	).count as number;
+	return Number(
+		(
+			await db
+				.selectFrom('activityRoles')
+				.select(eb => eb.fn.countAll().as('count'))
+				.where('permanent', '=', false)
+				.executeTakeFirstOrThrow()
+		).count,
+	);
 }
 
 export async function getPermRoleCount(): Promise<number> {
-	return (
-		await db
-			.selectFrom('activityRoles')
-			.select(eb => eb.fn.countAll().as('count'))
-			.where('permanent', '=', true)
-			.executeTakeFirstOrThrow()
-	).count as number;
+	return Number(
+		(
+			await db
+				.selectFrom('activityRoles')
+				.select(eb => eb.fn.countAll().as('count'))
+				.where('permanent', '=', true)
+				.executeTakeFirstOrThrow()
+		).count,
+	);
 }
 
 export async function getRolesCount(): Promise<number> {

@@ -24,8 +24,7 @@ import {
 	getLang,
 } from './db';
 import { log, __ } from './messages';
-import { writeIntPoint } from './metrics';
-import { client, stats } from './bot';
+import metrics from './metrics';
 import { Selectable } from 'kysely';
 import { ActiveTemporaryRoles, ActivityRoles, StatusRoles } from './db.types';
 
@@ -132,9 +131,9 @@ skipped (in guild ${guild.name})`,
 		// does the cache need to be checked?
 		// if (member.roles.cache.has(role.id)) return;
 		if (permanent) {
-			writeIntPoint('roles_added', 'permanent_roles_added', 1);
+			metrics.rolesModified.inc({action: 'add_permanent'});
 		} else {
-			writeIntPoint('roles_added', 'temporary_roles_added', 1);
+			metrics.rolesModified.inc({action: 'add_temporary'});
 			db.insertInto('activeTemporaryRoles')
 				.values({ userID: member.user.id, guildID: guild.id, roleID })
 				.onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
@@ -159,18 +158,17 @@ skipped (in guild ${guild.name})`,
 				.execute();
 		}
 		await member.roles.add(role);
-		stats.rolesAdded++;
 		return addRoleStatus.RoleAdded;
 	} else if (change === 'remove') {
 		// does the cache need to be checked?
 		// if (!member.roles.cache.has(role.id)) return;
+		metrics.rolesModified.inc({action: 'remove'});
 		await member.roles.remove(role);
 		db.deleteFrom('activeTemporaryRoles')
 			.where('guildID', '=', guild.id)
 			.where('roleID', '=', roleID)
 			.where('userID', '=', member.user.id)
 			.execute();
-		stats.rolesRemoved++;
 		return addRoleStatus.RoleRemoved;
 	}
 }
@@ -300,8 +298,9 @@ export async function processRoles({
 // PresenceUpdate fires once for every guild the bot shares with the user
 export async function presenceUpdate(oldMember: Presence | null, newMember: Presence) {
 	if (newMember.user?.bot) return;
-	const startTime = Date.now();
-	stats.presenceUpdates++;
+	const stopTimer = metrics.presenceUpdateDuration.startTimer();
+	metrics.presenceUpdates.inc();
+
 
 	// no activities changed
 	// if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
@@ -392,5 +391,5 @@ export async function presenceUpdate(oldMember: Presence | null, newMember: Pres
 		}
 	}
 
-	writeIntPoint('presence_updates', 'took_time', Date.now() - startTime);
+	stopTimer();
 }

@@ -19,7 +19,7 @@ import {
 	MessageFlags,
 } from 'discord.js';
 import { checkrolesCurrentGuilds, db, getActivityRoles, getLang, getStatusRoles } from '../db';
-import { Point, writeApi, writeIntPoint } from '../metrics';
+import metrics from '../metrics';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -76,7 +76,7 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
 	checkrolesCurrentGuilds.add(guild.id);
 
 	log.debug(`started checkroles on ${guild.name} (${guild.id})`);
-	writeIntPoint('checkroles_guilds', `${guild.name} (${guild.id})`, 1);
+	metrics.checkroles.inc({ guildId: guild.id });
 
 	if (interaction && locale) await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
@@ -224,13 +224,10 @@ ${guild.ownerId}), Permission: MANAGE_ROLES`,
 		});
 	}
 	checkrolesCurrentGuilds.delete(guild.id);
-	if (writeApi)
-		writeApi.writePoint(
-			new Point('checkroles')
-				.intField('exec_total', 1)
-				.intField('roles_added', status.rolesAdded)
-				.intField('roles_removed', status.rolesRemoved),
-		);
+
+	metrics.checkrolesRolesModified.inc({ action: 'add' }, status.rolesAdded);
+	metrics.checkrolesRolesModified.inc({ action: 'remove' }, status.rolesRemoved);
+
 	db.updateTable('guilds')
 		.set('lastCheckRoles', new Date())
 		.where('guildID', '=', guild.id)
