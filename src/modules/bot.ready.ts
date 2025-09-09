@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2021 tippfehlr <tippfehlr@tippfehlr.dev>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ActivityType } from 'discord.js';
+import { ActivitiesOptions, ActivityType } from 'discord.js';
 
 import { client } from './bot';
 import CommandHandler from './commandHandler';
@@ -26,6 +26,41 @@ import toggleAutoRole from './commands/toggleAutoRole';
 
 export let commandHandler: CommandHandler;
 
+const presences: Array<() => Promise<ActivitiesOptions>> = [
+	async () => {
+		return {
+			name: i18n.__n({
+				singular: '%s guild',
+				plural: '%s guilds',
+				locale: 'en-US',
+				count: client.guilds.cache.size,
+			}),
+			type: ActivityType.Watching,
+		};
+	},
+	async () => {
+		return {
+			name: i18n.__n({
+				singular: '%s role',
+				plural: '%s roles',
+				locale: 'en-US',
+				count: await getRolesCount(),
+			}),
+			type: ActivityType.Watching,
+		};
+	},
+];
+let currentPresenceIndex = 0;
+
+async function cyclePresence() {
+	currentPresenceIndex = (currentPresenceIndex + 1) % presences.length;
+	client.user?.setPresence({
+		status: 'online',
+		afk: false,
+		activities: [await presences[currentPresenceIndex]()],
+	});
+}
+
 export async function clientReady() {
 	commandHandler = new CommandHandler(client)
 		.addCommand(activityStats)
@@ -43,57 +78,8 @@ export async function clientReady() {
 		.addCommand(toggleAutoRole);
 	if (!config.SKIP_COMMAND_UPLOAD) await commandHandler.uploadCommands();
 
-	const setActivityGuilds = () => {
-		client.user?.setPresence({
-			status: 'online',
-			afk: false,
-			activities: [
-				{
-					name: i18n.__n({
-						singular: '%s guild',
-						plural: '%s guilds',
-						locale: 'en-US',
-						count: client.guilds.cache.size,
-					}),
-					type: ActivityType.Watching,
-				},
-			],
-		});
-		setTimeout(setActivityUsers, 10 * 1000);
-	};
-	const setActivityUsers = async () => {
-		client.user?.setPresence({
-			activities: [
-				{
-					name: i18n.__n({
-						singular: '%s user',
-						plural: '%s users',
-						locale: 'en-US',
-						count: await getUserCount(),
-					}),
-					type: ActivityType.Watching,
-				},
-			],
-		});
-		setTimeout(setActivityActivityRoles, 10 * 1000);
-	};
-	const setActivityActivityRoles = async () => {
-		client.user?.setPresence({
-			activities: [
-				{
-					name: i18n.__n({
-						singular: '%s role',
-						plural: '%s roles',
-						locale: 'en-US',
-						count: await getRolesCount(),
-					}),
-					type: ActivityType.Watching,
-				},
-			],
-		});
-		setTimeout(setActivityGuilds, 10 * 1000);
-	};
-	setActivityGuilds();
+	cyclePresence();
+	setInterval(cyclePresence, 10 * 1000);
 
 	log.info(
 		`Logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`,
