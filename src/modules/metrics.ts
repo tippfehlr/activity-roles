@@ -44,6 +44,10 @@ const metricsPublic = {
 		name: 'activityroles_websocket_errors_total',
 		help: 'The number of websocket errors',
 	}),
+	unhandledRejections: new prom.Counter({
+		name: 'activityroles_unhandled_rejections_total',
+		help: 'The number of unhandled rejections',
+	})
 };
 export default metricsPublic;
 

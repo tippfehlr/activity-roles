@@ -4,9 +4,10 @@
 import { initDB } from './modules/db';
 import { initBot } from './modules/bot';
 import { log } from './modules/messages';
-import { initMetrics } from './modules/metrics';
+import metrics, { initMetrics } from './modules/metrics';
 
 process.on('unhandledRejection', (reason, _) => {
+	metrics.unhandledRejections.inc();
 	log.error(reason);
 });
 
