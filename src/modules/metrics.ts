@@ -29,7 +29,11 @@ const metricsPublic = {
 	presenceUpdateDuration: new prom.Histogram({
 		name: 'activityroles_presence_update_duration_seconds',
 		help: 'The time a presence update takes',
-		buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
+		// buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
+		buckets: [
+			0.002, 0.003, 0.004, 0.005, 0.01, 0.025, 0.035, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 8, 10,
+			15, 20, 30, 60, 120, 180,
+		],
 	}),
 	presenceUpdates: new prom.Counter({
 		name: 'activityroles_presence_updates_total',
@@ -47,7 +51,7 @@ const metricsPublic = {
 	unhandledRejections: new prom.Counter({
 		name: 'activityroles_unhandled_rejections_total',
 		help: 'The number of unhandled rejections',
-	})
+	}),
 };
 export default metricsPublic;
 
