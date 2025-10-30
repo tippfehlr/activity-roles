@@ -131,9 +131,9 @@ skipped (in guild ${guild.name})`,
 		// does the cache need to be checked?
 		// if (member.roles.cache.has(role.id)) return;
 		if (permanent) {
-			metrics.rolesModified.inc({action: 'add_permanent'});
+			metrics.rolesModified.inc({ action: 'add_permanent' });
 		} else {
-			metrics.rolesModified.inc({action: 'add_temporary'});
+			metrics.rolesModified.inc({ action: 'add_temporary' });
 			db.insertInto('activeTemporaryRoles')
 				.values({ userID: member.user.id, guildID: guild.id, roleID })
 				.onConflict(oc => oc.columns(['userID', 'roleID', 'guildID']).doNothing())
@@ -162,7 +162,7 @@ skipped (in guild ${guild.name})`,
 	} else if (change === 'remove') {
 		// does the cache need to be checked?
 		// if (!member.roles.cache.has(role.id)) return;
-		metrics.rolesModified.inc({action: 'remove'});
+		metrics.rolesModified.inc({ action: 'remove' });
 		await member.roles.remove(role);
 		db.deleteFrom('activeTemporaryRoles')
 			.where('guildID', '=', guild.id)
@@ -300,7 +300,6 @@ export async function presenceUpdate(oldMember: Presence | null, newMember: Pres
 	if (newMember.user?.bot) return;
 	const stopTimer = metrics.presenceUpdateDuration.startTimer();
 	metrics.presenceUpdates.inc();
-
 
 	// no activities changed
 	// if (oldMember?.activities.toString() === newMember?.activities.toString()) return;
