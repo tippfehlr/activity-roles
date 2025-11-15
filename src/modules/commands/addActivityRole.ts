@@ -334,8 +334,8 @@ async function process(
 			.where('guildID', '=', interaction.guildId)
 			.where('activityName', '=', r.activityName)
 			.where('roleID', '=', r.role.id)
-			.where('state', '=', r.state ?? null)
-			.where('details', '=', r.details ?? null)
+			.where('state', '=', r.state ?? '')
+			.where('details', '=', r.details ?? '')
 			.executeTakeFirst()
 	) {
 		reply(
@@ -353,6 +353,7 @@ async function process(
 				permanent: r.permanent,
 				state: r.state ?? '',
 				details: r.details ?? '',
+				removeAfterDays: r.removeAfterDays,
 			})
 			.execute();
 		log.info(
