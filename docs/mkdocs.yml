@@ -36,9 +36,11 @@ theme:
     - navigation.instant.progress
     - navigation.expand
     - navigation.indexes
+    - navigation.tracking
     - toc.follow
     - search.highlight
     - content.action.edit
+    - content.tooltips
     # - content.action.view
   icon:
     repo: fontawesome/brands/github
@@ -48,3 +50,11 @@ plugins:
 extra:
   analytics:
     provider: custom
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
